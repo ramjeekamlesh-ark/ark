@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ARK Financial Planners — Brutally Honest Retirement Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#05080F;--surface:#0B0F1C;--card:#0F1525;--border:#1C2640;--border2:#243050;
+  --accent:#00E5B0;--adim:#00A87E;--gold:#FFD166;--gdim:#C9A13B;
+  --warn:#FF8F5A;--danger:#FF4466;
+  --text:#ECF0FA;--muted:#4A5A7E;--subtle:#141D33;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+button,input[type=range]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(0,229,176,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,176,.018) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none}
+body::after{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);
+  width:900px;height:600px;background:radial-gradient(ellipse,rgba(0,229,176,.032) 0%,transparent 68%);pointer-events:none;z-index:0}
+#root{position:relative;z-index:1}
+
+/* ── FAT-FINGER SLIDERS (fix #1) ── */
+.slider-wrap{margin-bottom:22px}
+.slider-labels{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.slider-label{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.slider-value{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;letter-spacing:-.01em}
+.slider-sub{font-size:10px;color:var(--accent);font-style:italic;margin-bottom:6px}
+.slider-sub2{font-size:10px;color:var(--muted);margin-top:5px}
+/* Track sits on top, full height invisible range sits over it */
+.slider-track-wrap{position:relative;height:28px;display:flex;align-items:center;cursor:pointer}
+.slider-track{position:absolute;left:0;right:0;height:6px;background:var(--subtle);border-radius:3px}
+.slider-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width .06s}
+input[type=range]{
+  position:absolute;left:0;top:0;width:100%;height:100%;
+  opacity:0;cursor:pointer;margin:0;z-index:2
+}
+input[type=range]::-webkit-slider-thumb{width:32px;height:32px;-webkit-appearance:none}
+input[type=range]::-moz-range-thumb{width:32px;height:32px;border:none;opacity:0}
+/* Visible thumb */
+.slider-thumb{
+  position:absolute;top:50%;transform:translate(-50%,-50%);
+  width:26px;height:26px;border-radius:50%;
+  border:3px solid var(--bg);pointer-events:none;z-index:1;
+  box-shadow:0 0 0 3px rgba(0,229,176,.22),0 2px 8px rgba(0,0,0,.5);
+  transition:left .06s
+}
+
+
+/* General */
+input[type=text],input[type=email],input[type=tel]{
+  font-family:'DM Sans',sans-serif;font-size:15px;background:var(--subtle);
+  border:1px solid var(--border);border-radius:12px;color:var(--text);
+  padding:14px 16px;width:100%;outline:none;transition:border-color .2s
+}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus{border-color:var(--accent)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Animations */
+.fi{animation:fi .5s cubic-bezier(.22,1,.36,1) both}
+.fu{animation:fu .45s cubic-bezier(.22,1,.36,1) both}
+.fu1{animation:fu .45s .07s cubic-bezier(.22,1,.36,1) both}
+.fu2{animation:fu .45s .14s cubic-bezier(.22,1,.36,1) both}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;
+  border:1px solid rgba(0,229,176,.22);background:rgba(0,229,176,.06);
+  font-size:11px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:20px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pp 2.2s infinite}
+@keyframes pp{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,176,.4)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(0,229,176,0)}}
+
+/* Currency toggle (fix #4) */
+.cur-toggle{display:flex;gap:0;background:var(--subtle);border-radius:10px;padding:3px;border:1px solid var(--border)}
+.cur-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:6px 16px;
+  border-radius:8px;border:none;cursor:pointer;transition:all .18s;color:var(--muted);background:transparent}
+.cur-btn.on{background:var(--accent);color:#02100C}
+
+/* Tabs */
+.tab-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:8px 18px;
+  border-radius:100px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all .2s}
+.tab-btn:hover{border-color:var(--border2);color:var(--text)}
+.tab-btn.act{border-color:var(--accent);background:rgba(0,229,176,.1);color:var(--accent)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px}
+.card-g{background:var(--card);border:1px solid rgba(0,229,176,.18);border-radius:20px;
+  box-shadow:0 0 50px rgba(0,229,176,.04)}
+
+/* Chips */
+.chip{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 14px;
+  border-radius:100px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--border2);color:var(--text)}
+.chip.ca{border-color:var(--accent);background:rgba(0,229,176,.1);color:var(--accent)}
+.chip.cg{border-color:var(--gold);background:rgba(255,209,102,.09);color:var(--gold)}
+.chip.cm{border-color:var(--muted);background:rgba(74,90,126,.14);color:var(--text)}
+.chip.cw{border-color:var(--warn);background:rgba(255,143,90,.1);color:var(--warn)}
+
+/* Scenario cards — full-width, question always visible */
+.scene-card{
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:20px 22px;cursor:pointer;transition:all .2s;text-align:left;width:100%
+}
+.scene-card:hover{border-color:var(--accent);background:rgba(0,229,176,.04);transform:translateY(-1px)}
+.scene-card.act{border-color:var(--accent);background:rgba(0,229,176,.06)}
+.scene-q{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;line-height:1.35;margin-bottom:6px;color:#ECF0FA}
+.scene-sub{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* CTA */
+.cta{width:100%;padding:18px 0;border-radius:14px;
+  background:linear-gradient(135deg,var(--adim),var(--accent));
+  border:none;color:#02100C;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;box-shadow:0 4px 32px rgba(0,229,176,.22);transition:all .2s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 44px rgba(0,229,176,.32)}
+.cta:active{transform:translateY(0)}
+.sec{padding:12px 24px;border-radius:12px;border:1px solid var(--accent);
+  background:rgba(0,229,176,.07);color:var(--accent);font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.sec:hover{background:rgba(0,229,176,.14)}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(2,4,10,.85);
+  backdrop-filter:blur(10px);z-index:999;display:flex;align-items:center;
+  justify-content:center;padding:24px}
+.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:24px;
+  max-width:500px;width:100%;padding:clamp(22px,5vw,38px);position:relative;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);max-height:90vh;overflow-y:auto}
+
+/* Life goal pill (fix #5) */
+.goal-pill{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;
+  border-radius:14px;border:1px solid var(--border);background:transparent;
+  cursor:pointer;transition:all .18s;text-align:left;width:100%
+}
+.goal-pill:hover{border-color:var(--border2)}
+.goal-pill.on{border-color:var(--gold);background:rgba(255,209,102,.07)}
+.goal-pill-icon{font-size:20px;flex-shrink:0}
+.goal-pill-label{font-size:13px;font-weight:600;color:var(--text)}
+.goal-pill-sub{font-size:10px;color:var(--muted)}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media(max-width:760px){
+  /* Grid collapses */
+  .tc{grid-template-columns:1fr !important}
+  .fc{grid-template-columns:1fr 1fr !important}
+  .sc{grid-template-columns:1fr 1fr !important}
+
+  /* ── HEADER: single tight row on mobile ── */
+  .hdr-inner{
+    height:52px !important;
+    padding:0 12px !important;
+    flex-wrap:nowrap !important;
+    gap:8px !important;
+  }
+  /* Show short name instead of full name */
+  .hdr-logo-text{display:block !important}
+  .hdr-logo-fullname{display:none !important}
+  .hdr-logo-short{display:block !important}
+  /* Shrink the logo icon */
+  .hdr-logo-icon{width:26px !important;height:26px !important;font-size:11px !important;border-radius:7px !important}
+  /* Controls stay in one row — currency + bottom nav handles tabs */
+  .hdr-controls{gap:6px !important;flex-shrink:0}
+  .desktop-tabs{display:none !important}
+  .cur-btn{font-size:11px !important;padding:5px 9px !important}
+  .cur-toggle{padding:2px !important}
+
+  /* Hide desktop subtext in plan header */
+  .plan-sub{display:none !important}
+
+  /* Content padding */
+  .main-pad{padding:14px 12px !important}
+
+  /* Hero adjustments */
+  .hero-title{font-size:clamp(26px,7vw,40px) !important;line-height:1.1 !important}
+
+  /* Sliders — taller for fat fingers */
+  .slider-track-wrap{height:36px !important}
+  .slider-wrap{margin-bottom:18px !important}
+
+  /* Chips */
+  .chip{padding:7px 11px !important;font-size:11px !important}
+
+  /* Cards — less padding on mobile */
+  .card,.card-g{border-radius:14px !important}
+  .card-pad{padding:16px !important}
+
+  /* Scene cards */
+  .scene-q{font-size:14px !important}
+  .scene-sub{font-size:11px !important}
+
+  /* Results hero */
+  .results-pot{font-size:clamp(30px,8vw,46px) !important}
+
+  /* Stat boxes 2-col on mobile */
+  .stat-3{grid-template-columns:1fr 1fr !important}
+
+  /* Reduce heading sizes */
+  .plan-title{font-size:22px !important}
+
+  /* Bottom nav spacing */
+  body{padding-bottom:68px}
+}
+
+@media(max-width:420px){
+  .fc{grid-template-columns:1fr !important}
+  .sc{grid-template-columns:1fr !important}
+  .hdr-controls{gap:4px !important}
+  .cur-btn{font-size:10px !important;padding:4px 7px !important}
+  .hdr-logo-short{font-size:13px !important}
+}
+
+/* Bottom navigation bar for mobile */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(5,8,15,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  grid-template-columns:repeat(3,1fr);
+}
+.bnav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;background:none;border:none;cursor:pointer;padding:6px 4px;
+  color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;
+  font-weight:500;letter-spacing:.04em;transition:color .15s
+}
+.bnav-btn.act{color:var(--accent)}
+.bnav-btn svg{width:20px;height:20px;stroke-width:1.8}
+@media(max-width:760px){
+  .bottom-nav{display:grid}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef,useMemo}=React;
+
+// ── CURRENCY (fix #4) ──────────────────────────────────────────────────────────
+// USD/MUR — rate fixed as of June 2025: 1 USD = 46.5 MUR
+const FX_MUR = 46.5;
+const CURRENCIES = {
+  USD:{ sym:"$", code:"USD", toBase:v=>v, fromBase:v=>v, label:"US Dollar" },
+  MUR:{ sym:"₨", code:"MUR", toBase:v=>v/FX_MUR, fromBase:v=>v*FX_MUR, label:"Mauritian Rupee" },
+};
+
+function useCur(){
+  const [cur,setCur]=useState("USD");
+  const C2=CURRENCIES[cur];
+  // fmt converts a BASE (USD) value → display string in selected currency
+  const disp=(v,short=false)=>{
+    if(typeof v!=="number"||isNaN(v)) return "—";
+    const val=C2.fromBase(v);
+    const sym=C2.sym;
+    if(val>=1e6) return `${sym}${(val/1e6).toFixed(short?1:2)}M`;
+    if(val>=1e3) return `${sym}${(val/1e3).toFixed(short?0:1)}K`;
+    return `${sym}${Math.round(val).toLocaleString()}`;
+  };
+  // input converts user-entered display value → base (USD)
+  const toBase=(v)=>C2.toBase(Number(v));
+  const fromBase=(v)=>C2.fromBase(v);
+  return {cur,setCur,disp,toBase,fromBase,sym:C2.sym};
+}
+
+// ── FINANCIAL ENGINE ───────────────────────────────────────────────────────────
+function runProjection(inp){
+  const{age,gender,income,monthlySpend,savings,savingsRate,retireAge,
+    debtBalance=0,retireMonthlyExpenses=0,lifeGoals=[]}=inp;
+  const lifeExp=gender==="male"?75:85;
+  const yearsInRet=Math.max(1,lifeExp-retireAge);
+  const INFLATION=0.025,INCOME_GROWTH=Math.max(0.03,INFLATION),SWR=0.04;
+  const ytr=Math.max(1,retireAge-age);
+  const returnRate=ytr>10?0.075:ytr>5?0.05:0.035;
+
+  // Build schedule of goal withdrawals keyed by year
+  const goalWithdrawals={};
+  (lifeGoals||[]).forEach(g=>{
+    if(g.amount>0&&g.atAge>age&&g.atAge<retireAge){
+      const yr=g.atAge-age; // years from now
+      goalWithdrawals[yr]=(goalWithdrawals[yr]||0)+g.amount;
+    }
+  });
+
+  let portfolio=Math.max(0,savings-debtBalance);
+  const accum=[];
+  for(let t=0;t<ytr;t++){
+    const curIncome=income*Math.pow(1+INCOME_GROWTH,t);
+    portfolio=portfolio*(1+returnRate)+curIncome*(savingsRate/100);
+    // Deduct life goal at this year
+    if(goalWithdrawals[t]) portfolio=Math.max(0,portfolio-goalWithdrawals[t]);
+    accum.push({yr:age+t,val:Math.max(0,portfolio),phase:"grow"});
+  }
+
+  const retPortfolio=Math.max(0,portfolio);
+  const retIncome=retPortfolio*SWR;
+  const inflatedSpend=monthlySpend*12*Math.pow(1+INFLATION,ytr);
+  const desiredAnnual=retireMonthlyExpenses>0
+    ?retireMonthlyExpenses*12*Math.pow(1+INFLATION,ytr):null;
+  const withdrawal=desiredAnnual!==null
+    ?desiredAnnual:Math.max(inflatedSpend*0.7,retIncome);
+  const targetPortfolio=retireMonthlyExpenses>0
+    ?(retireMonthlyExpenses*12*Math.pow(1+INFLATION,ytr))/SWR:null;
+
+  let reqMonthlySaving=null,reqSavingsRate=null;
+  if(targetPortfolio!==null){
+    const PV=Math.max(0,savings-debtBalance),r=returnRate/12,n=ytr*12;
+    const gr=Math.pow(1+r,n),needed=targetPortfolio-PV*gr;
+    reqMonthlySaving=needed>0?(needed*r)/(gr-1):0;
+    reqSavingsRate=Math.min(80,Math.max(0,(reqMonthlySaving*12/income)*100));
+  }
+  const curMonthlySaving=(income*(savingsRate/100))/12;
+  const monthlySavingGap=reqMonthlySaving!==null?reqMonthlySaving-curMonthlySaving:null;
+
+  const maxDraw=Math.max(40,yearsInRet+15);
+  let runOut=retireAge+maxDraw,drawnPort=retPortfolio;
+  const drawdown=[];
+  for(let y=0;y<=maxDraw;y++){
+    const w=withdrawal*Math.pow(1+INFLATION,y);
+    drawnPort=drawnPort*(1+0.04)-w;
+    if(drawnPort<=0){runOut=retireAge+y;break;}
+    if(y<maxDraw) drawdown.push({yr:retireAge+y,val:Math.max(0,drawnPort),phase:"draw"});
+  }
+
+  const lastsToLifeExp=runOut>=lifeExp;
+  const surplusYears=runOut-lifeExp;
+  const corpusMultiple=withdrawal>0?retPortfolio/withdrawal:0;
+
+  // Health score
+  const savScore=Math.min(30,(savingsRate/20)*30);
+  const spendScore=Math.min(25,Math.max(0,25-((monthlySpend*12)/income)*25));
+  const progScore=Math.min(20,(savings/(income*3))*20);
+  const readyBase=targetPortfolio
+    ?Math.min(25,(retPortfolio/targetPortfolio)*25)
+    :Math.min(25,(retPortfolio/(withdrawal*yearsInRet))*25);
+  const health=Math.round(savScore+spendScore+progScore+(lastsToLifeExp?readyBase:readyBase*0.5));
+
+  const successProb=Math.min(97,Math.max(5,
+    (lastsToLifeExp?60:25)+
+    (surplusYears>=10?18:surplusYears>=5?10:surplusYears>=0?4:0)+
+    (savingsRate>=20?10:savingsRate>=15?6:savingsRate>=10?3:0)+
+    (corpusMultiple>=25?9:corpusMultiple>=18?5:0)
+  ));
+
+  const onTrackRatio=targetPortfolio?Math.min(1.5,retPortfolio/targetPortfolio):null;
+
+  // Total goal impact
+  const totalGoalAmount=(lifeGoals||[]).reduce((s,g)=>s+(g.amount||0),0);
+
+  return{
+    retPortfolio,retIncome,successProb,runOut,health,lifeExp,yearsInRet,
+    returnRate,withdrawal,ytr,lastsToLifeExp,corpusMultiple,surplusYears,
+    chartData:[...accum,...drawdown],
+    targetPortfolio,reqMonthlySaving,reqSavingsRate,
+    curMonthlySaving,monthlySavingGap,onTrackRatio,
+    inflatedSpend,INCOME_GROWTH,totalGoalAmount,
+  };
+}
+
+// What savings rate is needed to retire N years earlier?
+function calcEarlyRetireSavings(inp,yearsEarlier){
+  const target=Math.max(inp.age+2,inp.retireAge-yearsEarlier);
+  const ytr=Math.max(1,target-inp.age);
+  const returnRate=ytr>10?0.075:ytr>5?0.05:0.035;
+  const lifeExp=inp.gender==="male"?75:85;
+  const yearsInRet=Math.max(1,lifeExp-target);
+  const INFLATION=0.025,INCOME_GROWTH=0.03;
+  // Need enough for ~25x annual spend
+  const inflatedSpend=inp.monthlySpend*12*Math.pow(1+INFLATION,ytr);
+  const neededPort=Math.max(
+    inp.retireMonthlyExpenses>0
+      ?(inp.retireMonthlyExpenses*12*Math.pow(1+INFLATION,ytr))/0.04
+      :inflatedSpend*0.7*25,
+    inflatedSpend*20
+  );
+  const PV=Math.max(0,inp.savings-inp.debtBalance);
+  const r=returnRate/12,n=ytr*12;
+  const gr=Math.pow(1+r,n),needed=neededPort-PV*gr;
+  const monthlyNeeded=needed>0?(needed*r)/(gr-1):0;
+  const rateNeeded=Math.min(80,Math.max(0,(monthlyNeeded*12/inp.income)*100));
+  return{targetAge:target,rateNeeded,monthlyNeeded,neededPort};
+}
+
+function runStressTest(inp){
+  const results=[];
+  for(let i=0;i<300;i++){
+    const n=()=>1+(Math.random()-.5)*.08;
+    const r=runProjection({...inp,income:inp.income*n(),savings:inp.savings*n()});
+    results.push({port:r.retPortfolio,lasts:r.lastsToLifeExp});
+  }
+  results.sort((a,b)=>a.port-b.port);
+  return{
+    best:results[270].port,likely:results[150].port,tough:results[30].port,
+    pctOk:(results.filter(r=>r.lasts).length/300)*100,
+  };
+}
+
+function healthLabel(s){
+  if(s<35) return{label:"Critical",color:"#FF4466"};
+  if(s<55) return{label:"At Risk",color:"#FF8F5A"};
+  if(s<75) return{label:"Stable",color:"#FFD166"};
+  return{label:"Strong",color:"#00E5B0"};
+}
+
+// ── SLIDER (fat-finger friendly fix #1) ───────────────────────────────────────
+function Slider({label,value,min,max,step=1,fmtFn,onChange,color,sub,sub2}){
+  const col=color||"#00E5B0";
+  const p=Math.min(100,Math.max(0,((value-min)/(max-min))*100));
+  return(
+    <div className="slider-wrap">
+      <div className="slider-labels">
+        <span className="slider-label">{label}</span>
+        <span className="slider-value" style={{color:col}}>{fmtFn(value)}</span>
+      </div>
+      {sub&&<div className="slider-sub">{sub}</div>}
+      <div className="slider-track-wrap">
+        <div className="slider-track">
+          <div className="slider-fill" style={{width:`${p}%`,background:`linear-gradient(90deg,${col}60,${col})`}}/>
+        </div>
+        <div className="slider-thumb" style={{left:`${p}%`,background:col}}/>
+        <input type="range" min={min} max={max} step={step} value={value}
+          onChange={e=>onChange(Number(e.target.value))}/>
+      </div>
+      {sub2&&<div className="slider-sub2">{sub2}</div>}
+    </div>
+  );
+}
+
+// ── SAVINGS SLIDER (% only, amount shown inline — no extra boxes) ──────────────
+function SavingsSlider({income,savingsRate,onChange,disp}){
+  const col=savingsRate>=20?"#00E5B0":savingsRate>=10?"#FFD166":"#FF4466";
+  const monthlyAmt=(income*(savingsRate/100))/12;
+  return(
+    <div className="slider-wrap">
+      <div className="slider-labels">
+        <span className="slider-label">Savings Rate <span style={{textTransform:"none",letterSpacing:0,fontSize:10,color:"#4A5A7E"}}>(% of gross income)</span></span>
+        <span className="slider-value" style={{color:col}}>{savingsRate}%</span>
+      </div>
+      <div className="slider-sub" style={{color:col}}>{disp(monthlyAmt)}/mo saved · {savingsRate<10?"aim for 15%+":savingsRate<20?"good — aim for 20%":"excellent"}</div>
+      <div className="slider-track-wrap">
+        <div className="slider-track">
+          <div className="slider-fill" style={{
+            width:`${Math.min(100,(savingsRate/50)*100)}%`,
+            background:`linear-gradient(90deg,${col}60,${col})`
+          }}/>
+        </div>
+        <div className="slider-thumb" style={{left:`${Math.min(100,(savingsRate/50)*100)}%`,background:col}}/>
+        <input type="range" min={1} max={50} step={1} value={savingsRate}
+          onChange={e=>onChange(Number(e.target.value))}/>
+      </div>
+    </div>
+  );
+}
+
+// ── CHART ──────────────────────────────────────────────────────────────────────
+function Chart({data,retireAge,lifeExp,goalMarkers=[],height=150}){
+  if(!data||!data.length) return null;
+  const W=600,H=height,pad={l:10,r:10,t:14,b:22};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const maxV=Math.max(...data.map(d=>d.val),1)*1.1;
+  const minYr=data[0].yr,maxYr=data[data.length-1].yr;
+  const range=Math.max(1,maxYr-minYr);
+  const sx=yr=>pad.l+((yr-minYr)/range)*cw;
+  const sy=v=>pad.t+ch-(v/maxV)*ch;
+  const grow=data.filter(d=>d.phase==="grow");
+  const draw=data.filter(d=>d.phase==="draw");
+  const tp=pts=>pts.map((d,i)=>`${i?"L":"M"}${sx(d.yr).toFixed(1)},${sy(d.val).toFixed(1)}`).join(" ");
+  const retX=sx(retireAge);
+  const lifeX=lifeExp>=minYr&&lifeExp<=maxYr?sx(lifeExp):null;
+  return(
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{overflow:"visible",display:"block"}}>
+      <defs>
+        <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#00E5B0" stopOpacity=".25"/><stop offset="100%" stopColor="#00E5B0" stopOpacity="0"/>
+        </linearGradient>
+        <linearGradient id="gd" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#FFD166" stopOpacity=".2"/><stop offset="100%" stopColor="#FFD166" stopOpacity="0"/>
+        </linearGradient>
+      </defs>
+      {grow.length>1&&<path d={`${tp(grow)} L${sx(grow[grow.length-1].yr)},${pad.t+ch} L${sx(grow[0].yr)},${pad.t+ch} Z`} fill="url(#gg)"/>}
+      {draw.length>1&&<path d={`${tp(draw)} L${sx(draw[draw.length-1].yr)},${pad.t+ch} L${sx(draw[0].yr)},${pad.t+ch} Z`} fill="url(#gd)"/>}
+      {grow.length>1&&<path d={tp(grow)} fill="none" stroke="#00E5B0" strokeWidth="2.5" strokeLinejoin="round"/>}
+      {draw.length>1&&<path d={tp(draw)} fill="none" stroke="#FFD166" strokeWidth="2" strokeLinejoin="round" strokeDasharray="7,3"/>}
+      {/* Goal markers */}
+      {goalMarkers.map((gm,i)=>{
+        const gx=sx(gm.yr);
+        return gx>=pad.l&&gx<=pad.l+cw?(
+          <g key={i}>
+            <line x1={gx} y1={pad.t} x2={gx} y2={pad.t+ch} stroke="#FF8F5A" strokeWidth="1" strokeDasharray="3,3" opacity=".6"/>
+            <text x={gx+3} y={pad.t+22} fill="#FF8F5A" fontSize="8" fontFamily="DM Sans" opacity=".85">{gm.icon}</text>
+          </g>
+        ):null;
+      })}
+      <line x1={retX} y1={pad.t} x2={retX} y2={pad.t+ch} stroke="#4A5A7E" strokeWidth="1" strokeDasharray="3,3" opacity=".6"/>
+      <text x={retX+3} y={pad.t+10} fill="#4A5A7E" fontSize="9" fontFamily="DM Sans" opacity=".9">retire {retireAge}</text>
+      {lifeX!==null&&<g>
+        <line x1={lifeX} y1={pad.t} x2={lifeX} y2={pad.t+ch} stroke="#FF4466" strokeWidth="1.5" strokeDasharray="4,3" opacity=".7"/>
+        <text x={lifeX+3} y={pad.t+10} fill="#FF4466" fontSize="9" fontFamily="DM Sans" opacity=".9">age {lifeExp}</text>
+      </g>}
+      {[minYr,Math.round((minYr+maxYr)/2),maxYr].map(yr=>(
+        <text key={yr} x={sx(yr)} y={H-4} fill="#4A5A7E" fontSize="9" fontFamily="DM Sans" textAnchor="middle" opacity=".7">{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+// ── LIFESPAN BAR ───────────────────────────────────────────────────────────────
+function LifeBar({retireAge,lifeExp,runOut}){
+  const end=Math.max(lifeExp+12,runOut+6),range=end-retireAge;
+  const lifePos=((lifeExp-retireAge)/range)*100;
+  const runPos=Math.min(100,((Math.min(runOut,end)-retireAge)/range)*100);
+  const ok=runOut>=lifeExp;
+  return(
+    <div style={{marginTop:14}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:7}}>
+        <span style={{fontSize:11,color:"#4A5A7E"}}>Retire age {retireAge}</span>
+        <span style={{fontSize:11,fontWeight:600,color:ok?"#00E5B0":"#FF4466"}}>
+          {ok?`✓ ${runOut-lifeExp} years to spare`:`⚠ Runs short by ${lifeExp-runOut} years`}
+        </span>
+      </div>
+      <div style={{position:"relative",height:14,background:"#141D33",borderRadius:7,overflow:"hidden"}}>
+        <div style={{position:"absolute",left:0,top:0,height:"100%",width:`${runPos}%`,
+          background:ok?"linear-gradient(90deg,#00A87E88,#00E5B0)":"linear-gradient(90deg,#FF8F5A88,#FF4466)",
+          borderRadius:7,transition:"width .5s ease"}}/>
+        <div style={{position:"absolute",top:0,left:`${lifePos}%`,width:2,height:"100%",
+          background:"rgba(255,255,255,.4)",transform:"translateX(-1px)"}}/>
+      </div>
+      <div style={{position:"relative",height:16,marginTop:2}}>
+        <div style={{position:"absolute",left:`${lifePos}%`,transform:"translateX(-50%)",
+          fontSize:9,color:"#4A5A7E",whiteSpace:"nowrap"}}>
+          Life expectancy age {lifeExp}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── LIFE GOALS PANEL (fix #5) ──────────────────────────────────────────────────
+const GOAL_TYPES=[
+  {id:"house",icon:"🏠",label:"Buy a house",defaultAmt:200000,defaultAge:42},
+  {id:"car",icon:"🚗",label:"Buy a car",defaultAmt:30000,defaultAge:40},
+  {id:"education",icon:"🎓",label:"Kids' education",defaultAmt:50000,defaultAge:45},
+  {id:"wedding",icon:"💒",label:"Wedding / event",defaultAmt:25000,defaultAge:38},
+  {id:"travel",icon:"✈️",label:"Dream trip / sabbatical",defaultAmt:20000,defaultAge:50},
+  {id:"other",icon:"⭐",label:"Other big purchase",defaultAmt:40000,defaultAge:43},
+];
+
+function LifeGoals({goals,onAdd,onRemove,onUpdate,baseAge,retireAge,disp,toBase,fromBase,cur}){
+  return(
+    <div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}} className="sc">
+        {GOAL_TYPES.map(gt=>{
+          const active=goals.some(g=>g.id===gt.id);
+          return(
+            <button key={gt.id} className={`goal-pill${active?" on":""}`}
+              onClick={()=>active?onRemove(gt.id):onAdd(gt)}>
+              <span className="goal-pill-icon">{gt.icon}</span>
+              <div>
+                <div className="goal-pill-label">{gt.label}</div>
+                <div className="goal-pill-sub">{active?"Tap to remove":"Tap to add"}</div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      {goals.map(g=>(
+        <div key={g.id} style={{background:"#141D33",border:"1px solid rgba(255,209,102,.2)",
+          borderRadius:16,padding:"16px 18px",marginBottom:12}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+            <span style={{fontSize:13,fontWeight:600}}>{g.icon} {g.label}</span>
+            <button onClick={()=>onRemove(g.id)} style={{background:"none",border:"none",color:"#4A5A7E",cursor:"pointer",fontSize:18,lineHeight:1}}>×</button>
+          </div>
+          <Slider label="Cost" value={fromBase(g.amount)} min={fromBase(1000)} max={fromBase(1000000)} step={fromBase(1000)}
+            fmtFn={v=>disp(toBase(v))} onChange={v=>onUpdate(g.id,"amount",toBase(v))} color="#FFD166"/>
+          <Slider label="At my age" value={g.atAge} min={baseAge+1} max={retireAge-1}
+            fmtFn={v=>`Age ${v}`} onChange={v=>onUpdate(g.id,"atAge",v)} color="#FF8F5A"/>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── CONTACT MODAL ──────────────────────────────────────────────────────────────
+function ContactModal({base,result,stress,onClose,onSubmit,disp}){
+  const [name,setName]=useState("");
+  const [email,setEmail]=useState("");
+  const [phone,setPhone]=useState("");
+  const [submitted,setSubmitted]=useState(false);
+  const [loading,setLoading]=useState(false);
+  const ok=result.lastsToLifeExp;
+  const hl=healthLabel(result.health);
+
+  const valid=name.trim()&&(email.trim()||phone.trim());
+
+  const handleSubmit=async()=>{
+    if(!valid) return;
+    setLoading(true);
+    await new Promise(r=>setTimeout(r,700));
+    setSubmitted(true);setLoading(false);
+    onSubmit({name,email,phone});
+  };
+
+  if(submitted) return(
+    <div className="modal-ov" onClick={onClose}>
+      <div className="modal-box" onClick={e=>e.stopPropagation()} style={{textAlign:"center"}}>
+        <div style={{fontSize:52,marginBottom:16}}>✅</div>
+        <div style={{fontFamily:"'Playfair Display'",fontSize:22,fontWeight:700,marginBottom:10}}>We'll be in touch soon.</div>
+        <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.7,marginBottom:26}}>
+          One of our advisers will reach out to walk through your numbers personally.
+          Download your plan summary below.
+        </div>
+        <button className="cta" onClick={()=>onSubmit({name,email,phone,download:true})}>
+          Download My Plan Summary (PDF)
+        </button>
+        <div style={{marginTop:12,fontSize:11,color:"#4A5A7E"}}>Your details are kept private and never shared.</div>
+      </div>
+    </div>
+  );
+
+  return(
+    <div className="modal-ov" onClick={onClose}>
+      <div className="modal-box" onClick={e=>e.stopPropagation()}>
+        <button onClick={onClose} style={{position:"absolute",top:16,right:20,background:"none",border:"none",color:"#4A5A7E",fontSize:22,cursor:"pointer"}}>×</button>
+        <div style={{fontFamily:"'Playfair Display'",fontSize:22,fontWeight:700,marginBottom:6}}>Get your personalised plan</div>
+        <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.6,marginBottom:20}}>
+          Leave your details and an adviser will reach out — plus get a PDF summary of your numbers.
+        </div>
+        <div style={{background:ok?"rgba(0,229,176,.06)":"rgba(255,68,102,.06)",
+          border:`1px solid ${ok?"rgba(0,229,176,.2)":"rgba(255,68,102,.2)"}`,
+          borderRadius:14,padding:"13px 16px",marginBottom:22,fontSize:12,color:"#4A5A7E",lineHeight:1.65}}>
+          <b style={{color:ok?"#00E5B0":"#FF4466"}}>{ok?"✓ Looking solid":"⚠ Action needed"}</b>
+          {" — "}
+          {ok
+            ?`Your pot is projected to last ${result.surplusYears} years beyond age ${result.lifeExp}.`
+            :`Funds may run out at age ${result.runOut}, ${result.lifeExp-result.runOut} years short.`}
+          {" "}Health: <b style={{color:hl.color}}>{result.health}/100 · {hl.label}</b>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:22}}>
+          <div>
+            <div style={{fontSize:11,color:"#4A5A7E",marginBottom:6,textTransform:"uppercase",letterSpacing:".06em"}}>Your Name *</div>
+            <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="Full name"/>
+          </div>
+          <div>
+            <div style={{fontSize:11,color:"#4A5A7E",marginBottom:6,textTransform:"uppercase",letterSpacing:".06em"}}>Email Address</div>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/>
+          </div>
+          <div>
+            <div style={{fontSize:11,color:"#4A5A7E",marginBottom:6,textTransform:"uppercase",letterSpacing:".06em"}}>Phone Number</div>
+            <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="+230 5XXX XXXX"/>
+          </div>
+          <div style={{fontSize:11,color:"#4A5A7E",fontStyle:"italic"}}>* Name required. Provide email or phone (or both).</div>
+        </div>
+        <button className="cta" onClick={handleSubmit}
+          style={{opacity:valid&&!loading?1:.5,cursor:valid&&!loading?"pointer":"default"}}>
+          {loading?"Preparing your plan…":"Get my plan + PDF →"}
+        </button>
+        <div style={{marginTop:12,fontSize:11,color:"#4A5A7E",textAlign:"center"}}>Free. No obligation. Your data stays private.</div>
+      </div>
+    </div>
+  );
+}
+
+// ── PDF GENERATOR ──────────────────────────────────────────────────────────────
+function generatePDF(base,result,stress,contactInfo,cur,disp){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+  const W=210,M=20,tw=W-M*2;
+  const dk=[5,8,15],tl=[0,229,176],gd=[255,209,102],wh=[255,255,255],
+    mu=[74,90,126],dn=[255,68,102],cb=[15,21,37],sb=[20,29,51];
+  const sf=c=>doc.setFillColor(...c);
+  const st=c=>doc.setTextColor(...c);
+  const sd=c=>doc.setDrawColor(...c);
+
+  sf(dk);doc.rect(0,0,W,297,"F");
+  sf([11,15,28]);doc.rect(0,0,W,44,"F");
+  sd(tl);doc.setLineWidth(.4);doc.line(0,44,W,44);
+  sf(tl);doc.roundedRect(M,10,22,22,3,3,"F");
+  st(dk);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.text("ARK",M+2.5,25);
+  st(wh);doc.setFontSize(14);doc.text("ARK Financial Planners",M+28,18);
+  st(mu);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.text("RETIREMENT PLANNING TOOL",M+28,25);
+  st(mu);doc.text(`For: ${contactInfo?.name||"You"}`,M+28,33);
+  doc.text(`${new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}`,W-M,33,{align:"right"});
+  doc.text(`Currency: ${cur}`,W-M,40,{align:"right"});
+
+  let y=56;
+  st(wh);doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("Your Retirement Plan Summary",M,y);y+=8;
+  st(mu);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text("Personalised projection based on your inputs",M,y);y+=14;
+
+  const ok=result.lastsToLifeExp;
+  sf(ok?[0,50,35]:[60,10,15]);doc.roundedRect(M,y,tw,18,3,3,"F");
+  sd(ok?tl:dn);doc.setLineWidth(.5);doc.roundedRect(M,y,tw,18,3,3,"S");
+  st(ok?tl:dn);doc.setFont("helvetica","bold");doc.setFontSize(11);
+  doc.text(ok?"✓  Your savings are projected to outlast your life expectancy":"⚠  Your savings may run short before your life expectancy",M+6,y+11.5);
+  y+=26;
+
+  const boxes=[
+    ["Pot at Retirement",disp(result.retPortfolio),`at age ${base.retireAge}`,tl],
+    ["Annual Income",disp(base.retireMonthlyExpenses>0?result.withdrawal:result.retIncome),base.retireMonthlyExpenses>0?"goal-based":"4% rule",gd],
+    ["Health Score",`${result.health}/100`,healthLabel(result.health).label,healthLabel(result.health).color.replace("#","").match(/.{2}/g).map(v=>parseInt(v,16))],
+    ["Money lasts to",result.runOut>result.lifeExp+10?"Age 95+":String(`Age ${result.runOut}`),result.runOut>=result.lifeExp?`${result.surplusYears}yr surplus`:`${result.lifeExp-result.runOut}yr short`,result.runOut>=result.lifeExp?tl:dn],
+  ];
+  const bw=(tw-6)/2,bh=24;
+  boxes.forEach((b,i)=>{
+    const bx=M+(i%2)*(bw+6),by=y+Math.floor(i/2)*(bh+6);
+    sf(cb);doc.roundedRect(bx,by,bw,bh,3,3,"F");
+    st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text(b[0].toUpperCase(),bx+5,by+7);
+    const col=Array.isArray(b[3])?b[3]:wh;
+    st(col);doc.setFont("helvetica","bold");doc.setFontSize(13);doc.text(String(b[1]),bx+5,by+16);
+    st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7);doc.text(String(b[2]),bx+5,by+21.5);
+  });
+  y+=2*bh+18;
+
+  st(wh);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Your Inputs",M,y);y+=7;
+  sd([28,38,64]);doc.setLineWidth(.3);doc.line(M,y,M+tw,y);y+=8;
+  const rows=[
+    ["Age",String(base.age),"Retirement Age",String(base.retireAge)],
+    ["Sex",base.gender==="male"?"Male":"Female","Life Expectancy",`Age ${result.lifeExp}`],
+    ["Annual Income",disp(base.income),"Savings Rate",`${base.savingsRate}% (${disp(base.income*base.savingsRate/100)}/yr)`],
+    ["Monthly Spend",disp(base.monthlySpend),"Current Savings",disp(base.savings)],
+    ["Return Rate",`${(result.returnRate*100).toFixed(1)}%/yr`,"Income Growth",`${(result.INCOME_GROWTH*100).toFixed(1)}%/yr`],
+    ["Corpus Multiple",`${result.corpusMultiple.toFixed(1)}×`,"Retirement Duration",`${result.yearsInRet} years`],
+  ];
+  rows.forEach(([k1,v1,k2,v2])=>{
+    sf(sb);doc.roundedRect(M,y,tw,10,1.5,1.5,"F");
+    st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text(k1,M+4,y+6.5);
+    st(wh);doc.setFont("helvetica","bold");doc.text(v1,M+tw/2-4,y+6.5,{align:"right"});
+    st(mu);doc.setFont("helvetica","normal");doc.text(k2,M+tw/2+4,y+6.5);
+    st(wh);doc.setFont("helvetica","bold");doc.text(v2,M+tw,y+6.5,{align:"right"});
+    y+=12;
+  });
+  y+=8;
+
+  if(base.lifeGoals&&base.lifeGoals.length>0){
+    if(y>230){doc.addPage();sf(dk);doc.rect(0,0,W,297,"F");y=20;}
+    st(wh);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Life Goals Impact",M,y);y+=7;
+    sd([28,38,64]);doc.setLineWidth(.3);doc.line(M,y,M+tw,y);y+=8;
+    base.lifeGoals.forEach(g=>{
+      sf(sb);doc.roundedRect(M,y,tw,10,1.5,1.5,"F");
+      st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text(`${g.icon} ${g.label} at age ${g.atAge}`,M+4,y+6.5);
+      st([255,143,90]);doc.setFont("helvetica","bold");doc.text(`-${disp(g.amount)}`,M+tw,y+6.5,{align:"right"});
+      y+=12;
+    });
+    sf(sb);doc.roundedRect(M,y,tw,10,1.5,1.5,"F");
+    st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text("TOTAL WITHDRAWN FOR LIFE GOALS",M+4,y+6.5);
+    st([255,143,90]);doc.setFont("helvetica","bold");doc.text(`-${disp(result.totalGoalAmount)}`,M+tw,y+6.5,{align:"right"});
+    y+=18;
+  }
+
+  if(stress){
+    if(y>230){doc.addPage();sf(dk);doc.rect(0,0,W,297,"F");y=20;}
+    st(wh);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Range of Outcomes (300 Scenarios)",M,y);y+=7;
+    sd([28,38,64]);doc.setLineWidth(.3);doc.line(M,y,M+tw,y);y+=8;
+    const sw=(tw-12)/3;
+    [[disp(stress.tough),"If things go badly","#FF8F5A"],[disp(stress.likely),"Most likely","#ECF0FA"],[disp(stress.best),"If things go well","#00E5B0"]].forEach((b,i)=>{
+      const bx=M+i*(sw+6);sf(cb);doc.roundedRect(bx,y,sw,22,3,3,"F");
+      const col=b[2].replace("#","").match(/.{2}/g).map(v=>parseInt(v,16));
+      st(col);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(b[0],bx+sw/2,y+10,{align:"center"});
+      st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text(b[1],bx+sw/2,y+18,{align:"center"});
+    });
+    y+=30;
+    sf(cb);doc.roundedRect(M,y,tw,12,2,2,"F");
+    const pw=stress.pctOk;
+    const pc=pw>=75?tl:pw>=55?gd:dn;
+    st(pc);doc.setFont("helvetica","bold");doc.setFontSize(9);
+    doc.text(`${pw.toFixed(0)}% of 300 scenarios show your money lasting to age ${result.lifeExp}`,M+tw/2,y+7.5,{align:"center"});
+    y+=20;
+  }
+
+  if(y>260){doc.addPage();sf(dk);doc.rect(0,0,W,297,"F");y=20;}
+  sf([11,15,28]);doc.rect(0,280,W,17,"F");
+  sd([28,38,64]);doc.setLineWidth(.3);doc.line(0,280,W,280);
+  st(mu);doc.setFont("helvetica","normal");doc.setFontSize(7);
+  doc.text("ARK Financial Planners · For educational purposes only. Not financial advice.",M,289);
+  doc.text("Consult a qualified financial adviser before making any decisions.",W-M,289,{align:"right"});
+
+  doc.save(contactInfo?.name?`ARK-Plan-${contactInfo.name.split(" ")[0]}.pdf`:"ARK-Plan.pdf");
+}
+
+// ── CRM STORAGE ────────────────────────────────────────────────────────────────
+async function saveLead(lead){
+  try{
+    const id=`lead:${Date.now()}`;
+    await window.storage.set(id,JSON.stringify({...lead,id,savedAt:new Date().toISOString()}));
+    return true;
+  }catch(e){console.error("CRM save failed",e);return false;}
+}
+async function loadLeads(){
+  try{
+    const keys=await window.storage.list("lead:");
+    if(!keys||!keys.keys||!keys.keys.length) return [];
+    const leads=await Promise.all(
+      keys.keys.map(async k=>{
+        try{const r=await window.storage.get(k);return r?JSON.parse(r.value):null;}
+        catch{return null;}
+      })
+    );
+    return leads.filter(Boolean).sort((a,b)=>b.savedAt>a.savedAt?1:-1);
+  }catch(e){return [];}
+}
+
+// CRMPanel lives in the separate ark-crm.html dashboard — not exposed here
+function CRMPanel_UNUSED(){
+
+  const exportCSV=()=>{
+    if(!leads||!leads.length) return;
+    const hdr=["Name","Email","Phone","Health","Success%","Pot","Status","Date"];
+    const rows=leads.map(l=>[
+      l.name||"",l.email||"",l.phone||"",
+      l.health||"",l.successProb||"",l.potDisplay||"",
+      l.verdict||"",new Date(l.savedAt).toLocaleDateString("en-GB"),
+    ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(","));
+    const csv=[hdr.join(","),...rows].join("\n");
+    const a=document.createElement("a");
+    a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+    a.download=`ARK-Leads-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  };
+
+  const statCol=s=>{
+    if(!s&&s!==0) return "#4A5A7E";
+    if(s>=75) return "#00E5B0";
+    if(s>=55) return "#FFD166";
+    return "#FF4466";
+  };
+
+  return(
+    <div className="modal-ov" onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{
+        background:"#0B0F1C",border:"1px solid #243050",borderRadius:24,
+        width:"min(1000px,96vw)",maxHeight:"90vh",display:"flex",flexDirection:"column",
+        overflow:"hidden",boxShadow:"0 32px 80px rgba(0,0,0,.7)"}}>
+
+        {/* CRM Header */}
+        <div style={{padding:"22px 28px",borderBottom:"1px solid #1C2640",
+          display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+          <div>
+            <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:700,marginBottom:2}}>
+              ◈ ARK Lead CRM
+            </div>
+            <div style={{fontSize:12,color:"#4A5A7E"}}>
+              {leads===null?"Loading…":`${leads.length} lead${leads.length!==1?"s":""} collected · click a row to copy contact`}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            {leads&&leads.length>0&&(
+              <button onClick={exportCSV} style={{padding:"9px 20px",borderRadius:10,
+                border:"1px solid #243050",background:"transparent",color:"#ECF0FA",
+                fontSize:13,cursor:"pointer",fontFamily:"'DM Sans'",fontWeight:500}}>
+                ↓ Export CSV
+              </button>
+            )}
+            <button onClick={onClose} style={{background:"none",border:"none",color:"#4A5A7E",fontSize:22,cursor:"pointer",lineHeight:1,padding:"4px 8px"}}>×</button>
+          </div>
+        </div>
+
+        {/* CRM Body */}
+        <div style={{overflowY:"auto",flex:1,padding:"20px 28px"}}>
+          {leads===null?(
+            <div style={{textAlign:"center",padding:"60px 0",color:"#4A5A7E",fontSize:14}}>Loading…</div>
+          ):leads.length===0?(
+            <div style={{textAlign:"center",padding:"70px 0"}}>
+              <div style={{fontSize:44,marginBottom:14}}>📭</div>
+              <div style={{fontFamily:"'Playfair Display'",fontSize:18,fontWeight:700,marginBottom:8}}>No leads yet</div>
+              <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.7}}>
+                When users click <b style={{color:"#ECF0FA"}}>"Get my plan"</b> and submit their details,<br/>they appear here automatically.
+              </div>
+            </div>
+          ):(
+            <div>
+              {/* Stats bar */}
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:22}}>
+                {[
+                  ["Total Leads",leads.length,"#ECF0FA"],
+                  ["This week",leads.filter(l=>Date.now()-new Date(l.savedAt)<7*86400000).length,"#00E5B0"],
+                  ["Need action",leads.filter(l=>l.needsAction).length,"#FF4466"],
+                  ["Strong plans",leads.filter(l=>l.health>=75).length,"#FFD166"],
+                ].map(([lbl,val,col])=>(
+                  <div key={lbl} style={{background:"#0F1525",border:"1px solid #1C2640",borderRadius:14,
+                    padding:"14px 16px",textAlign:"center"}}>
+                    <div style={{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:700,color:col}}>{val}</div>
+                    <div style={{fontSize:10,color:"#4A5A7E",marginTop:3,textTransform:"uppercase",letterSpacing:".08em"}}>{lbl}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Table header */}
+              <div style={{display:"grid",gridTemplateColumns:"2fr 2fr 1.2fr 1fr 1fr 1.5fr",
+                gap:12,padding:"8px 20px",marginBottom:6}}>
+                {["Client","Contact","Health","Success","Pot at Ret.","Status"].map(h=>(
+                  <div key={h} style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}>{h}</div>
+                ))}
+              </div>
+
+              {/* Lead rows */}
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {leads.map(l=>(
+                  <div key={l.id}
+                    onClick={()=>{
+                      const txt=`${l.name} — ${l.email||"no email"} / ${l.phone||"no phone"}`;
+                      navigator.clipboard?.writeText(txt);
+                    }}
+                    style={{background:"#0F1525",border:"1px solid #1C2640",borderRadius:14,
+                      padding:"15px 20px",display:"grid",cursor:"pointer",
+                      gridTemplateColumns:"2fr 2fr 1.2fr 1fr 1fr 1.5fr",
+                      gap:12,alignItems:"center",transition:"border-color .15s"}}
+                    onMouseEnter={e=>e.currentTarget.style.borderColor="#243050"}
+                    onMouseLeave={e=>e.currentTarget.style.borderColor="#1C2640"}>
+                    <div>
+                      <div style={{fontSize:14,fontWeight:600,color:"#ECF0FA",marginBottom:2}}>{l.name||"—"}</div>
+                      <div style={{fontSize:10,color:"#4A5A7E"}}>{new Date(l.savedAt).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}</div>
+                    </div>
+                    <div>
+                      {l.email&&<div style={{fontSize:12,color:"#ECF0FA",marginBottom:3}}>✉ {l.email}</div>}
+                      {l.phone&&<div style={{fontSize:12,color:"#4A5A7E"}}>📞 {l.phone}</div>}
+                      {!l.email&&!l.phone&&<div style={{fontSize:12,color:"#4A5A7E"}}>No contact</div>}
+                    </div>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:700,
+                        color:statCol(l.health)}}>{l.health||"—"}</div>
+                      <div style={{fontSize:9,color:"#4A5A7E",marginTop:1}}>/ 100</div>
+                    </div>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:700,
+                        color:statCol(l.successProb)}}>{l.successProb!=null?l.successProb+"%":"—"}</div>
+                    </div>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontFamily:"'Playfair Display'",fontSize:15,fontWeight:700,color:"#ECF0FA"}}>{l.potDisplay||"—"}</div>
+                    </div>
+                    <div>
+                      <div style={{fontSize:11,fontWeight:600,padding:"5px 12px",borderRadius:100,textAlign:"center",
+                        background:l.needsAction?"rgba(255,68,102,.12)":"rgba(0,229,176,.1)",
+                        border:`1px solid ${l.needsAction?"rgba(255,68,102,.3)":"rgba(0,229,176,.25)"}`,
+                        color:l.needsAction?"#FF4466":"#00E5B0"}}>
+                        {l.verdict||"—"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer note */}
+        <div style={{padding:"14px 28px",borderTop:"1px solid #1C2640",
+          fontSize:11,color:"#4A5A7E",flexShrink:0}}>
+          Leads stored in your browser's local session · Export CSV to save permanently · Click a row to copy contact details to clipboard
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── HERO (fix: short & punchy) ─────────────────────────────────────────────────
+function Hero({onStart}){
+  return(
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",padding:"clamp(40px,8vw,80px) 20px",textAlign:"center",position:"relative"}}>
+      <div className="badge fu">Free · No signup · 2 minutes</div>
+      <h1 className="fu hero-title" style={{fontFamily:"'Playfair Display'",
+        fontSize:"clamp(38px,5.5vw,72px)",fontWeight:900,lineHeight:1.08,
+        letterSpacing:"-.03em",marginBottom:20,maxWidth:760}}>
+        Most advisers show you<br/>
+        <span style={{background:"linear-gradient(120deg,#00E5B0,#FFD166)",
+          WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
+          the best case.
+        </span><br/>
+        <span style={{fontSize:"clamp(28px,4vw,54px)",color:"#ECF0FA"}}>We show you the brutal honest one.</span>
+      </h1>
+      <p className="fu1" style={{fontSize:"clamp(14px,1.6vw,17px)",color:"#4A5A7E",
+        maxWidth:440,lineHeight:1.7,marginBottom:42}}>
+        Including whether your money will actually outlast you — adjusted for your gender's real life expectancy.
+      </p>
+      <button className="fu1" onClick={onStart}
+        style={{padding:"18px 52px",borderRadius:14,background:"linear-gradient(135deg,#00A87E,#00E5B0)",
+          border:"none",color:"#02100C",fontFamily:"'DM Sans'",fontSize:16,fontWeight:600,cursor:"pointer",
+          boxShadow:"0 4px 42px rgba(0,229,176,.28)",transition:"all .2s"}}
+        onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"}
+        onMouseLeave={e=>e.currentTarget.style.transform=""}>
+        Run my numbers →
+      </button>
+      <p className="fu2" style={{marginTop:14,fontSize:11,color:"#4A5A7E",opacity:.55}}>
+        No email needed to start.
+      </p>
+      <div style={{position:"absolute",bottom:28,left:"50%",transform:"translateX(-50%)",
+        display:"flex",flexDirection:"column",alignItems:"center",gap:5,opacity:.25}}>
+        <div style={{width:1,height:36,background:"linear-gradient(180deg,transparent,#00E5B0)"}}/>
+        <span style={{fontSize:8,color:"#00E5B0",letterSpacing:".18em",textTransform:"uppercase"}}>scroll</span>
+      </div>
+    </div>
+  );
+}
+
+// ── SCENARIO CARDS (hooked what-ifs fix #6) ────────────────────────────────────
+function ScenarioCards({base,result,onSelect,active,disp}){
+  const early5=calcEarlyRetireSavings(base,5);
+  const early10=calcEarlyRetireSavings(base,10);
+  const at20=runProjection({...base,savingsRate:20});
+  const cutSpend=runProjection({...base,monthlySpend:Math.round(base.monthlySpend*.8)});
+  const noGoals=base.lifeGoals&&base.lifeGoals.length>0
+    ?runProjection({...base,lifeGoals:[]}):null;
+
+  const scenarios=[
+    {
+      id:"earlyRetire5",
+      q:`Can I retire at ${early5.targetAge} — 5 years earlier?`,
+      hook:early5.rateNeeded<=50
+        ?`Yes — if you save ${early5.rateNeeded.toFixed(1)}% of your income from now.`
+        :`It's tight — needs ${early5.rateNeeded.toFixed(1)}% savings rate. Let's see how close you can get.`,
+      inp:{...base,retireAge:early5.targetAge},
+      badge:early5.rateNeeded<=base.savingsRate?"Achievable ✓":"Stretch goal",
+      badgeCol:early5.rateNeeded<=base.savingsRate?"#00E5B0":"#FFD166",
+    },
+    {
+      id:"earlyRetire10",
+      q:`What if I retire at ${early10.targetAge} — a whole decade early?`,
+      hook:`You'd need to save ${early10.rateNeeded.toFixed(1)}% of your income. Here's what that looks like.`,
+      inp:{...base,retireAge:early10.targetAge},
+      badge:"Bold move",badgeCol:"#FF8F5A",
+    },
+    {
+      id:"save20",
+      q:"What if I simply saved 20% of my income?",
+      hook:result?`That would add ${disp(at20.retPortfolio-result.retPortfolio)} to your pot by retirement.`:"See the difference one decision makes.",
+      inp:{...base,savingsRate:20},
+      badge:"Easy win",badgeCol:"#00E5B0",
+    },
+    {
+      id:"cutSpend",
+      q:"What if I spent 20% less each month?",
+      hook:result?`Your money would last ${Math.max(0,cutSpend.runOut-result.runOut)} extra years.`:"Spending less now buys you time later.",
+      inp:{...base,monthlySpend:Math.round(base.monthlySpend*.8)},
+      badge:"High impact",badgeCol:"#00E5B0",
+    },
+    ...(noGoals?[{
+      id:"noGoals",
+      q:"What if I skipped my planned big purchases?",
+      hook:`Your retirement pot would be ${disp(noGoals.retPortfolio-result.retPortfolio)} larger.`,
+      inp:{...base,lifeGoals:[]},
+      badge:"Trade-off",badgeCol:"#FFD166",
+    }]:[]),
+    {
+      id:"lateRetire",
+      q:`What if I work 5 more years — retire at ${Math.min(80,base.retireAge+5)}?`,
+      hook:"Working longer is one of the most powerful moves in retirement planning.",
+      inp:{...base,retireAge:Math.min(80,base.retireAge+5)},
+      badge:"Powerful lever",badgeCol:"#00E5B0",
+    },
+    {id:"custom",q:"I want to build my own scenario.",hook:"Adjust any variable — see the impact instantly.",inp:{...base},badge:"Custom",badgeCol:"#4A5A7E"},
+  ];
+  return{scenarios};
+}
+
+// ── APP ────────────────────────────────────────────────────────────────────────
+function App(){
+  const [showHero,setShowHero]=useState(true);
+  const [tab,setTab]=useState("plan");
+  const [showModal,setShowModal]=useState(false);
+  const [showGoals,setShowGoals]=useState(false);
+  const [contactInfo,setContactInfo]=useState(null);
+  const {cur,setCur,disp,toBase,fromBase,sym}=useCur();
+  const appRef=useRef(null);
+
+  const DEF={
+    age:35,gender:"female",
+    income:90000,   // always stored in USD base
+    monthlySpend:3200,
+    savings:45000,
+    savingsRate:12,
+    retireAge:65,
+    debtBalance:0,
+    retireMonthlyExpenses:0,
+    lifeGoals:[],
+  };
+  const [base,setBase]=useState(DEF);
+  const [sandbox,setSandbox]=useState(null);
+  const [sbInp,setSbInp]=useState({...DEF});
+  const [result,setResult]=useState(null);
+  const [stress,setStress]=useState(null);
+  const [sbResult,setSbResult]=useState(null);
+
+  const setB=(k,v)=>setBase(p=>({...p,[k]:v}));
+  const setSB=(k,v)=>setSbInp(p=>({...p,[k]:v}));
+
+  useEffect(()=>{
+    setResult(runProjection(base));
+    setStress(runStressTest(base));
+  },[JSON.stringify(base)]);
+  useEffect(()=>{
+    if(sandbox) setSbResult(runProjection(sbInp));
+  },[JSON.stringify(sbInp),sandbox]);
+
+  // Life goals handlers
+  const addGoal=(gt)=>setB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.defaultAmt,atAge:Math.min(gt.defaultAge,base.retireAge-1)}]);
+  const removeGoal=(id)=>setB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
+  const updateGoal=(id,key,val)=>setB("lifeGoals",(base.lifeGoals||[]).map(g=>g.id===id?{...g,[key]:val}:g));
+
+  const addSbGoal=(gt)=>setSB("lifeGoals",[...(sbInp.lifeGoals||[]),{...gt,amount:gt.defaultAmt,atAge:Math.min(gt.defaultAge,sbInp.retireAge-1)}]);
+  const removeSbGoal=(id)=>setSB("lifeGoals",(sbInp.lifeGoals||[]).filter(g=>g.id!==id));
+  const updateSbGoal=(id,key,val)=>setSB("lifeGoals",(sbInp.lifeGoals||[]).map(g=>g.id===id?{...g,[key]:val}:g));
+
+  const {scenarios}=result?ScenarioCards({base,result,active:sandbox,disp}):{scenarios:[]};
+
+  const handleContact=(info)=>{
+    setContactInfo(info);
+    // Save to CRM on first submit (not on PDF download re-trigger)
+    if(!info.download&&result){
+      const shortfall=result.lifeExp-result.runOut;
+      saveLead({
+        name:info.name,
+        email:info.email,
+        phone:info.phone,
+        health:result.health,
+        successProb:result.successProb,
+        potDisplay:disp(result.retPortfolio),
+        retPortfolio:result.retPortfolio,
+        verdict:result.lastsToLifeExp?"On track":"Needs action",
+        needsAction:!result.lastsToLifeExp,
+        shortfall:result.lastsToLifeExp?null:shortfall,
+        age:base.age,
+        retireAge:base.retireAge,
+        currency:cur,
+        note:`Age ${base.age}, retire ${base.retireAge}, saving ${base.savingsRate}%`,
+      });
+    }
+    if(info.download){
+      setShowModal(false);
+      setTimeout(()=>generatePDF(base,result,stress,info,cur,disp),300);
+    }
+  };
+
+  const hl=result?healthLabel(result.health):{label:"",color:"#00E5B0"};
+  const dp=sbResult&&result?sbResult.retPortfolio-result.retPortfolio:0;
+  const dP=sbResult&&result?sbResult.successProb-result.successProb:0;
+  const dH=sbResult&&result?sbResult.health-result.health:0;
+
+  // Goal markers for chart
+  const goalMarkers=(base.lifeGoals||[]).map(g=>({yr:g.atAge,icon:g.icon}));
+
+  // Brutal brief summary — one punch, hits the most critical number
+  function getBrutalVerdict(result,base,disp){
+    const shortfall=result.lifeExp-result.runOut;
+    const gap=result.monthlySavingGap;
+    const targetMonthly=base.retireMonthlyExpenses>0?base.retireMonthlyExpenses:0;
+    // Use the actual projected monthly income (withdrawal-based when goal set, else 4% rule)
+    const projectedMonthly=(base.retireMonthlyExpenses>0?result.withdrawal:result.retIncome)/12;
+    // True gap: only negative if projected income actually falls short of goal
+    const incomeShortfall=targetMonthly>0?targetMonthly-projectedMonthly:0;
+
+    if(!result.lastsToLifeExp){
+      if(shortfall>=15) return{
+        color:"#FF4466",icon:"🔴",
+        headline:`Your money runs out ${shortfall} years too soon.`,
+        sub:`At ${base.retireAge} you'll have ${disp(result.retPortfolio)}. At your life expectancy of ${result.lifeExp} — you'll have nothing. That's the gap you need to close.`,
+        action:`Save ${Math.min(50,base.savingsRate+8)}% instead of ${base.savingsRate}% and retire at ${Math.min(80,base.retireAge+3)}.`
+      };
+      return{
+        color:"#FF8F5A",icon:"⚠️",
+        headline:`${shortfall} year shortfall. Fixable — but not on autopilot.`,
+        sub:`Your pot of ${disp(result.retPortfolio)} runs out at ${result.runOut}. You need it to last to ${result.lifeExp}.`,
+        action:gap>0?`Close the gap: save ${disp(gap)} more per month.`:`Retire ${Math.min(5,shortfall)} years later or cut monthly spending by 15%.`
+      };
+    }
+    if(result.surplusYears<5) return{
+      color:"#FFD166",icon:"🟡",
+      headline:`You're fine — unless anything goes wrong.`,
+      sub:`Money lasts ${result.surplusYears} years past age ${result.lifeExp}. That's a thin margin for a ${result.yearsInRet}-year retirement.`,
+      action:`A 3% savings bump now adds ${disp(runProjection({...base,savingsRate:base.savingsRate+3}).retPortfolio-result.retPortfolio)} — buy yourself real breathing room.`
+    };
+    // Goal set and projected income genuinely falls short
+    if(targetMonthly>0&&incomeShortfall>0) return{
+      color:"#FF8F5A",icon:"🎯",
+      headline:`You're ${disp(incomeShortfall/12*12)}/yr short of your retirement goal.`,
+      sub:`You want ${disp(targetMonthly)}/mo. Your pot is projected to deliver ${disp(projectedMonthly)}/mo — a ${disp(incomeShortfall)}/mo gap.`,
+      action:`Saving ${result.reqSavingsRate?.toFixed(1)}% of income (you're at ${base.savingsRate}%) closes it.`
+    };
+    // Goal set and already on track or exceeded
+    if(targetMonthly>0&&incomeShortfall<=0) return{
+      color:"#00E5B0",icon:"✅",
+      headline:`On track for your ${disp(targetMonthly)}/mo retirement goal.`,
+      sub:`Your pot is projected to deliver ${disp(projectedMonthly)}/mo — ${disp(-incomeShortfall)}/mo above your target. Money lasts ${result.surplusYears} years past age ${result.lifeExp}.`,
+      action:`You're ahead. Focus now on protecting gains and tax efficiency.`
+    };
+    return{
+      color:"#00E5B0",icon:"✅",
+      headline:`Solid. Money lasts ${result.surplusYears} years past your life expectancy.`,
+      sub:`Pot at retirement: ${disp(result.retPortfolio)}. Projected income: ${disp(projectedMonthly)}/mo. You're in good shape.`,
+      action:`Focus shifts to tax efficiency and protecting what you've built.`
+    };
+  }
+
+  const verdict=result?getBrutalVerdict(result,base,disp):null;
+
+  // Currency-aware retirement income quick-picks (stored in USD base)
+  // MUR: 25k, 50k, 75k, 100k, 150k, 250k  → divide by FX_MUR to store as USD
+  // USD: 2.5k, 5k, 7.5k, 10k, 20k, 25k
+  const GOALS_RETIRE = cur==="MUR"
+    ? [25000/FX_MUR, 50000/FX_MUR, 75000/FX_MUR, 100000/FX_MUR, 150000/FX_MUR, 250000/FX_MUR]
+    : [2500, 5000, 7500, 10000, 20000, 25000];
+
+  if(showHero) return <Hero onStart={()=>{setShowHero(false);setTimeout(()=>appRef.current?.scrollIntoView({behavior:"smooth"}),50);}}/>;
+
+  // Currency-scaled slider helpers
+  // All internal values stored in USD; sliders show in selected currency
+  const incomeDisp=fromBase(base.income);
+  const spendDisp=fromBase(base.monthlySpend);
+  const savingsDisp=fromBase(base.savings);
+  const debtDisp=fromBase(base.debtBalance);
+  const retGoalDisp=fromBase(base.retireMonthlyExpenses||0);
+
+  const sbIncomeDisp=fromBase(sbInp.income);
+  const sbSpendDisp=fromBase(sbInp.monthlySpend);
+  const sbSavingsDisp=fromBase(sbInp.savings);
+
+  const minIncome=cur==="MUR"?465000:10000;
+  const minSpend=cur==="MUR"?23250:500;
+  const maxIncome=cur==="MUR"?25000000:500000;
+  const maxSpend=cur==="MUR"?11625000:250000;
+  const maxSavings=cur==="MUR"?46500000:1000000;
+  const maxRetGoal=cur==="MUR"?13950000:300000;
+  const stepIncome=cur==="MUR"?25000:500;
+  const stepSpend=cur==="MUR"?25000:500;
+  const stepSavings=cur==="MUR"?250000:5000;
+
+  return(
+    <div ref={appRef} style={{minHeight:"100vh"}}>
+      {showModal&&result&&<ContactModal base={base} result={result} stress={stress} onClose={()=>setShowModal(false)} onSubmit={handleContact} disp={disp}/>}
+
+      {/* HEADER */}
+      <header style={{background:"rgba(5,8,15,.95)",backdropFilter:"blur(20px)",
+        borderBottom:"1px solid #1C2640",position:"sticky",top:0,zIndex:100}}>
+        <div className="hdr-inner" style={{padding:"0 20px",display:"flex",alignItems:"center",
+          justifyContent:"space-between",height:60,gap:10,flexWrap:"nowrap"}}>
+          <button onClick={()=>setShowHero(true)} style={{display:"flex",alignItems:"center",
+            gap:8,background:"none",border:"none",cursor:"pointer",color:"inherit",padding:0,flexShrink:0,minWidth:0}}>
+            <div className="hdr-logo-icon" style={{width:32,height:32,borderRadius:9,flexShrink:0,
+              background:"linear-gradient(135deg,#00A87E,#00E5B0)",
+              display:"grid",placeItems:"center",fontSize:13,color:"#02100C",fontWeight:800}}>◈</div>
+            <div className="hdr-logo-text" style={{textAlign:"left",minWidth:0}}>
+              {/* Full name — hidden on mobile via .hdr-logo-fullname */}
+              <div className="hdr-logo-fullname" style={{fontFamily:"'Playfair Display'",fontSize:15,fontWeight:700,whiteSpace:"nowrap"}}>ARK Financial Planners</div>
+              {/* Short name — shown on mobile only */}
+              <div className="hdr-logo-short" style={{display:"none",fontFamily:"'Playfair Display'",fontSize:15,fontWeight:700,whiteSpace:"nowrap"}}>ARK</div>
+              <div style={{fontSize:9,color:"#4A5A7E",letterSpacing:".12em",textTransform:"uppercase"}}>Retirement Planning</div>
+            </div>
+          </button>
+          <div className="hdr-controls" style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+            <div className="cur-toggle">
+              <button className={`cur-btn${cur==="USD"?" on":""}`} onClick={()=>setCur("USD")}>USD $</button>
+              <button className={`cur-btn${cur==="MUR"?" on":""}`} onClick={()=>setCur("MUR")}>MUR ₨</button>
+            </div>
+            {/* Desktop tabs — hidden on mobile, bottom nav used instead */}
+            <nav style={{display:"flex",gap:6}} className="desktop-tabs">
+              {[["plan","Plan"],["results","Results"],["scenarios","What-Ifs"]].map(([id,lbl])=>(
+                <button key={id} onClick={()=>setTab(id)} className={`tab-btn${tab===id?" act":""}`}>{lbl}</button>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* BOTTOM NAV — mobile only */}
+      <nav className="bottom-nav">
+        {[
+          ["plan","Plan",<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>],
+          ["results","Results",<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>],
+          ["scenarios","What-Ifs",<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>],
+        ].map(([id,lbl,icon])=>(
+          <button key={id} className={`bnav-btn${tab===id?" act":""}`} onClick={()=>setTab(id)}>
+            {icon}
+            <span>{lbl}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="main-pad" style={{maxWidth:1040,margin:"0 auto",padding:"28px 20px"}}>
+
+        {/* ══ PLAN TAB ══════════════════════════════════════════════════════ */}
+        {tab==="plan"&&(
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:24}} className="tc fi">
+            {/* LEFT */}
+            <div>
+              <div style={{marginBottom:22}}>
+                <div className="plan-title" style={{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:900,lineHeight:1.2,marginBottom:6}}>
+                  Where do you actually stand?
+                </div>
+                <div className="plan-sub" style={{fontSize:13,color:"#4A5A7E",lineHeight:1.6}}>Your numbers update live on the right.</div>
+              </div>
+
+              <div className="card card-pad" style={{padding:24,marginBottom:14}}>
+                <Slider label="Your Current Age" value={base.age} min={18} max={70}
+                  fmtFn={v=>`${v} years old`} onChange={v=>setB("age",v)}/>
+
+                <div style={{marginBottom:22}}>
+                  <div style={{fontSize:11,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".08em",marginBottom:10,fontWeight:500}}>
+                    Biological Sex — <span style={{textTransform:"none",letterSpacing:0}}>sets your life expectancy benchmark</span>
+                  </div>
+                  <div style={{display:"flex",gap:10}}>
+                    {[["female","Female · ~85 yrs"],["male","Male · ~75 yrs"]].map(([g,lbl])=>(
+                      <button key={g} onClick={()=>setB("gender",g)}
+                        className={`chip${base.gender===g?" ca":""}`}
+                        style={{padding:"10px 20px",fontSize:13}}>{lbl}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <Slider label={`Annual Income (gross, ${cur})`}
+                  value={incomeDisp} min={minIncome} max={maxIncome} step={stepIncome}
+                  fmtFn={v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                  onChange={v=>setB("income",toBase(v))}
+                  sub={`Grows at least ${((result?.INCOME_GROWTH||.025)*100).toFixed(1)}%/yr`}/>
+
+                <Slider label={`Monthly Spending (${cur})`}
+                  value={spendDisp} min={minSpend} max={maxSpend} step={stepSpend}
+                  fmtFn={v=>sym+(v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                  onChange={v=>setB("monthlySpend",toBase(v))} color="#FF8F5A"/>
+
+                <Slider label={`Current Savings (${cur})`}
+                  value={savingsDisp} min={0} max={maxSavings} step={stepSavings}
+                  fmtFn={v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                  onChange={v=>setB("savings",toBase(v))}/>
+
+                {/* Savings rate with dual % + amount display — fix #3 */}
+                <SavingsSlider income={base.income} savingsRate={base.savingsRate}
+                  onChange={v=>setB("savingsRate",v)} disp={disp}/>
+
+                <Slider label="Target Retirement Age" value={base.retireAge}
+                  min={Math.max(base.age+2,40)} max={80}
+                  fmtFn={v=>`Age ${v} · ${v-base.age} years away`}
+                  onChange={v=>setB("retireAge",v)} color="#FFD166"/>
+              </div>
+
+              {/* Retirement income goal */}
+              <div className="card" style={{padding:22,marginBottom:14,
+                borderColor:base.retireMonthlyExpenses>0?"rgba(255,209,102,.28)":"#1C2640"}}>
+                <div style={{fontFamily:"'Playfair Display'",fontSize:15,fontWeight:700,marginBottom:4}}>
+                  What monthly income do you want in retirement?
+                </div>
+                <div style={{fontSize:12,color:"#4A5A7E",marginBottom:14,lineHeight:1.55}}>
+                  Set a target and we'll calculate what you need to save. Leave blank for the standard 4% rule.
+                </div>
+                <Slider label={`Monthly retirement income (${cur})`}
+                  value={retGoalDisp||fromBase(3000)} min={cur==="MUR"?25000:500} max={maxRetGoal} step={stepSpend}
+                  fmtFn={v=>base.retireMonthlyExpenses===0?"Using 4% rule":sym+(v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo"}
+                  onChange={v=>setB("retireMonthlyExpenses",toBase(v))} color="#FFD166"
+                  sub={base.retireMonthlyExpenses>0&&result?.reqSavingsRate!=null
+                    ?`Requires ${result.reqSavingsRate.toFixed(1)}% savings rate · ${disp(result.reqMonthlySaving)}/mo`:null}/>
+                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                  <button onClick={()=>setB("retireMonthlyExpenses",0)} className={`chip${base.retireMonthlyExpenses===0?" cm":""}`}>4% rule (default)</button>
+                  {GOALS_RETIRE.map((v,i)=>{
+                    const murLabels=["₨25K","₨50K","₨75K","₨100K","₨150K","₨250K"];
+                    const usdLabels=["$2,500","$5K","$7,500","$10K","$20K","$25K"];
+                    const lbl=cur==="MUR"?murLabels[i]:usdLabels[i];
+                    const isActive=Math.abs(base.retireMonthlyExpenses-v)<0.5;
+                    return(
+                      <button key={i} onClick={()=>setB("retireMonthlyExpenses",v)}
+                        className={`chip${isActive?" cg":""}`}>{lbl}/mo</button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Life goals — fix #5 */}
+              <button onClick={()=>setShowGoals(p=>!p)}
+                style={{width:"100%",background:"transparent",border:"1px dashed #1C2640",
+                  borderRadius:14,padding:"14px 18px",color:"#4A5A7E",fontSize:13,
+                  cursor:"pointer",display:"flex",justifyContent:"space-between",marginBottom:14,
+                  borderColor:(base.lifeGoals||[]).length>0?"rgba(255,143,90,.4)":"#1C2640",
+                  color:(base.lifeGoals||[]).length>0?"#FF8F5A":"#4A5A7E"}}>
+                <span>{(base.lifeGoals||[]).length>0
+                  ?`🏠 ${(base.lifeGoals||[]).length} life goal${(base.lifeGoals||[]).length>1?"s":""} added — tap to edit`
+                  :"+ Add life goals (house, car, education…)"}</span>
+                <span>{showGoals?"▲":"▼"}</span>
+              </button>
+              {showGoals&&<div className="card" style={{padding:22,marginBottom:14}}>
+                <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.6,marginBottom:16}}>
+                  We'll show how each goal draws from your retirement pot — and what it costs you long term.
+                </div>
+                <LifeGoals goals={base.lifeGoals||[]} onAdd={addGoal} onRemove={removeGoal}
+                  onUpdate={updateGoal} baseAge={base.age} retireAge={base.retireAge}
+                  disp={disp} toBase={toBase} fromBase={fromBase} cur={cur}/>
+              </div>}
+
+              <button className="cta" onClick={()=>setTab("results")}>
+                Show me the full picture →
+              </button>
+            </div>
+
+            {/* RIGHT — live preview (decluttered, fix #2) */}
+            {result&&<div style={{display:"flex",flexDirection:"column",gap:14}}>
+              <div className="card-g" style={{padding:22}}>
+                <div style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Live Preview</div>
+                {/* Single dominant verdict using brutal copy */}
+                {verdict&&<div style={{padding:"14px 18px",marginBottom:16,
+                  background:`${verdict.color}0D`,
+                  border:`1px solid ${verdict.color}33`,
+                  borderRadius:14}}>
+                  <div style={{fontFamily:"'Playfair Display'",fontSize:14,fontWeight:700,
+                    color:verdict.color,marginBottom:4}}>
+                    {verdict.icon} {verdict.headline}
+                  </div>
+                  <div style={{fontSize:11,color:"#ECF0FA",lineHeight:1.6,marginBottom:4}}>
+                    {verdict.sub}
+                  </div>
+                  <div style={{fontSize:11,color:"#4A5A7E",fontStyle:"italic"}}>
+                    → {verdict.action}
+                  </div>
+                </div>}
+
+                <Chart data={result.chartData} retireAge={base.retireAge}
+                  lifeExp={result.lifeExp} goalMarkers={goalMarkers} height={140}/>
+
+                <LifeBar retireAge={base.retireAge} lifeExp={result.lifeExp} runOut={result.runOut}/>
+
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:14}}>
+                  <div style={{background:"#141D33",borderRadius:13,padding:"12px 14px"}}>
+                    <div style={{fontSize:9,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:4}}>Pot at Retirement</div>
+                    <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:700,color:"#00E5B0"}}>{disp(result.retPortfolio)}</div>
+                    <div style={{fontSize:10,color:"#4A5A7E"}}>age {base.retireAge}</div>
+                  </div>
+                  <div style={{background:"#141D33",borderRadius:13,padding:"12px 14px"}}>
+                    <div style={{fontSize:9,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:4}}>Chance of success</div>
+                    <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:700,
+                      color:result.successProb>=75?"#00E5B0":result.successProb>=55?"#FFD166":"#FF4466"}}>
+                      {result.successProb}%
+                    </div>
+                    <div style={{fontSize:10,color:"#4A5A7E"}}>money outlasts you</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Health — condensed */}
+              <div className="card" style={{padding:18}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                  <span style={{fontSize:11,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em"}}>Financial Health</span>
+                  <span style={{fontFamily:"'Playfair Display'",fontSize:22,fontWeight:700,color:hl.color}}>{result.health}<span style={{fontSize:12,color:"#4A5A7E"}}>/100</span></span>
+                </div>
+                <div style={{height:6,background:"#141D33",borderRadius:3,overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${result.health}%`,
+                    background:"linear-gradient(90deg,#FF4466,#FF8F5A 35%,#FFD166 65%,#00E5B0)",
+                    transition:"width .4s ease"}}/>
+                </div>
+                <div style={{fontSize:11,color:hl.color,marginTop:6,textAlign:"right",fontWeight:600}}>{hl.label}</div>
+              </div>
+
+              {/* Stress test — condensed (fix #2) */}
+              {stress&&<div className="card" style={{padding:18}}>
+                <div style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:12}}>If markets don't cooperate</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}} className="stat-3">
+                  {[["Tough",stress.tough,"#FF8F5A"],["Likely",stress.likely,"#ECF0FA"],["Good",stress.best,"#00E5B0"]].map(([l,v,col])=>(
+                    <div key={l} style={{textAlign:"center"}}>
+                      <div style={{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:700,color:col}}>{disp(v,true)}</div>
+                      <div style={{fontSize:9,color:"#4A5A7E",marginTop:2}}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{marginTop:10,fontSize:11,color:"#4A5A7E",textAlign:"center"}}>
+                  <b style={{color:stress.pctOk>=75?"#00E5B0":stress.pctOk>=55?"#FFD166":"#FF4466"}}>{stress.pctOk.toFixed(0)}%</b> of 300 scenarios → money lasts to age {result.lifeExp}
+                </div>
+              </div>}
+
+              {/* Goal gap — only if goal set */}
+              {base.retireMonthlyExpenses>0&&result.targetPortfolio&&(
+                <div className="card" style={{padding:18,borderColor:"rgba(255,209,102,.2)"}}>
+                  <div style={{fontSize:10,color:"#FFD166",textTransform:"uppercase",letterSpacing:".1em",marginBottom:10}}>
+                    Goal: {disp(base.retireMonthlyExpenses)}/mo
+                  </div>
+                  <div style={{height:5,background:"#141D33",borderRadius:3,overflow:"hidden",marginBottom:7}}>
+                    <div style={{height:"100%",width:`${Math.min(100,(result.onTrackRatio||0)*100)}%`,
+                      background:"linear-gradient(90deg,#C9A13B,#FFD166)",transition:"width .4s ease"}}/>
+                  </div>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:11}}>
+                    <span style={{color:"#4A5A7E"}}>Need: {disp(result.targetPortfolio)}</span>
+                    <span style={{color:result.monthlySavingGap<=0?"#00E5B0":"#FF8F5A",fontWeight:600}}>
+                      {result.monthlySavingGap<=0?"On track ✓":`Gap: +${disp(result.monthlySavingGap)}/mo`}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>}
+          </div>
+        )}
+
+        {/* ══ RESULTS TAB (decluttered — fix #2) ═══════════════════════════ */}
+        {tab==="results"&&result&&(
+          <div className="fi">
+            {/* Hero number */}
+            <div style={{marginBottom:24,display:"flex",justifyContent:"space-between",
+              alignItems:"flex-start",flexWrap:"wrap",gap:16}}>
+              <div>
+                <div style={{fontSize:12,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".12em",marginBottom:4}}>Projected pot at age {base.retireAge}</div>
+                <div className="results-pot" style={{fontFamily:"'Playfair Display'",fontSize:"clamp(36px,5vw,60px)",
+                  fontWeight:900,letterSpacing:"-.03em",lineHeight:1,marginBottom:8}}>{disp(result.retPortfolio)}</div>
+                <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"7px 16px",
+                  borderRadius:100,flexWrap:"wrap",
+                  background:result.lastsToLifeExp?"rgba(0,229,176,.07)":"rgba(255,68,102,.07)",
+                  border:`1px solid ${result.lastsToLifeExp?"rgba(0,229,176,.22)":"rgba(255,68,102,.22)"}`}}>
+                  <span style={{fontSize:12,fontWeight:600,color:result.lastsToLifeExp?"#00E5B0":"#FF4466"}}>
+                    {result.lastsToLifeExp
+                      ?`✓ Funds last to age ${result.lifeExp} — ${result.surplusYears} years to spare`
+                      :`⚠ Runs out at age ${result.runOut} — ${result.lifeExp-result.runOut} years short`}
+                  </span>
+                </div>
+              </div>
+              <div style={{background:`${hl.color}12`,border:`1px solid ${hl.color}28`,
+                borderRadius:18,padding:"14px 22px",textAlign:"center"}}>
+                <div style={{fontSize:9,color:hl.color,letterSpacing:".12em",textTransform:"uppercase",marginBottom:3}}>Health</div>
+                <div style={{fontFamily:"'Playfair Display'",fontSize:38,fontWeight:900,color:hl.color,lineHeight:1}}>{result.health}</div>
+                <div style={{fontSize:11,color:hl.color,marginTop:2}}>{hl.label}</div>
+              </div>
+            </div>
+
+            {/* Chart */}
+            <div className="card" style={{padding:22,marginBottom:18}}>
+              <div style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>
+                Your money over time · red line = life expectancy age {result.lifeExp}
+                {(base.lifeGoals||[]).length>0&&<span style={{color:"#FF8F5A"}}> · orange markers = life goals</span>}
+              </div>
+              <Chart data={result.chartData} retireAge={base.retireAge}
+                lifeExp={result.lifeExp} goalMarkers={goalMarkers} height={170}/>
+              <LifeBar retireAge={base.retireAge} lifeExp={result.lifeExp} runOut={result.runOut}/>
+            </div>
+
+            {/* 3 key stats only (fix #2 — cut from 4 to 3) */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:18}} className="sc stat-3">
+              {[
+                ["Monthly income in retirement",disp(base.retireMonthlyExpenses>0?result.withdrawal/12:result.retIncome/12),base.retireMonthlyExpenses>0?"your goal":"4% rule estimate","#FFD166"],
+                ["Chance money outlasts you",`${result.successProb}%`,"based on your current plan",result.successProb>=75?"#00E5B0":result.successProb>=55?"#FFD166":"#FF4466"],
+                ["Years of coverage",`${result.corpusMultiple.toFixed(1)}×`,"annual spending · aim for 20–25×",result.corpusMultiple>=22?"#00E5B0":result.corpusMultiple>=16?"#FFD166":"#FF4466"],
+              ].map(([l,v,s,col])=>(
+                <div key={l} style={{background:"#141D33",border:"1px solid #1C2640",borderRadius:14,padding:"14px 16px"}}>
+                  <div style={{fontSize:9,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:4,fontWeight:500}}>{l}</div>
+                  <div style={{fontFamily:"'Playfair Display'",fontSize:22,fontWeight:700,color:col,lineHeight:1.1}}>{v}</div>
+                  <div style={{fontSize:10,color:"#4A5A7E",marginTop:3}}>{s}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Life goals impact */}
+            {(base.lifeGoals||[]).length>0&&(
+              <div className="card" style={{padding:22,marginBottom:18,borderColor:"rgba(255,143,90,.2)"}}>
+                <div style={{fontSize:10,color:"#FF8F5A",textTransform:"uppercase",letterSpacing:".1em",marginBottom:14}}>Life Goals — Retirement Impact</div>
+                {(base.lifeGoals||[]).map(g=>(
+                  <div key={g.id} style={{display:"flex",justifyContent:"space-between",
+                    alignItems:"center",padding:"10px 14px",background:"#141D33",
+                    borderRadius:12,marginBottom:8}}>
+                    <span style={{fontSize:13}}>{g.icon} {g.label} at age {g.atAge}</span>
+                    <span style={{fontFamily:"'Playfair Display'",fontSize:15,fontWeight:700,color:"#FF8F5A"}}>
+                      −{disp(g.amount)}
+                    </span>
+                  </div>
+                ))}
+                <div style={{display:"flex",justifyContent:"space-between",
+                  padding:"11px 14px",background:"rgba(255,143,90,.07)",
+                  borderRadius:12,border:"1px solid rgba(255,143,90,.2)"}}>
+                  <span style={{fontSize:13,fontWeight:600}}>Total drawn from retirement pot</span>
+                  <span style={{fontFamily:"'Playfair Display'",fontSize:17,fontWeight:700,color:"#FF8F5A"}}>
+                    −{disp(result.totalGoalAmount)}
+                  </span>
+                </div>
+                <div style={{marginTop:12,fontSize:12,color:"#4A5A7E",lineHeight:1.65}}>
+                  Without these goals your pot would be <b style={{color:"#00E5B0"}}>{disp(runProjection({...base,lifeGoals:[]}).retPortfolio)}</b> at retirement.
+                  That's <b style={{color:"#00E5B0"}}>{disp(runProjection({...base,lifeGoals:[]}).retPortfolio-result.retPortfolio)}</b> more — a real trade-off worth knowing.
+                </div>
+              </div>
+            )}
+
+            {/* Brutal verdict — one card, hits hardest number */}
+            {verdict&&<div style={{
+              background:`${verdict.color}0D`,
+              border:`1.5px solid ${verdict.color}44`,
+              borderRadius:20,padding:"22px 26px",marginBottom:18}}>
+              <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
+                <span style={{fontSize:28,lineHeight:1,flexShrink:0,marginTop:2}}>{verdict.icon}</span>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:"'Playfair Display'",fontSize:20,fontWeight:900,
+                    color:verdict.color,lineHeight:1.2,marginBottom:8}}>
+                    {verdict.headline}
+                  </div>
+                  <div style={{fontSize:13,color:"#ECF0FA",lineHeight:1.65,marginBottom:10}}>
+                    {verdict.sub}
+                  </div>
+                  <div style={{fontSize:12,color:"#4A5A7E",fontStyle:"italic",
+                    borderTop:"1px solid rgba(255,255,255,.06)",paddingTop:10}}>
+                    What to do: <span style={{color:verdict.color,fontStyle:"normal",fontWeight:600}}>{verdict.action}</span>
+                  </div>
+                </div>
+              </div>
+            </div>}
+
+            <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:20}}>
+              <button className="cta" style={{flex:1}} onClick={()=>setTab("scenarios")}>Explore what-if scenarios →</button>
+              <button className="sec" onClick={()=>setTab("plan")}>← Edit inputs</button>
+            </div>
+
+            {/* Consult CTA */}
+            <div style={{background:"linear-gradient(135deg,rgba(0,229,176,.05),rgba(255,209,102,.03))",
+              border:"1px solid rgba(0,229,176,.13)",borderRadius:22,padding:"22px 26px",
+              display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
+              <div>
+                <div style={{fontFamily:"'Playfair Display'",fontSize:18,fontWeight:700,marginBottom:5}}>
+                  {"Want to achieve your dream? Connect with our financial planners."}
+                </div>
+                <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.6,maxWidth:400}}>
+                  A personalised conversation with one of our advisers turns these numbers into an actionable plan.
+                </div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:8,alignItems:"flex-end"}}>
+                <button onClick={()=>setShowModal(true)}
+                  style={{padding:"14px 28px",borderRadius:13,
+                    background:"linear-gradient(135deg,#00A87E,#00E5B0)",border:"none",
+                    color:"#02100C",fontFamily:"'DM Sans'",fontSize:14,fontWeight:600,
+                    cursor:"pointer",whiteSpace:"nowrap",boxShadow:"0 3px 22px rgba(0,229,176,.22)"}}>
+                  Get plan + PDF →
+                </button>
+                <div style={{fontSize:11,color:"#4A5A7E"}}>Free · No obligation</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ SCENARIOS / WHAT-IFS (hooked fix #6) ══════════════════════════ */}
+        {tab==="scenarios"&&result&&(
+          <div className="fi">
+            <div style={{marginBottom:20}}>
+              <div style={{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:700,marginBottom:5}}>
+                Ask yourself the hard questions.
+              </div>
+              <div style={{fontSize:13,color:"#4A5A7E",lineHeight:1.6}}>
+                Pick a scenario below. We'll show you exactly what it would take — and what you'd gain.
+              </div>
+            </div>
+
+            {/* Scenario selection — single column so questions are always fully readable */}
+            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:24}}>
+              {scenarios.map(sc=>(
+                <button key={sc.id} className={`scene-card${sandbox===sc.id?" act":""}`}
+                  onClick={()=>{setSbInp({...sc.inp,lifeGoals:sc.inp.lifeGoals||[]});setSandbox(sc.id);}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
+                    <div style={{flex:1}}>
+                      <div className="scene-q">{sc.q}</div>
+                      <div className="scene-sub">{sc.hook}</div>
+                    </div>
+                    <span style={{fontSize:11,fontWeight:600,color:sc.badgeCol,
+                      background:`${sc.badgeCol}18`,border:`1px solid ${sc.badgeCol}44`,
+                      borderRadius:100,padding:"4px 12px",whiteSpace:"nowrap",flexShrink:0,marginTop:2}}>
+                      {sc.badge}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Active scenario comparison */}
+            {sandbox&&sbResult&&(
+              <div>
+                {/* Quick answer banner */}
+                {scenarios.find(s=>s.id===sandbox)&&(
+                  <div style={{background:"rgba(0,229,176,.06)",border:"1px solid rgba(0,229,176,.2)",
+                    borderRadius:16,padding:"16px 20px",marginBottom:18}}>
+                    <div style={{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:700,marginBottom:4}}>
+                      {scenarios.find(s=>s.id===sandbox)?.q}
+                    </div>
+                    <div style={{fontSize:13,color:sbResult.lastsToLifeExp?"#00E5B0":"#FF8F5A",lineHeight:1.6,fontWeight:600}}>
+                      {sbResult.lastsToLifeExp
+                        ?`✓ ${scenarios.find(s=>s.id===sandbox)?.hook}`
+                        :`⚠ ${scenarios.find(s=>s.id===sandbox)?.hook}`}
+                    </div>
+                  </div>
+                )}
+
+                {/* Side by side */}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:16}} className="tc">
+                  {[{label:"Your current plan",res:result,inp:base,isScen:false},
+                    {label:"This scenario",res:sbResult,inp:sbInp,isScen:true}].map(({label,res,inp,isScen})=>(
+                    <div key={label}>
+                      <div style={{fontSize:10,color:isScen?"#00E5B0":"#4A5A7E",
+                        textTransform:"uppercase",letterSpacing:".1em",marginBottom:8}}>{label}</div>
+                      <div style={{background:"#0F1525",border:`1px solid ${isScen?"rgba(0,229,176,.22)":"#1C2640"}`,
+                        borderRadius:20,padding:20}}>
+                        <div style={{fontFamily:"'Playfair Display'",fontSize:26,fontWeight:700,
+                          color:isScen?(dp>=0?"#00E5B0":"#FF4466"):"#ECF0FA",marginBottom:2}}>{disp(res.retPortfolio)}</div>
+                        <div style={{fontSize:11,color:res.lastsToLifeExp?"#00E5B0":"#FF4466",marginBottom:12}}>
+                          {res.lastsToLifeExp?`✓ lasts to age ${res.lifeExp}`:`⚠ runs out at ${res.runOut}`}
+                        </div>
+                        <Chart data={res.chartData} retireAge={inp.retireAge} lifeExp={res.lifeExp} height={100}
+                          goalMarkers={(inp.lifeGoals||[]).map(g=>({yr:g.atAge,icon:g.icon}))}/>
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12}}>
+                          {[["Success",`${res.successProb}%`,isScen?(dP>=0?"#00E5B0":"#FF4466"):"#ECF0FA"],
+                            ["Health",String(res.health),healthLabel(res.health).color]].map(([l,v,col])=>(
+                            <div key={l} style={{textAlign:"center",background:"#141D33",borderRadius:10,padding:"8px 0"}}>
+                              <div style={{fontFamily:"'Playfair Display'",fontSize:17,fontWeight:700,color:col}}>{v}</div>
+                              <div style={{fontSize:9,color:"#4A5A7E"}}>{l}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Delta bar */}
+                <div className="card" style={{padding:"15px 20px",marginBottom:18,
+                  display:"flex",alignItems:"center",gap:24,flexWrap:"wrap"}}>
+                  <div style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".08em",flexShrink:0}}>vs your plan</div>
+                  {[
+                    ["Pot",dp>=0?`+${disp(dp)}`:disp(dp),dp],
+                    ["Success",`${dP>=0?"+":""}${dP.toFixed(0)}pp`,dP],
+                    ["Health",`${dH>=0?"+":""}${dH}`,dH],
+                    ["Lasts?",sbResult.lastsToLifeExp?"Yes ✓":"No ⚠",sbResult.lastsToLifeExp?1:-1],
+                  ].map(([label,val,d])=>(
+                    <div key={label}>
+                      <div style={{fontFamily:"'Playfair Display'",fontSize:16,fontWeight:700,
+                        color:d>=0?"#00E5B0":"#FF4466"}}>{val}</div>
+                      <div style={{fontSize:9,color:"#4A5A7E"}}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Custom sliders */}
+                <div className="card" style={{padding:24}}>
+                  <div style={{fontSize:10,color:"#4A5A7E",textTransform:"uppercase",letterSpacing:".1em",marginBottom:18}}>
+                    Fine-tune this scenario
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 30px"}} className="tc">
+                    <Slider label={`Annual Income (${cur})`} value={sbIncomeDisp}
+                      min={minIncome} max={maxIncome} step={stepIncome}
+                      fmtFn={v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                      onChange={v=>setSB("income",toBase(v))} color="#00E5B0"/>
+                    <Slider label={`Monthly Spending (${cur})`} value={sbSpendDisp}
+                      min={minSpend} max={maxSpend} step={stepSpend}
+                      fmtFn={v=>sym+(v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                      onChange={v=>setSB("monthlySpend",toBase(v))} color="#FF8F5A"/>
+                    <SavingsSlider income={sbInp.income} savingsRate={sbInp.savingsRate}
+                      onChange={v=>setSB("savingsRate",v)} disp={disp}/>
+                    <Slider label="Retirement Age" value={sbInp.retireAge}
+                      min={Math.max(sbInp.age+2,40)} max={80}
+                      fmtFn={v=>`Age ${v}`} onChange={v=>setSB("retireAge",v)} color="#FFD166"/>
+                    <Slider label={`Current Savings (${cur})`} value={sbSavingsDisp}
+                      min={0} max={maxSavings} step={stepSavings}
+                      fmtFn={v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())}
+                      onChange={v=>setSB("savings",toBase(v))} color="#00E5B0"/>
+                  </div>
+
+                  {/* Life goals in sandbox */}
+                  <div style={{borderTop:"1px solid #1C2640",marginTop:12,paddingTop:18}}>
+                    <div style={{fontSize:11,color:"#4A5A7E",marginBottom:12,textTransform:"uppercase",letterSpacing:".08em"}}>Life goals in this scenario</div>
+                    <LifeGoals goals={sbInp.lifeGoals||[]} onAdd={addSbGoal} onRemove={removeSbGoal}
+                      onUpdate={updateSbGoal} baseAge={sbInp.age} retireAge={sbInp.retireAge}
+                      disp={disp} toBase={toBase} fromBase={fromBase} cur={cur}/>
+                  </div>
+
+                  <div style={{display:"flex",gap:12,marginTop:18,flexWrap:"wrap"}}>
+                    <button className="sec" onClick={()=>{setBase({...sbInp});setSandbox(null);setTab("results");}}>
+                      Make this my plan →
+                    </button>
+                    <button className="sec" style={{borderColor:"#FFD166",color:"#FFD166",background:"rgba(255,209,102,.06)"}}
+                      onClick={()=>setShowModal(true)}>
+                      Get PDF + speak to an adviser
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* FOOTER */}
+      <footer style={{borderTop:"1px solid #1C2640",padding:"20px 28px",marginTop:48,
+        display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div style={{width:24,height:24,borderRadius:7,background:"linear-gradient(135deg,#00A87E,#00E5B0)",
+            display:"grid",placeItems:"center",fontSize:11,color:"#02100C",fontWeight:800}}>◈</div>
+          <span style={{fontFamily:"'Playfair Display'",fontSize:13,fontWeight:700}}>ARK Financial Planners</span>
+          <span style={{fontSize:11,color:"#4A5A7E",marginLeft:4}}>USD/MUR rate: 1 USD = {FX_MUR} MUR (fixed Jun 2025)</span>
+        </div>
+        <div style={{fontSize:11,color:"#4A5A7E",maxWidth:480,textAlign:"right",lineHeight:1.65}}>
+          For educational purposes only. Not financial advice. Consult a qualified financial adviser before making decisions.
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
