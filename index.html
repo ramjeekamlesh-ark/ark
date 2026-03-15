@@ -56,7 +56,7 @@ input,select{font-family:inherit}
 .sl-track{position:absolute;left:0;right:0;height:4px;background:var(--border);border-radius:2px}
 .sl-fill{position:absolute;left:0;top:0;height:100%;border-radius:2px}
 .sl-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:none;z-index:1}
-input[type=range].sl-input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2;-webkit-appearance:none}
+input[type=range].sl-input{position:absolute;left:4%;top:0;width:92%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2;-webkit-appearance:none}
 .g-chips{display:flex;gap:6px;margin-bottom:14px}
 .g-chip{flex:1;padding:7px 6px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;font-family:inherit;cursor:pointer;text-align:center;transition:all .15s}
 .mode-tog{display:flex;background:var(--subtle);border-radius:8px;padding:2px;border:1px solid var(--border);margin-bottom:16px}
@@ -378,10 +378,9 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDb,stepDb}
       fmt:v=>v===0?"None":fmtAmt(v,sym),
       onChange:v=>onDB(toB(v)),color:"var(--danger)",hint:"mortgage, loans, credit cards"}),
     hasDebt&&h("div",{className:"debt-box"},
-      h("div",{style:{fontSize:12,fontWeight:600,color:"var(--danger)",marginBottom:10}},"Debt details — repayment drag is factored into your corpus"),
       h("div",{className:"row2"},
         h("div",null,
-          h("div",{className:"field-lbl"},"Annual interest rate (%)"),
+          h("div",{className:"field-lbl"},"Interest rate (% p.a.)"),
           h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:dr||"",placeholder:"e.g. 6.5",
             onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})
         ),
@@ -391,10 +390,9 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDb,stepDb}
             onChange:e=>onDT(Math.min(30,Math.max(1,parseInt(e.target.value)||1))*12)})
         )
       ),
-      hasDebt&&(dr>0||dt>0)&&h("div",{className:"debt-summary"},
-        h("div",null,"Monthly payment: ",h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
-        dr>0&&h("div",null,"Total interest: ",h("b",{style:{color:"var(--warn)"}},fmtAmt(frB(dbt.totalInterest),sym))),
-        h("div",null,"Repayment drag deducted from savings each year until cleared.")
+      hasDebt&&(dr>0||dt>0)&&h("div",{style:{display:"flex",gap:16,fontSize:11,color:"var(--muted)",marginTop:4,flexWrap:"wrap"}},
+        h("span",null,"Monthly: ",h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
+        dr>0&&h("span",null,"Total interest: ",h("b",{style:{color:"var(--warn)"}},fmtAmt(frB(dbt.totalInterest),sym)))
       )
     )
   );
@@ -512,7 +510,6 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,le,disp,toB,frB,cur,sym}
 
         // House: mortgage component
         isHouse&&h("div",{style:{marginTop:4}},
-          h("div",{className:"field-lbl",style:{marginBottom:6}},"Mortgage component"),
           h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,
             fmt:v=>`${v}%  (down payment: ${disp(toB(frB(g.amount)*(1-(v/100))))})`,
             onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
@@ -531,10 +528,10 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,le,disp,toB,frB,cur,sym}
           (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&(()=>{
             const principal=g.amount*(g.mortgagePct/100);
             const dbt=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
-            return h("div",{className:"debt-summary",style:{marginTop:6}},
-              h("div",null,"Loan amount: ",h("b",{style:{color:"var(--accent)"}},disp(principal))),
-              h("div",null,"Monthly mortgage: ",h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
-              h("div",null,"Total interest: ",h("b",{style:{color:"var(--warn)"}},disp(dbt.totalInterest)))
+            return h("div",{style:{display:"flex",gap:16,fontSize:11,color:"var(--muted)",marginTop:4,flexWrap:"wrap"}},
+              h("span",null,"Loan: ",h("b",{style:{color:"var(--accent)"}},disp(principal))),
+              h("span",null,"Monthly: ",h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
+              h("span",null,"Interest: ",h("b",{style:{color:"var(--warn)"}},disp(dbt.totalInterest)))
             );
           })()
         ),
@@ -702,7 +699,7 @@ function Hero({onStart}){
   return h("div",{className:"hero"},
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup · 3 minutes"),
     h("h1",{className:"hero-title"},"Will your money last",h("br")," ",h("span",{style:{color:"var(--accent)"}},"as long as you do?")),
-    h("p",{className:"hero-sub"},"Most people have no idea. You will know where you stand before your coffee gets cold."),
+    h("p",{className:"hero-sub"},"Most people have no idea.",h("br"),"You will know where you stand before your coffee gets cold."),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
       [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored server-side"]].map(([icon,title,sub])=>
@@ -749,7 +746,7 @@ function App(){
   const minI=cur==="MUR"?8000:150,maxI=cur==="MUR"?2500000:100000,stepI=cur==="MUR"?5000:500;
   const minSp=cur==="MUR"?5000:100,maxSp=cur==="MUR"?500000:25000,stepSp=cur==="MUR"?2500:100;
   const maxSv=cur==="MUR"?25000000:10000000,stepSv=cur==="MUR"?100000:10000;
-  const maxDb=cur==="MUR"?50000000:5000000,stepDb=cur==="MUR"?100000:1000;
+  const maxDb=cur==="MUR"?50000000:5000000,stepDb=cur==="MUR"?100000:5000;
   const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
   const fmtS=v=>v===0?"None":fmtAmt(v,sym);
   const fmtSp=v=>fmtAmt(v,sym)+"/mo";
@@ -800,7 +797,7 @@ function App(){
   );
 
   // PersonCard now fully receives display-unit caps
-  const PersonCard=({card,setFn,col,label,sub,num})=>h("div",{className:`person-card ${num===1?"p1":"p2"}`},
+  const PersonCard=({card,setFn,col,label,sub,num,mxDb,stDb})=>h("div",{className:`person-card ${num===1?"p1":"p2"}`},
     h("div",{className:"person-hdr"},
       h("div",{className:"avatar",style:{background:col+"22",color:col}},num),
       h("div",null,h("div",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},label),h("div",{style:{fontSize:11,color:"var(--muted)"}},sub))
@@ -808,12 +805,11 @@ function App(){
     h(Slider,{label:"Age",value:card.age,min:18,max:70,fmt:v=>`${v} yrs`,onChange:v=>setFn("age",v),color:col}),
     h(GChips,{val:card.gender,onChange:g=>setFn("gender",g),ac:col}),
     h(Slider,{label:`Income (${cur})`,value:frB(card.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>setFn("income",toB(v)),color:col}),
-    h(Slider,{label:`Savings (${cur})`,value:frB(card.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>setFn("savings",toB(v)),color:col}),
-    h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:col}),
+    h(Slider,{label:`Savings (${cur})`,value:frB(card.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>setFn("savings",toB(v)),color:col}),    h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:col}),
     h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,fmt:v=>`Age ${v}`,onChange:v=>setFn("retireAge",v),color:"var(--gold)"}),
     h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||240,
       onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),
-      disp,frB,toB,cur,sym,maxDb,stepDb})
+      disp,frB,toB,cur,sym,maxDb:mxDb||maxDb,stepDb:stDb||stepDb})
   );
 
   if(hero)return h(Hero,{onStart:()=>setHero(false)});
@@ -863,7 +859,7 @@ function App(){
         // Household shared finances
         hh&&h("div",{style:cardS},
           h("div",{style:secL},"Shared household finances"),
-          h(Slider,{label:`Monthly expenses (${cur})`,value:spD,min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)",hint:"rent, food, bills…"}),
+          h(Slider,{label:`Monthly expenses (${cur})`,value:spD,min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)"}),
           h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:14,marginTop:4}},
             h("button",{className:`goals-tog${(base.lifeGoals||[]).length>0?" has":""}`,onClick:()=>setGoalsOpen(p=>!p)},
               h("span",null,(base.lifeGoals||[]).length>0?`${(base.lifeGoals||[]).length} shared life goal${(base.lifeGoals||[]).length>1?"s":""}  — tap to edit`:"+ Add shared life goals"),
@@ -877,8 +873,8 @@ function App(){
         hh?h("div",null,
           h("div",{style:secL},"Individual finances"),
           h("div",{className:"person-pair"},
-            h(PersonCard,{card:base,setFn:sB,col:"var(--accent)",label:"You",sub:"income, savings & debt",num:1}),
-            h(PersonCard,{card:partner,setFn:sP,col:"var(--p2)",label:"Partner",sub:"income, savings & debt",num:2})
+            h(PersonCard,{card:base,setFn:sB,col:"var(--accent)",label:"You",sub:"income, savings & debt",num:1,mxDb:maxDb,stDb:stepDb}),
+            h(PersonCard,{card:partner,setFn:sP,col:"var(--p2)",label:"Partner",sub:"income, savings & debt",num:2,mxDb:maxDb,stDb:stepDb})
           ),
           res&&res.p1P!=null&&h("div",{className:"hh-snap"},
             h("div",{style:{...secL,marginBottom:8}},"Projected pots"),
@@ -986,10 +982,9 @@ function App(){
         ),
 
         (base.debtBalance>0||(hh&&partner.debtBalance>0))&&h("div",{style:{background:"var(--danger-lt)",border:"1px solid rgba(239,68,68,.15)",borderRadius:10,padding:"12px 14px",marginBottom:14,fontSize:12,color:"var(--muted)",lineHeight:1.8}},
-          h("div",{style:{fontWeight:600,color:"var(--danger)",marginBottom:4}},"Debt impact on your plan"),
-          base.debtBalance>0&&h("div",null,"Your debt: ",h("b",{style:{color:"var(--danger)"}},disp(base.debtBalance)),` @ ${base.debtRate||0}% / ${Math.round((base.debtTerm||240)/12)} yrs → `,h("b",null,`${sym}${Math.round(frB(res.debtMonthlyPmt||0)).toLocaleString()}/mo`)),
-          hh&&partner.debtBalance>0&&h("div",null,"Partner's debt: ",h("b",{style:{color:"var(--danger)"}},disp(partner.debtBalance)),` @ ${partner.debtRate||0}% / ${Math.round((partner.debtTerm||240)/12)} yrs`),
-          h("div",{style:{marginTop:4,fontSize:11,color:"var(--hint)"}},"Repayments are deducted from savings each year until cleared.")
+          h("div",{style:{fontWeight:600,color:"var(--danger)",marginBottom:4}},"Debt impact"),
+          base.debtBalance>0&&h("div",null,h("span",{style:{color:"var(--text)"}},"You: "),disp(base.debtBalance),` @ ${base.debtRate||0}% / ${Math.round((base.debtTerm||240)/12)} yrs — `,h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(res.debtMonthlyPmt||0)).toLocaleString()}/mo`)),
+          hh&&partner.debtBalance>0&&h("div",null,h("span",{style:{color:"var(--text)"}},"Partner: "),disp(partner.debtBalance),` @ ${partner.debtRate||0}% / ${Math.round((partner.debtTerm||240)/12)} yrs`)
         ),
 
         h("div",{className:"stat-grid"},
