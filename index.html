@@ -189,18 +189,35 @@ function proj(inp,rate){
   const dbt=debtCalc(db,dr,dt);
   const debtMonths=Math.min(dt||60,ytr*12);
   const gw={};
+  // Monthly mortgage payments from house goals — stored as annual drag per year
+  const mortgageDragByYear={};
   (lg||[]).forEach(g=>{
     const amt=g.amount||0;if(!amt)return;
     if(g.id==="trip"&&g.recurYears>0){
       for(let a2=g.atAge;a2<ra;a2+=g.recurYears){const yr=a2-age;if(yr>0)gw[yr]=(gw[yr]||0)+amt;}
-    }else if(g.atAge>age&&g.atAge<ra){const yr=g.atAge-age;gw[yr]=(gw[yr]||0)+amt;}
+    }else if(g.atAge>age&&g.atAge<ra){
+      // For house: only the down-payment hits the lump-sum; mortgage runs as monthly drag
+      const effectiveAmt=g.id==="house"&&(g.mortgagePct||0)>0
+        ?amt*(1-(g.mortgagePct/100))  // only down payment as lump sum
+        :amt;
+      const yr=g.atAge-age;gw[yr]=(gw[yr]||0)+effectiveAmt;
+      // Add mortgage monthly payment drag
+      if(g.id==="house"&&(g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0){
+        const principal=amt*(g.mortgagePct/100);
+        const md=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
+        const startYr=g.atAge-age;
+        for(let t2=startYr;t2<startYr+g.mortgageTerm&&t2<ytr;t2++){
+          mortgageDragByYear[t2]=(mortgageDragByYear[t2]||0)+md.monthlyPmt*12;
+        }
+      }
+    }
   });
   let port=Math.max(0,savings-db);
   const acc=[];
   for(let t=0;t<ytr;t++){
     const curIncome=ai*Math.pow(1+IG,t);
     const monthsThisYear=Math.min(12,Math.max(0,debtMonths-t*12));
-    const effectiveSaving=Math.max(0,curIncome*(sr/100)-dbt.monthlyPmt*monthsThisYear);
+    const effectiveSaving=Math.max(0,curIncome*(sr/100)-dbt.monthlyPmt*monthsThisYear-(mortgageDragByYear[t]||0));
     port=port*(1+r)+effectiveSaving;
     if(gw[t])port=Math.max(0,port-gw[t]);
     acc.push({yr:age+t,val:Math.max(0,port),phase:"grow"});
@@ -449,17 +466,28 @@ function LifeBar({ra,le,ro}){
 
 // ── LIFE GOALS ────────────────────────────────────────────────────────────────
 const GOALS=[
-  {id:"house",icon:"🏠",label:"Buy a house",da:200000,dage:42},
+  {id:"house",icon:"🏠",label:"Buy a house",da:300000,dage:42},
   {id:"car",icon:"🚗",label:"Buy a car",da:30000,dage:40},
   {id:"edu",icon:"🎓",label:"Kids' education",da:50000,dage:45},
   {id:"wed",icon:"💒",label:"Wedding / event",da:25000,dage:38},
   {id:"trip",icon:"✈️",label:"Dream trip",da:20000,dage:45},
   {id:"other",icon:"⭐",label:"Other",da:40000,dage:43},
 ];
-function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,disp,toB,frB,cur,sym}){
-  // Trip max: Rs2m MUR / $50k USD; other goals: Rs10m / $500k
-  const tripMax=cur==="MUR"?2000000:50000,tripStep=cur==="MUR"?5000:500;
-  const otherMax=cur==="MUR"?10000000:500000,otherStep=cur==="MUR"?5000:1000;
+function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,le,disp,toB,frB,cur,sym}){
+  // ba = base age (or younger of couple), le = life expectancy for age range max
+  const ageMin=ba+1, ageMax=Math.min(le-1, 99);
+
+  // Per-goal caps in display units
+  const getCaps=(id)=>{
+    if(id==="house") return{max:cur==="MUR"?100000000:3000000,step:cur==="MUR"?500000:10000};
+    if(id==="edu")   return{max:cur==="MUR"?25000000:500000, step:cur==="MUR"?100000:5000};
+    if(id==="trip")  return{max:cur==="MUR"?2000000:50000,   step:cur==="MUR"?5000:500};
+    if(id==="other") return{max:cur==="MUR"?25000000:500000, step:cur==="MUR"?100000:5000};
+    if(id==="car")   return{max:cur==="MUR"?5000000:200000,  step:cur==="MUR"?50000:1000};
+    if(id==="wed")   return{max:cur==="MUR"?5000000:150000,  step:cur==="MUR"?50000:1000};
+    return{max:cur==="MUR"?10000000:500000,step:cur==="MUR"?50000:1000};
+  };
+
   return h("div",null,
     h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}},
       GOALS.map(gt=>{
@@ -470,27 +498,58 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,disp,toB,frB,cur,sym}){
       })
     ),
     goals.map(g=>{
-      const isTrip=g.id==="trip";
-      const maxA=isTrip?tripMax:otherMax,stepA=isTrip?tripStep:otherStep;
+      const isTrip=g.id==="trip", isHouse=g.id==="house";
+      const{max:maxA,step:stepA}=getCaps(g.id);
       return h("div",{key:g.id,style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.2)",borderRadius:10,padding:14,marginBottom:8}},
         h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
           h("span",{style:{fontSize:12,fontWeight:600,color:"var(--text)"}},`${g.icon} ${g.label}`),
           h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:17}},"×")
         ),
-        h(Slider,{label:isTrip?"Cost per trip":"Cost",value:frB(g.amount),min:isTrip?(cur==="MUR"?5000:100):1000,max:frB(maxA),step:frB(stepA),
+        h(Slider,{label:isTrip?"Cost per trip":"Purchase price",value:frB(g.amount),min:cur==="MUR"?5000:100,max:frB(maxA),step:frB(stepA),
           fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"var(--gold)"}),
-        h(Slider,{label:isTrip?"First trip at age":"At age",value:g.atAge,min:ba+1,max:ra-1,
+        h(Slider,{label:isTrip?"First trip at age":"At age",value:Math.max(ageMin,Math.min(g.atAge,ageMax)),min:ageMin,max:ageMax,
           fmt:v=>`Age ${v}`,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--warn)"}),
+
+        // House: mortgage component
+        isHouse&&h("div",{style:{marginTop:4}},
+          h("div",{className:"field-lbl",style:{marginBottom:6}},"Mortgage component"),
+          h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,
+            fmt:v=>`${v}%  (down payment: ${disp(toB(frB(g.amount)*(1-(v/100))))})`,
+            onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
+          (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:4}},
+            h("div",null,
+              h("div",{className:"field-lbl"},"Mortgage rate (% p.a.)"),
+              h("input",{className:"mini-input",type:"number",min:0,max:20,step:0.1,value:g.mortgageRate||"",placeholder:"e.g. 5.5",
+                onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(20,Math.max(0,parseFloat(e.target.value)||0)))})
+            ),
+            h("div",null,
+              h("div",{className:"field-lbl"},"Term (years)"),
+              h("input",{className:"mini-input",type:"number",min:1,max:30,step:1,value:g.mortgageTerm||"",placeholder:"e.g. 20",
+                onChange:e=>onUpdate(g.id,"mortgageTerm",Math.min(30,Math.max(1,parseInt(e.target.value)||20)))})
+            )
+          ),
+          (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&(()=>{
+            const principal=g.amount*(g.mortgagePct/100);
+            const dbt=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
+            return h("div",{className:"debt-summary",style:{marginTop:6}},
+              h("div",null,"Loan amount: ",h("b",{style:{color:"var(--accent)"}},disp(principal))),
+              h("div",null,"Monthly mortgage: ",h("b",{style:{color:"var(--danger)"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
+              h("div",null,"Total interest: ",h("b",{style:{color:"var(--warn)"}},disp(dbt.totalInterest)))
+            );
+          })()
+        ),
+
+        // Trip: recurring frequency on one line
         isTrip&&h("div",{style:{marginTop:4}},
           h("div",{className:"field-lbl",style:{marginBottom:6}},"Recurring frequency"),
-          h("div",{style:{display:"flex",gap:6,flexWrap:"wrap"}},
+          h("div",{style:{display:"flex",gap:6}},
             [{v:0,l:"Once"},{v:2,l:"Every 2 yrs"},{v:3,l:"Every 3 yrs"},{v:5,l:"Every 5 yrs"}].map(opt=>
               h("button",{key:opt.v,onClick:()=>onUpdate(g.id,"recurYears",opt.v),
-                style:{padding:"5px 10px",borderRadius:6,
+                style:{flex:1,padding:"5px 4px",borderRadius:6,
                   border:`1px solid ${(g.recurYears||0)===opt.v?"var(--gold)":"var(--border)"}`,
                   background:(g.recurYears||0)===opt.v?"var(--gold-lt)":"transparent",
                   color:(g.recurYears||0)===opt.v?"var(--gold)":"var(--muted)",
-                  fontSize:11,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},opt.l)
+                  fontSize:10,fontWeight:500,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}},opt.l)
             )
           )
         )
@@ -643,9 +702,8 @@ function Hero({onStart}){
   return h("div",{className:"hero"},
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup · 3 minutes"),
     h("h1",{className:"hero-title"},"Will your money last",h("br")," ",h("span",{style:{color:"var(--accent)"}},"as long as you do?")),
-    h("p",{className:"hero-sub"},"Most people have no idea. In 3 minutes you'll know exactly where you stand — and what it takes to retire on your own terms."),
+    h("p",{className:"hero-sub"},"Most people have no idea. You will know where you stand before your coffee gets cold."),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
-    h("p",{className:"hero-micro"},"No email required. Takes 3 minutes."),
     h("div",{className:"hero-feats"},
       [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored server-side"]].map(([icon,title,sub])=>
         h("div",{key:title,className:"hero-feat"},h("div",{className:"hero-feat-icon"},icon),h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2,color:"var(--text)"}},title),h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.4}},sub))
@@ -675,12 +733,18 @@ function App(){
 
   const sB=(k,v)=>setBase(p=>({...p,[k]:v}));
   const sP=(k,v)=>setPartner(p=>({...p,[k]:v}));
-  const addG=gt=>sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.da,atAge:Math.min(gt.dage,base.retireAge-1),recurYears:gt.id==="trip"?3:0}]);
+  const addG=gt=>sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.da,
+    atAge:Math.max(base.age+1,Math.min(gt.dage,baseLE-1)),
+    recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20}]);
   const remG=id=>sB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
   const updG=(id,k,v)=>sB("lifeGoals",(base.lifeGoals||[]).map(g=>g.id===id?{...g,[k]:v}:g));
   const hl=res?hlabel(res.health):{l:"",c:"var(--accent)"};
 
-  // Display-unit slider params
+  const baseLE=base.gender==="male"?75:85;
+  const partnerLE=partner.gender==="male"?75:85;
+  const hhLE=Math.max(baseLE,partnerLE);
+  const goalLE=hh?hhLE:baseLE;
+  const goalBA=hh?Math.min(base.age,partner.age):base.age;
   const iD=frB(base.income),spD=frB(base.monthlySpend),svD=frB(base.savings);
   const minI=cur==="MUR"?8000:150,maxI=cur==="MUR"?2500000:100000,stepI=cur==="MUR"?5000:500;
   const minSp=cur==="MUR"?5000:100,maxSp=cur==="MUR"?500000:25000,stepSp=cur==="MUR"?2500:100;
@@ -761,7 +825,7 @@ function App(){
       h("div",{className:"wrap hdr-inner"},
         h("button",{className:"logo-btn",onClick:()=>setHero(true)},
           h("div",{className:"logo-mark"},"A"),
-          h("div",null,h("div",{className:"logo-name"},"ARK Financial Planners"),h("div",{className:"logo-sub"},"Retirement Planning"))
+          h("div",null,h("div",{className:"logo-name"},"ARK Financial Planners"),        h("div",{className:"logo-sub"},"ARK Financial Planners"))
         ),
         h("div",{className:"hdr-right"},
           h(Tog,{opts:[["USD","USD $"],["MUR","MUR ₨"]],val:cur,onChange:setCur}),
@@ -805,7 +869,7 @@ function App(){
               h("span",null,(base.lifeGoals||[]).length>0?`${(base.lifeGoals||[]).length} shared life goal${(base.lifeGoals||[]).length>1?"s":""}  — tap to edit`:"+ Add shared life goals"),
               h("span",null,goalsOpen?"▲":"▼")
             ),
-            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:Math.min(base.age,partner.age),ra:Math.min(base.retireAge,partner.retireAge),disp,toB,frB,cur,sym}))
+            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,ra:Math.min(base.retireAge,partner.retireAge),le:goalLE,disp,toB,frB,cur,sym}))
           )
         ),
 
@@ -845,7 +909,7 @@ function App(){
             h("span",null,(base.lifeGoals||[]).length>0?`${(base.lifeGoals||[]).length} life goal${(base.lifeGoals||[]).length>1?"s":""} added`:"+ Add life goals (house, car, trips…)"),
             h("span",null,goalsOpen?"▲":"▼")
           ),
-          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:base.age,ra:base.retireAge,disp,toB,frB,cur,sym}))
+          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,ra:base.retireAge,le:goalLE,disp,toB,frB,cur,sym}))
         ),
 
         res&&vd&&h("div",{className:"teaser",onClick:()=>setTab("results")},
