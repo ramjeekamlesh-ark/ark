@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ARK Financial Planners — Retirement Planning</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#F7F8FA;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;color:#111827;font-size:14px;line-height:1.6;overflow-x:hidden}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#E8EAF0;border-radius:2px}
+.wrap{max-width:660px;margin:0 auto;padding:0 16px}
+.hdr{background:#fff;border-bottom:1px solid #E8EAF0;position:sticky;top:0;z-index:100}
+.hdr-inner{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo-btn{display:flex;align-items:center;gap:10px;background:none;border:none;padding:0;color:#111827;cursor:pointer}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:#1A56DB;display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.logo-name{font-size:14px;font-weight:600;letter-spacing:-.3px}
+.logo-sub{font-size:10px;color:#6B7280}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tog{display:flex;background:#F3F4F6;border-radius:8px;padding:2px;border:1px solid #E8EAF0}
+.tog-btn{padding:6px 14px;border-radius:6px;border:none;background:transparent;color:#6B7280;font-size:12px;font-weight:500;transition:all .15s;font-family:inherit}
+.tog-btn.on{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card{background:#fff;border:1px solid #E8EAF0;border-radius:16px;padding:20px;margin-bottom:12px}
+.sec-lbl{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.sl-wrap{margin-bottom:18px}
+.sl-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.sl-label{font-size:12px;font-weight:500;color:#6B7280}
+.sl-hint{font-size:10px;color:#9CA3AF;font-style:italic;font-weight:400;margin-left:5px}
+.sl-val{font-size:17px;font-weight:600;letter-spacing:-.4px}
+.sl-sub{font-size:11px;margin-bottom:4px;min-height:16px}
+.sl-track-wrap{position:relative;height:32px;display:flex;align-items:center;cursor:pointer}
+.sl-track{position:absolute;left:0;right:0;height:4px;background:#E8EAF0;border-radius:2px}
+.sl-fill{position:absolute;left:0;top:0;height:100%;border-radius:2px}
+.sl-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);pointer-events:none;z-index:1}
+input[type=range].sl-input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2;-webkit-appearance:none}
+.g-chips{display:flex;gap:6px;margin-bottom:14px}
+.g-chip{flex:1;padding:7px 6px;border-radius:8px;border:1px solid #E8EAF0;background:transparent;color:#6B7280;font-size:11px;font-weight:500;font-family:inherit;cursor:pointer;text-align:center;transition:all .15s}
+.mode-tog{display:flex;background:#F3F4F6;border-radius:8px;padding:2px;border:1px solid #E8EAF0;margin-bottom:16px}
+.mode-btn{flex:1;padding:8px 0;border-radius:6px;border:none;background:transparent;color:#6B7280;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .18s}
+.mode-btn.on{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.person-pair{display:flex;gap:12px;margin-bottom:12px}
+.person-card{background:#fff;border-radius:14px;padding:16px;flex:1;min-width:0}
+.person-card.p1{border:1px solid rgba(26,86,219,.3)}
+.person-card.p2{border:1px solid rgba(124,58,237,.3)}
+.person-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.avatar{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
+.goals-tog{width:100%;border:1px dashed #E8EAF0;border-radius:8px;padding:11px 14px;background:transparent;color:#6B7280;font-family:inherit;font-size:12px;font-weight:500;display:flex;justify-content:space-between;cursor:pointer;text-align:left}
+.goals-tog.has{border-color:rgba(180,83,9,.35);color:#B45309}
+.goal-pill{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;border:1px solid #E8EAF0;background:transparent;color:#6B7280;font-size:12px;font-weight:500;cursor:pointer;text-align:left;width:100%;transition:all .15s;font-family:inherit}
+.goal-pill.on{border-color:#B45309;background:#FFFBEB;color:#B45309}
+.imode-wrap{display:flex;gap:6px;margin-bottom:12px}
+.imode-btn{flex:1;padding:10px 6px;border-radius:8px;border:1px solid #E8EAF0;background:transparent;color:#6B7280;font-family:inherit;font-size:11px;font-weight:500;cursor:pointer;text-align:center;line-height:1.4;transition:all .15s}
+.scen-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.scen-btn{padding:12px 8px;border-radius:10px;border:1px solid #E8EAF0;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-box{background:#F3F4F6;border-radius:10px;padding:13px 15px}
+.stat-lbl{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.stat-val{font-size:20px;font-weight:600;letter-spacing:-.4px;line-height:1.1}
+.stat-sub{font-size:11px;color:#6B7280;margin-top:3px}
+.wi-card{background:#F3F4F6;border-radius:10px;padding:14px;margin-bottom:8px;border:1px solid #E8EAF0}
+.wi-nums{display:flex;gap:8px;margin-top:8px}
+.wi-num{flex:1;background:#fff;border-radius:8px;padding:7px 10px;border:1px solid #E8EAF0}
+.wi-num-lbl{font-size:10px;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.wi-num-val{font-size:14px;font-weight:600}
+.hh-snap{background:#F3F4F6;border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.hh-snap-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.hh-snap-item{background:#fff;border-radius:8px;padding:8px 10px;text-align:center;border:1px solid #E8EAF0}
+.cta{width:100%;padding:14px;border-radius:8px;background:#1A56DB;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .18s}
+.cta:hover{background:#1447B8}
+.teaser{background:#EEF3FD;border:1px solid rgba(26,86,219,.2);border-radius:12px;padding:14px 16px;cursor:pointer;margin-bottom:14px}
+.callout{border-radius:8px;padding:10px 13px;margin-bottom:10px;font-size:12px;line-height:1.7}
+.verdict{border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.lifebar{margin-top:12px}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:#fff;border:1px solid #E8EAF0;border-radius:16px;max-width:440px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-input{font-family:inherit;font-size:14px;background:#fff;border:1px solid #E8EAF0;border-radius:8px;color:#111827;padding:10px 13px;width:100%;outline:none}
+.modal-input:focus{border-color:#1A56DB}
+.mini-input{font-family:inherit;font-size:13px;background:#F3F4F6;border:1px solid #E8EAF0;border-radius:7px;color:#111827;padding:7px 10px;outline:none;width:100%}
+.mini-input:focus{border-color:#1A56DB;background:#fff}
+.mini-select{font-family:inherit;font-size:12px;background:#F3F4F6;border:1px solid #E8EAF0;border-radius:7px;color:#111827;padding:6px 8px;outline:none;width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.field-lbl{font-size:10px;color:#6B7280;font-weight:500;margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.debt-box{background:#FEF2F2;border:1px solid rgba(220,38,38,.18);border-radius:10px;padding:14px;margin-top:10px}
+.debt-summary{font-size:11px;color:#6B7280;margin-top:8px;padding:8px 10px;background:#fff;border-radius:7px;border:1px solid #E8EAF0;line-height:1.7}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;background:#F7F8FA}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:100px;border:1px solid #E8EAF0;font-size:11px;color:#6B7280;margin-bottom:24px;background:#fff}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:#16A34A}
+.hero-title{font-family:Georgia,serif;font-size:clamp(34px,6vw,60px);font-weight:400;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px}
+.hero-sub{font-size:clamp(14px,1.8vw,17px);color:#6B7280;max-width:480px;line-height:1.7;margin-bottom:32px}
+.hero-cta{padding:14px 48px;border-radius:8px;background:#1A56DB;border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:12px;font-family:inherit}
+.hero-micro{font-size:11px;color:#9CA3AF;margin-bottom:48px}
+.hero-feats{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.hero-feat{text-align:center;max-width:100px}
+.hero-feat-icon{width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid #E8EAF0;display:grid;place-items:center;margin:0 auto 8px;font-size:16px}
+.footer{border-top:1px solid #E8EAF0;padding:16px;margin-top:20px}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;border-top:1px solid #E8EAF0;grid-template-columns:repeat(2,1fr);padding:6px 0}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 4px;color:#6B7280;font-size:10px;font-weight:500;font-family:inherit}
+.bnav-btn.on{color:#1A56DB}
+.bnav-icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+.fade{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+  .person-pair{flex-direction:column}
+  .hh-snap-row{grid-template-columns:1fr 1fr}
+  .scen-grid{grid-template-columns:1fr}
+  .desktop-only{display:none!important}
+  .bnav{display:grid}
+  body{padding-bottom:60px}
+  .imode-wrap{flex-direction:column}
+  .row3{grid-template-columns:1fr 1fr}
+}
+@media(min-width:601px){.bnav{display:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect,useMemo,createElement:h}=React;
+const FX=46.5;
+const CURR={USD:{sym:"$",toB:v=>v,frB:v=>v},MUR:{sym:"₨",toB:v=>v/FX,frB:v=>v*FX}};
+function useCur(){
+  const[cur,setCur]=useState("USD");
+  const C=CURR[cur];
+  const disp=(v,sh=false)=>{
+    if(typeof v!=="number"||isNaN(v))return"—";
+    const val=C.frB(v),s=C.sym;
+    if(val>=1e6)return`${s}${(val/1e6).toFixed(sh?1:2)}M`;
+    if(val>=1e3)return`${s}${(val/1e3).toFixed(sh?0:1)}K`;
+    return`${s}${Math.round(val).toLocaleString()}`;
+  };
+  return{cur,setCur,disp,toB:C.toB,frB:C.frB,sym:C.sym};
+}
+
+// ── DEBT: compute total outstanding balance after factoring interest & duration ──
+// Returns the present value of remaining payments and a monthly payment amount
+function debtCalc(principal,annualRate,termMonths){
+  if(!principal||principal<=0)return{balance:0,monthlyPmt:0,totalInterest:0};
+  if(!annualRate||annualRate<=0){
+    // zero interest: simple division
+    const mp=termMonths>0?principal/termMonths:principal;
+    return{balance:principal,monthlyPmt:mp,totalInterest:0};
+  }
+  const mr=annualRate/100/12,n=termMonths||60;
+  const mp=principal*(mr*Math.pow(1+mr,n))/(Math.pow(1+mr,n)-1);
+  const total=mp*n,interest=total-principal;
+  return{balance:principal,monthlyPmt:mp,totalInterest:Math.max(0,interest)};
+}
+
+// ── FINANCIAL ENGINE ──────────────────────────────────────────────────────────
+function proj(inp,rate){
+  const{age,gender,income,monthlySpend:ms,savings,savingsRate:sr,retireAge:ra,
+    debtBalance:db=0,debtRate:dr=0,debtTerm:dt=60,
+    retireMonthlyExpenses:rme=0,lifeGoals:lg=[],incomeMode:im="rule4"}=inp;
+  const ai=income*12,le=gender==="male"?75:85,yir=Math.max(1,le-ra);
+  const INF=0.025,IG=0.03,SWR=0.04,ytr=Math.max(1,ra-age),r=rate!==undefined?rate:0.05;
+
+  // Debt: compute monthly payment and effective drag on savings
+  const dbt=debtCalc(db,dr,dt);
+  const debtMonths=Math.min(dt,ytr*12);
+  // Total extra outflow due to debt interest over repayment period (PV basis)
+  const debtInterestDrag=dbt.totalInterest>0?(dbt.totalInterest/ytr):0;
+
+  // Build goal withdrawal map — trips can recur
+  const gw={};
+  (lg||[]).forEach(g=>{
+    const amt=g.amount||0;
+    if(amt<=0)return;
+    if(g.id==="trip"&&g.recurYears>0){
+      // recurring trip: withdraw every recurYears from atAge until retire
+      for(let age2=g.atAge;age2<ra;age2+=g.recurYears){
+        const yr=age2-age;
+        if(yr>0)gw[yr]=(gw[yr]||0)+amt;
+      }
+    } else {
+      if(g.atAge>age&&g.atAge<ra){
+        const yr=g.atAge-age;
+        gw[yr]=(gw[yr]||0)+amt;
+      }
+    }
+  });
+
+  // Net starting savings: deduct outstanding principal (debt reduces net worth)
+  let port=Math.max(0,savings-db);
+  const acc=[];
+  for(let t=0;t<ytr;t++){
+    const curIncome=ai*Math.pow(1+IG,t);
+    const savingAmount=curIncome*(sr/100);
+    // Deduct monthly debt payments from savings capacity during repayment period
+    const monthsThisYear=Math.min(12,Math.max(0,debtMonths-t*12));
+    const debtDragThisYear=dbt.monthlyPmt*monthsThisYear;
+    const effectiveSaving=Math.max(0,savingAmount-debtDragThisYear);
+    port=port*(1+r)+effectiveSaving;
+    if(gw[t])port=Math.max(0,port-gw[t]);
+    acc.push({yr:age+t,val:Math.max(0,port),phase:"grow"});
+  }
+
+  const rp=Math.max(0,port),isp=ms*12*Math.pow(1+INF,ytr);
+  let wd,tp=null,rms=null,rsr=null;
+  if(im==="expenses"){const d=ms*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;}
+  else if(im==="custom"&&rme>0){const d=rme*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;}
+  else{wd=Math.max(isp*0.7,rp*SWR);}
+  if(tp!==null){
+    const PV=Math.max(0,savings-db),mr=r/12,n=ytr*12,gr=Math.pow(1+mr,n),nd=tp-PV*gr;
+    rms=nd>0?(nd*mr)/(gr-1):0;rsr=Math.min(80,Math.max(0,(rms/income)*100));
+  }
+  const maxD=Math.max(40,yir+15);
+  let ro=ra+maxD,dp=rp;const dds=[];
+  for(let y=0;y<=maxD;y++){
+    const w=wd*Math.pow(1+INF,y);dp=dp*(1+r)-w;
+    if(dp<=0){ro=ra+y;break;}
+    if(y<maxD)dds.push({yr:ra+y,val:Math.max(0,dp),phase:"draw"});
+  }
+  const lasts=ro>=le,sur=ro-le,cm=wd>0?rp/wd:0;
+  const sc1=Math.min(30,(sr/20)*30),sc2=Math.min(25,Math.max(0,25-(ms/income)*25));
+  const sc3=Math.min(20,(savings/(ai*3))*20);
+  const rb=tp?Math.min(25,(rp/tp)*25):Math.min(25,(rp/(wd*yir))*25);
+  const health=Math.round(sc1+sc2+sc3+(lasts?rb:rb*0.5));
+  const sp2=Math.min(97,Math.max(5,(lasts?60:25)+(sur>=10?18:sur>=5?10:sur>=0?4:0)+(sr>=20?10:sr>=15?6:sr>=10?3:0)+(cm>=25?9:cm>=18?5:0)));
+  return{retP:rp,retI:rp*SWR,sp:sp2,ro,health,le,yir,r,wd,ytr,lasts,cm,sur,
+    data:[...acc,...dds],tp,rms,rsr,cms:income*(sr/100),isp,inf:Math.pow(1+INF,ytr),
+    debtMonthlyPmt:dbt.monthlyPmt,debtTotalInterest:dbt.totalInterest};
+}
+
+function stress(inp){
+  const t=proj(inp,0.04),l=proj(inp,0.05),b=proj(inp,0.06);
+  return{tough:t,likely:l,best:b,tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
+}
+
+function hhProj(p1,p2,rate=0.05){
+  const INF=0.025,SWR=0.04,r=rate;
+  const r1=proj({...p1,incomeMode:"rule4",lifeGoals:p1.lifeGoals||[]},r);
+  const r2=proj({...p2,incomeMode:"rule4",lifeGoals:[]},r);
+  const hra=Math.max(p1.retireAge,p2.retireAge);
+  const le1=p1.gender==="male"?75:85,le2=p2.gender==="male"?75:85,hle=Math.max(le1,le2);
+  const pot1=r1.retP*Math.pow(1+r,Math.max(0,hra-p1.retireAge));
+  const pot2=r2.retP*Math.pow(1+r,Math.max(0,hra-p2.retireAge));
+  const cp=pot1+pot2,ci=p1.income+p2.income;
+  const ytr=Math.max(1,hra-Math.min(p1.age,p2.age));
+  const isp=p1.monthlySpend*12*Math.pow(1+INF,ytr);
+  const im=p1.incomeMode||"rule4";
+  let wd,tp=null,rms=null;
+  if(im==="expenses"){const d=p1.monthlySpend*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;}
+  else if(im==="custom"&&(p1.retireMonthlyExpenses||0)>0){const d=p1.retireMonthlyExpenses*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;}
+  else{wd=Math.max(isp*0.7,cp*SWR);}
+  if(tp!==null&&cp<tp){const rr=r/12,nn=ytr*12,gr=Math.pow(1+rr,nn),nd=tp-cp;rms=nd>0?(nd*rr)/(gr-1):0;}
+  const yir=Math.max(1,hle-hra),maxD=Math.max(40,yir+15);
+  let ro=hra+maxD,dp=cp;const dds=[];
+  for(let y=0;y<=maxD;y++){
+    const w=wd*Math.pow(1+INF,y);dp=dp*(1+r)-w;
+    if(dp<=0){ro=hra+y;break;}
+    if(y<maxD)dds.push({yr:hra+y,val:Math.max(0,dp),phase:"draw"});
+  }
+  const lasts=ro>=hle,sur=ro-hle,cm=wd>0?cp/wd:0;
+  const gm={};
+  [...r1.data,...r2.data].filter(d=>d.phase==="grow").forEach(d=>{gm[d.yr]=(gm[d.yr]||0)+d.val;});
+  const grow=Object.keys(gm).map(Number).sort((a,b)=>a-b).map(yr=>({yr,val:gm[yr],phase:"grow"}));
+  const avg=(p1.income*p1.savingsRate+p2.income*p2.savingsRate)/ci;
+  const sc1=Math.min(30,(avg/20)*30),sc2=Math.min(25,Math.max(0,25-(p1.monthlySpend/ci)*25));
+  const sc3=Math.min(20,((p1.savings+p2.savings)/((ci*12)*3))*20);
+  const rb=tp?Math.min(25,(cp/tp)*25):Math.min(25,(cp/(wd*yir))*25);
+  const health=Math.round(sc1+sc2+sc3+(lasts?rb:rb*0.5));
+  const sp2=Math.min(97,Math.max(5,(lasts?60:25)+(sur>=10?18:sur>=5?10:sur>=0?4:0)+(avg>=20?10:avg>=15?6:avg>=10?3:0)+(cm>=25?9:cm>=18?5:0)));
+  const inf=Math.pow(1+INF,ytr);
+  const p1s=cp>0?pot1/cp:0.5,p2s=cp>0?pot2/cp:0.5;
+  const tma=wd/12;
+  let pp1=pot1,pp2=pot2;const sLE=Math.min(le1,le2),p1df=le1<=le2,hdd=[];
+  for(let y=0;y<=maxD;y++){
+    const yr=hra+y;
+    if(yr<=sLE){pp1=pp1*(1+r)-wd*p1s*Math.pow(1+INF,y);pp2=pp2*(1+r)-wd*p2s*Math.pow(1+INF,y);}
+    else{const cb=Math.max(0,pp1)+Math.max(0,pp2),nc=cb*(1+r)-wd*Math.pow(1+INF,y);if(p1df){pp1=0;pp2=nc;}else{pp2=0;pp1=nc;}}
+    hdd.push({yr,p1v:Math.max(0,pp1),p2v:Math.max(0,pp2)});
+    if(Math.max(0,pp1)+Math.max(0,pp2)<=0)break;
+  }
+  return{retP:cp,retI:cp*SWR,sp:sp2,ro,health,le:hle,yir,wd,ytr,lasts,cm,sur,
+    data:[...grow,...dds],hdd,tp,rms,p1P:r1.retP,p2P:r2.retP,le1,le2,hra,
+    p1s,p2s,p1mt:tma*p1s/inf,p2mt:tma*p2s/inf,tmt:tma/inf,tma,inf,
+    cms:ci*avg/100,isp};
+}
+function hhStress(p1,p2){
+  const t=hhProj(p1,p2,0.04),l=hhProj(p1,p2,0.05),b=hhProj(p1,p2,0.06);
+  return{tough:t,likely:l,best:b,tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
+}
+function earlyCalc(inp,n,rate=0.05){
+  const target=Math.max(inp.age+2,inp.retireAge-n),ytr=Math.max(1,target-inp.age);
+  const isp=inp.monthlySpend*12*Math.pow(1.025,ytr);
+  const need=Math.max(inp.incomeMode==="expenses"||(inp.incomeMode==="custom"&&inp.retireMonthlyExpenses>0)?((inp.incomeMode==="custom"?inp.retireMonthlyExpenses:inp.monthlySpend)*12*Math.pow(1.025,ytr))/0.04:isp*0.7*25,isp*20);
+  const PV=Math.max(0,inp.savings-(inp.debtBalance||0)),mr=rate/12,n2=ytr*12,gr=Math.pow(1+mr,n2);
+  const mn=Math.max(0,need-PV*gr)>0?((need-PV*gr)*mr)/(gr-1):0;
+  return{targetAge:target,rn:Math.min(80,Math.max(0,(mn/inp.income)*100)),mn,need};
+}
+function hlabel(s){
+  if(s<35)return{l:"Poor",c:"#DC2626"};if(s<55)return{l:"Needs work",c:"#D97706"};
+  if(s<75)return{l:"On track",c:"#16A34A"};return{l:"Strong",c:"#16A34A"};
+}
+function fmtAmt(v,sym){
+  if(v<=0)return"None";
+  if(v>=1e6)return`${sym}${(v/1e6).toFixed(2)}M`;
+  if(v>=1e3)return`${sym}${(v/1e3).toFixed(0)}K`;
+  return`${sym}${Math.round(v).toLocaleString()}`;
+}
+
+// ── SLIDER ────────────────────────────────────────────────────────────────────
+function Slider({label,value,min,max,step=1,fmt,onChange,color="#1A56DB",sub,hint}){
+  const[loc,setLoc]=useState(value);
+  useEffect(()=>setLoc(value),[value]);
+  const p=Math.min(100,Math.max(0,((loc-min)/(max-min))*100));
+  const commit=v=>{const n=+v;setLoc(n);onChange(n);};
+  return h("div",{className:"sl-wrap"},
+    h("div",{className:"sl-hdr"},
+      h("span",{className:"sl-label"},label,hint&&h("span",{className:"sl-hint"},hint)),
+      h("span",{className:"sl-val",style:{color}},fmt(loc))
+    ),
+    sub&&h("div",{className:"sl-sub",style:{color}},sub),
+    h("div",{className:"sl-track-wrap"},
+      h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:`${p}%`,background:color}})),
+      h("div",{className:"sl-thumb",style:{left:`${p}%`,background:color}}),
+      h("input",{type:"range",className:"sl-input",min,max,step,value:loc,
+        onChange:e=>setLoc(+e.target.value),
+        onMouseUp:e=>commit(e.target.value),onTouchEnd:e=>commit(e.target.value),onKeyUp:e=>commit(e.target.value)})
+    )
+  );
+}
+function SavSlider({income,sr,onChange,disp,color}){
+  const[loc,setLoc]=useState(sr);
+  useEffect(()=>setLoc(sr),[sr]);
+  const col=color||(loc>=20?"#16A34A":loc>=10?"#D97706":"#DC2626");
+  const commit=v=>{const n=+v;setLoc(n);onChange(n);};
+  const p=Math.min(100,(loc/50)*100);
+  return h("div",{className:"sl-wrap"},
+    h("div",{className:"sl-hdr"},
+      h("span",{className:"sl-label"},"Savings rate ",h("span",{style:{fontSize:10,color:"#9CA3AF",fontWeight:400}},"% of income")),
+      h("span",{className:"sl-val",style:{color:col}},`${loc}%`)
+    ),
+    h("div",{className:"sl-sub",style:{color:col}},`${disp(income*(loc/100))}/mo · ${loc<10?"aim for 15%+":loc<20?"good — aim for 20%":"excellent ✓"}`),
+    h("div",{className:"sl-track-wrap"},
+      h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:`${p}%`,background:col}})),
+      h("div",{className:"sl-thumb",style:{left:`${p}%`,background:col}}),
+      h("input",{type:"range",className:"sl-input",min:1,max:50,step:1,value:loc,
+        onChange:e=>setLoc(+e.target.value),
+        onMouseUp:e=>commit(e.target.value),onTouchEnd:e=>commit(e.target.value),onKeyUp:e=>commit(e.target.value)})
+    )
+  );
+}
+
+// ── DEBT SECTION ──────────────────────────────────────────────────────────────
+function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym}){
+  const maxDb=cur==="MUR"?50000000:5000000;
+  const stepDb=cur==="MUR"?100000:1000;
+  const dbDisp=frB(db);
+  const dbt=debtCalc(db,dr,dt);
+  const hasDebt=db>0;
+  return h("div",null,
+    h(Slider,{label:`Outstanding debt (${cur})`,value:dbDisp,min:0,max:frB(maxDb),step:frB(stepDb),
+      fmt:v=>v===0?"None":fmtAmt(v,sym),
+      onChange:v=>onDB(toB(v)),color:"#DC2626",hint:"mortgage, loans, credit cards"}),
+    hasDebt&&h("div",{className:"debt-box"},
+      h("div",{style:{fontSize:12,fontWeight:600,color:"#DC2626",marginBottom:10}},"Debt details — used to compute repayment drag"),
+      h("div",{className:"row2"},
+        h("div",null,
+          h("div",{className:"field-lbl"},"Annual interest rate (%)"),
+          h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:dr||"",placeholder:"e.g. 6.5",
+            onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})
+        ),
+        h("div",null,
+          h("div",{className:"field-lbl"},"Remaining term (months)"),
+          h("input",{className:"mini-input",type:"number",min:1,max:360,step:1,value:dt||"",placeholder:"e.g. 240",
+            onChange:e=>onDT(Math.min(360,Math.max(1,parseInt(e.target.value)||60)))}),
+          h("div",{style:{fontSize:10,color:"#9CA3AF",marginTop:3}},dt?`≈ ${Math.round(dt/12*10)/10} years`:"")
+        )
+      ),
+      hasDebt&&(dr>0||dt>0)&&h("div",{className:"debt-summary"},
+        h("div",null,"Monthly payment: ",h("b",{style:{color:"#DC2626"}},`${sym}${Math.round(frB(dbt.monthlyPmt)).toLocaleString()}/mo`)),
+        dr>0&&h("div",null,"Total interest payable: ",h("b",{style:{color:"#D97706"}},fmtAmt(frB(dbt.totalInterest),sym))),
+        h("div",null,"This repayment drag is deducted from your savings capacity year by year.")
+      )
+    )
+  );
+}
+
+// ── CHART ─────────────────────────────────────────────────────────────────────
+function Chart({data,ra,le,hdd}){
+  if(!data||!data.length)return null;
+  const W=600,H=180,P={l:8,r:8,t:14,b:20};
+  const cw=W-P.l-P.r,ch=H-P.t-P.b;
+  const av=[...data.map(d=>d.val)];
+  if(hdd)hdd.forEach(d=>av.push(d.p1v||0,d.p2v||0));
+  const maxV=Math.max(...av,1)*1.12;
+  const ay=[...data.map(d=>d.yr)];
+  if(hdd)hdd.forEach(d=>ay.push(d.yr));
+  const minY=Math.min(...ay),maxY=Math.max(...ay),rng=Math.max(1,maxY-minY);
+  const sx=yr=>P.l+((yr-minY)/rng)*cw;
+  const sy=v=>P.t+ch-(Math.max(0,v)/maxV)*ch;
+  const grow=data.filter(d=>d.phase==="grow");
+  const draw=hdd||data.filter(d=>d.phase==="draw");
+  const tp=pts=>pts.map((d,i)=>`${i?"L":"M"}${sx(d.yr).toFixed(1)},${sy(d.val).toFixed(1)}`).join(" ");
+  const tp1=pts=>pts.map((d,i)=>`${i?"L":"M"}${sx(d.yr).toFixed(1)},${sy(d.p1v||0).toFixed(1)}`).join(" ");
+  const tp2=pts=>pts.map((d,i)=>`${i?"L":"M"}${sx(d.yr).toFixed(1)},${sy(d.p2v||0).toFixed(1)}`).join(" ");
+  const rx=sx(ra),lx=le>=minY&&le<=maxY?sx(le):null;
+  return h("svg",{width:"100%",viewBox:`0 0 ${W} ${H}`,style:{overflow:"visible",display:"block"}},
+    h("defs",null,
+      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#1A56DB",stopOpacity:".14"}),h("stop",{offset:"100%",stopColor:"#1A56DB",stopOpacity:".01"})),
+      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#0D9488",stopOpacity:".12"}),h("stop",{offset:"100%",stopColor:"#0D9488",stopOpacity:".01"})),
+      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#7C3AED",stopOpacity:".1"}),h("stop",{offset:"100%",stopColor:"#7C3AED",stopOpacity:".01"}))
+    ),
+    grow.length>1&&h("path",{d:`${tp(grow)} L${sx(grow[grow.length-1].yr)},${P.t+ch} L${sx(grow[0].yr)},${P.t+ch} Z`,fill:"url(#gg)"}),
+    grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#1A56DB",strokeWidth:"2",strokeLinejoin:"round"}),
+    hdd?[
+      draw.length>1&&h("path",{key:"f1",d:`${tp1(draw)} L${sx(draw[draw.length-1].yr)},${P.t+ch} L${sx(draw[0].yr)},${P.t+ch} Z`,fill:"url(#gd)"}),
+      draw.length>1&&h("path",{key:"f2",d:`${tp2(draw)} L${sx(draw[draw.length-1].yr)},${P.t+ch} L${sx(draw[0].yr)},${P.t+ch} Z`,fill:"url(#gp)"}),
+      draw.length>1&&h("path",{key:"l1",d:tp1(draw),fill:"none",stroke:"#0D9488",strokeWidth:"1.8",strokeDasharray:"6,3"}),
+      draw.length>1&&h("path",{key:"l2",d:tp2(draw),fill:"none",stroke:"#7C3AED",strokeWidth:"1.8",strokeDasharray:"6,3"})
+    ]:[
+      draw.length>1&&h("path",{key:"fd",d:`${tp(draw)} L${sx(draw[draw.length-1].yr)},${P.t+ch} L${sx(draw[0].yr)},${P.t+ch} Z`,fill:"url(#gd)"}),
+      draw.length>1&&h("path",{key:"ld",d:tp(draw),fill:"none",stroke:"#B45309",strokeWidth:"2",strokeDasharray:"6,3"})
+    ],
+    h("line",{x1:rx,y1:P.t,x2:rx,y2:P.t+ch,stroke:"#9CA3AF",strokeWidth:"1",strokeDasharray:"3,3"}),
+    h("text",{x:rx+3,y:P.t+9,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif"},`retire ${ra}`),
+    lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#DC2626",strokeWidth:"1.5",strokeDasharray:"4,3",opacity:".7"}),
+    lx&&h("text",{x:lx+3,y:P.t+9,fill:"#DC2626",fontSize:"8",fontFamily:"sans-serif"},`age ${le}`),
+    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>h("text",{key:yr,x:sx(yr),y:H-3,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr))
+  );
+}
+
+// ── LIFE BAR ──────────────────────────────────────────────────────────────────
+function LifeBar({ra,le,ro}){
+  const end=Math.max(le+10,ro+4),rng=Math.max(1,end-ra);
+  const lp=((le-ra)/rng)*100,rp2=Math.min(100,((Math.min(ro,end)-ra)/rng)*100);
+  const ok=ro>=le;
+  return h("div",{className:"lifebar"},
+    h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:5}},
+      h("span",{style:{fontSize:11,color:"#6B7280"}},`Retire ${ra}`),
+      h("span",{style:{fontSize:11,fontWeight:600,color:ok?"#16A34A":"#DC2626"}},ok?`+${ro-le} yrs beyond life exp.`:`${le-ro} yr shortfall`)
+    ),
+    h("div",{style:{height:6,background:"#E8EAF0",borderRadius:3,position:"relative",overflow:"hidden"}},
+      h("div",{style:{position:"absolute",left:0,top:0,height:"100%",width:`${rp2}%`,background:ok?"#16A34A":"#DC2626",borderRadius:3}}),
+      h("div",{style:{position:"absolute",top:0,left:`${lp}%`,width:2,height:"100%",background:"rgba(255,255,255,.7)"}})
+    ),
+    h("div",{style:{position:"relative",height:14,marginTop:2}},
+      h("div",{style:{position:"absolute",left:`${lp}%`,transform:"translateX(-50%)",fontSize:9,color:"#6B7280",whiteSpace:"nowrap"}},`Life exp. age ${le}`)
+    )
+  );
+}
+
+// ── GOAL TYPES ────────────────────────────────────────────────────────────────
+const GOALS=[
+  {id:"house",icon:"🏠",label:"Buy a house",da:200000,dage:42,recur:false},
+  {id:"car",icon:"🚗",label:"Buy a car",da:30000,dage:40,recur:false},
+  {id:"edu",icon:"🎓",label:"Kids' education",da:50000,dage:45,recur:false},
+  {id:"wed",icon:"💒",label:"Wedding / event",da:25000,dage:38,recur:false},
+  {id:"trip",icon:"✈️",label:"Dream trip",da:20000,dage:45,recur:true},
+  {id:"other",icon:"⭐",label:"Other",da:40000,dage:43,recur:false},
+];
+function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,ra,disp,toB,frB,cur,sym}){
+  const minA=cur==="MUR"?5000:100,maxA=cur==="MUR"?46500000:1000000,stepA=cur==="MUR"?5000:1000;
+  return h("div",null,
+    h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}},
+      GOALS.map(gt=>{
+        const active=goals.some(g=>g.id===gt.id);
+        return h("button",{key:gt.id,className:`goal-pill${active?" on":""}`,onClick:()=>active?onRemove(gt.id):onAdd(gt)},
+          h("span",{style:{fontSize:14}},gt.icon),h("span",null,gt.label)
+        );
+      })
+    ),
+    goals.map(g=>{
+      const isTrip=g.id==="trip";
+      return h("div",{key:g.id,style:{background:"#FFFBEB",border:"1px solid rgba(180,83,9,.18)",borderRadius:10,padding:14,marginBottom:8}},
+        h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
+          h("span",{style:{fontSize:12,fontWeight:600}},`${g.icon} ${g.label}`),
+          h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"#6B7280",cursor:"pointer",fontSize:17}},"×")
+        ),
+        h(Slider,{label:"Cost per trip",value:frB(g.amount),min:minA,max:maxA,step:stepA,fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"#B45309"}),
+        h(Slider,{label:"First trip at age",value:g.atAge,min:ba+1,max:ra-1,fmt:v=>`Age ${v}`,onChange:v=>onUpdate(g.id,"atAge",v),color:"#D97706"}),
+        isTrip&&h("div",{style:{marginTop:4}},
+          h("div",{className:"field-lbl",style:{marginBottom:6}},"Recurring frequency"),
+          h("div",{style:{display:"flex",gap:6,flexWrap:"wrap"}},
+            [{v:0,l:"Once"},{v:2,l:"Every 2 yrs"},{v:3,l:"Every 3 yrs"},{v:5,l:"Every 5 yrs"},{v:10,l:"Every 10 yrs"}].map(opt=>
+              h("button",{key:opt.v,onClick:()=>onUpdate(g.id,"recurYears",opt.v),
+                style:{padding:"5px 10px",borderRadius:6,border:`1px solid ${(g.recurYears||0)===opt.v?"#B45309":"#E8EAF0"}`,background:(g.recurYears||0)===opt.v?"#FFFBEB":"transparent",color:(g.recurYears||0)===opt.v?"#B45309":"#6B7280",fontSize:11,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}},opt.l)
+            )
+          ),
+          (g.recurYears||0)>0&&h("div",{style:{fontSize:11,color:"#B45309",marginTop:6}},
+            `Trips at ages: ${Array.from({length:Math.floor((ra-g.atAge)/g.recurYears)+1},(_,i)=>g.atAge+i*g.recurYears).filter(a=>a<ra).join(", ")} · Total: ${disp(toB(frB(g.amount)*Math.ceil((ra-g.atAge)/g.recurYears)))}`
+          )
+        ),
+        !isTrip&&null
+      );
+    })
+  );
+}
+
+// ── INCOME MODE ───────────────────────────────────────────────────────────────
+function IncomeMode({mode,onChange,ms,ca,onCA,result,disp,toB,frB,cur,sym,isHH}){
+  const p4=result?result.wd/12:0,ytr=result?.ytr||0;
+  const isp=(ms*12*Math.pow(1.025,ytr))/12,pct=isp>0?Math.round(p4/isp*100):0;
+  const minC=cur==="MUR"?5000:100,maxC=cur==="MUR"?1000000:50000,stepC=cur==="MUR"?5000:100;
+  const modes=[
+    {k:"rule4",icon:"📐",label:"4% Rule",sub:"Let pot decide",ac:"#1A56DB",ab:"#EEF3FD"},
+    {k:"expenses",icon:"🏠",label:"Same lifestyle",sub:"Match today",ac:"#B45309",ab:"#FFFBEB"},
+    {k:"custom",icon:"🎯",label:"My target",sub:"Set a number",ac:"#7C3AED",ab:"#F5F3FF"},
+  ];
+  return h("div",null,
+    h("p",{style:{fontSize:12,color:"#6B7280",marginBottom:12,lineHeight:1.6}},`How much monthly income ${isHH?"do you both":"do you"} want in retirement?`),
+    h("div",{className:"imode-wrap"},
+      modes.map(m=>{
+        const on=mode===m.k;
+        return h("button",{key:m.k,className:`imode-btn${on?" on":""}`,
+          style:{borderColor:on?m.ac:"#E8EAF0",background:on?m.ab:"transparent",color:on?m.ac:"#6B7280"},
+          onClick:()=>onChange(m.k)},
+          h("div",{style:{fontSize:16,marginBottom:3}},m.icon),
+          h("div",{style:{fontWeight:600}},m.label),
+          h("div",{style:{fontSize:10,opacity:.7,marginTop:1}},m.sub),
+          on&&m.k==="rule4"&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},`≈${disp(p4)}/mo`),
+          on&&m.k==="expenses"&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},`${disp(ms)}/mo`),
+          on&&m.k==="custom"&&ca>0&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},`${disp(ca)}/mo`)
+        );
+      })
+    ),
+    mode==="rule4"&&h("div",{className:"callout",style:{background:"#EEF3FD",border:"1px solid rgba(26,86,219,.15)"}},
+      h("b",{style:{color:"#1A56DB"}},"4% rule: "),`Withdrawing 4% annually = `,h("b",{style:{color:"#1A56DB"}},`${disp(p4)}/mo`),
+      ms>0&&[" — covering ",h("b",{key:"p",style:{color:pct>=100?"#16A34A":"#D97706"}},`${pct}%`)," of inflation-adjusted expenses."]
+    ),
+    mode==="expenses"&&h("div",{className:"callout",style:{background:"#FFFBEB",border:"1px solid rgba(180,83,9,.15)"}},
+      h("b",{style:{color:"#B45309"}},"Same lifestyle: "),`Target `,h("b",{style:{color:"#B45309"}},`${disp(ms)}/mo`),` today, adjusted 2.5%/yr.`
+    ),
+    mode==="custom"&&h("div",{className:"callout",style:{background:"#F5F3FF",border:"1px solid rgba(124,58,237,.15)"}},
+      h("b",{style:{color:"#7C3AED"}},"Your target:"),
+      h("div",{style:{marginTop:8}},
+        h(Slider,{label:"Monthly retirement income",value:frB(ca||ms),min:minC,max:maxC,step:stepC,
+          fmt:v=>sym+(v>=1e6?(v/1e6).toFixed(2)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo",
+          onChange:v=>onCA(toB(v)),color:"#7C3AED"})
+      )
+    )
+  );
+}
+
+// ── WHAT-IF SECTION ──────────────────────────────────────────────────────────
+function WhatIfSection({scens,res,disp,secL}){
+  const[open,setOpen]=useState(null);
+  const sc=open!=null?scens.find(s=>s.id===open):null;
+  const delta=sc?sc.res.retP-res.retP:0;
+  const deltaM=sc?sc.res.wd/12-res.wd/12:0;
+  return h("div",{style:{marginBottom:14}},
+    h("div",{style:secL},"What-if scenarios"),
+    h("div",{style:{display:"flex",flexDirection:"column",gap:6}},
+      scens.map(s=>h("button",{key:s.id,onClick:()=>setOpen(open===s.id?null:s.id),
+        style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",
+          borderRadius:10,border:`1px solid ${open===s.id?s.bc:"#E8EAF0"}`,
+          background:open===s.id?s.bc+"0a":"#fff",cursor:"pointer",fontFamily:"inherit",
+          textAlign:"left",transition:"all .15s"}},
+        h("div",{style:{display:"flex",alignItems:"center",gap:10,minWidth:0}},
+          h("span",{style:{padding:"2px 8px",borderRadius:100,fontSize:10,fontWeight:600,
+            background:s.bc+"14",color:s.bc,border:`1px solid ${s.bc}33`,flexShrink:0}},s.badge),
+          h("span",{style:{fontSize:13,fontWeight:500,color:"#111827",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},s.q)
+        ),
+        h("span",{style:{fontSize:14,color:"#9CA3AF",flexShrink:0,marginLeft:8}},open===s.id?"▲":"▼")
+      ))
+    ),
+    sc&&h("div",{style:{marginTop:6,background:"#F3F4F6",borderRadius:10,padding:16,border:`1px solid ${sc.bc}22`}},
+      h("div",{style:{fontSize:12,color:"#6B7280",marginBottom:12,lineHeight:1.6}},sc.hook),
+      h("div",{className:"wi-nums",style:{marginBottom:10}},
+        [["Pot",disp(sc.res.retP,true),sc.bc],["Monthly",disp(sc.res.wd/12,true),"#6B7280"],
+         ["vs base",(delta>=0?"+":"")+disp(delta,true),delta>=0?"#16A34A":"#DC2626"],
+         ["Monthly Δ",(deltaM>=0?"+":"")+disp(deltaM,true),deltaM>=0?"#16A34A":"#DC2626"]].map(([l,v,c])=>
+          h("div",{key:l,className:"wi-num"},h("div",{className:"wi-num-lbl"},l),h("div",{className:"wi-num-val",style:{color:c}},v))
+        )
+      ),
+      h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}},
+        h("div",{style:{fontSize:11,color:sc.res.lasts?"#16A34A":"#DC2626",fontWeight:500}},
+          sc.res.lasts?`✓ Funds last to age ${sc.res.le} (+${sc.res.sur} yrs)`:`⚠ Runs out at age ${sc.res.ro} (${sc.res.le-sc.res.ro} yr shortfall)`
+        ),
+        h("div",{style:{display:"flex",gap:12,fontSize:11,color:"#6B7280"}},
+          h("span",null,"Health: ",h("b",{style:{color:hlabel(sc.res.health).c}},`${sc.res.health}/100`)),
+          h("span",null,"Success: ",h("b",null,`${sc.res.sp}%`))
+        )
+      )
+    )
+  );
+}
+
+// ── HEALTH RING ───────────────────────────────────────────────────────────────
+function Ring({score,color}){
+  const r=22,circ=2*Math.PI*r,dash=circ*(Math.min(100,Math.max(0,score))/100);
+  return h("div",{style:{position:"relative",width:56,height:56,flexShrink:0}},
+    h("svg",{width:56,height:56,viewBox:"0 0 56 56",style:{transform:"rotate(-90deg)"}},
+      h("circle",{cx:28,cy:28,r,fill:"none",stroke:"#E8EAF0",strokeWidth:4}),
+      h("circle",{cx:28,cy:28,r,fill:"none",stroke:color,strokeWidth:4,strokeDasharray:`${dash} ${circ-dash}`,strokeLinecap:"round"})
+    ),
+    h("div",{style:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color}},score)
+  );
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function Modal({result,onClose,disp,hhMode}){
+  const[name,setName]=useState(""),[email,setEmail]=useState(""),[phone,setPhone]=useState("");
+  const[done,setDone]=useState(false),[loading,setLoading]=useState(false);
+  const ok=result.lasts,hl=hlabel(result.health),valid=name.trim()&&(email.trim()||phone.trim());
+  const submit=async()=>{
+    if(!valid)return;setLoading(true);
+    await new Promise(r=>setTimeout(r,600));
+    setDone(true);setLoading(false);
+    try{await window.storage.set(`lead:${Date.now()}`,JSON.stringify({name,email,phone,health:result.health,ts:new Date().toISOString()}));}catch(e){}
+  };
+  if(done)return h("div",{className:"modal-ov",onClick:onClose},
+    h("div",{className:"modal-box",onClick:e=>e.stopPropagation(),style:{textAlign:"center"}},
+      h("div",{style:{fontSize:40,marginBottom:14}},"✅"),
+      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8}},"We'll be in touch soon."),
+      h("p",{style:{fontSize:13,color:"#6B7280",lineHeight:1.7,marginBottom:20}},"A consultant will reach out personally."),
+      h("button",{className:"cta",onClick:onClose},"Close")
+    )
+  );
+  return h("div",{className:"modal-ov",onClick:onClose},
+    h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
+      h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"#6B7280",fontSize:20,cursor:"pointer"}},"×"),
+      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:4}},"Get your personalised plan"),
+      h("p",{style:{fontSize:13,color:"#6B7280",marginBottom:16,lineHeight:1.6}},"Leave your details and a consultant will reach out."),
+      h("div",{style:{background:ok?"#F0FDF4":"#FEF2F2",border:`1px solid ${ok?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:10,padding:"10px 14px",marginBottom:18,fontSize:12,color:"#6B7280",lineHeight:1.6}},
+        h("b",{style:{color:ok?"#16A34A":"#DC2626"}},ok?"On track":"Action needed"),` · Health: `,h("b",{style:{color:hl.c}},`${result.health}/100 · ${hl.l}`)
+      ),
+      h("div",{style:{display:"flex",flexDirection:"column",gap:10,marginBottom:18}},
+        [["Name *","text",name,setName,"Full name"],["Email","email",email,setEmail,"you@example.com"],["Phone","tel",phone,setPhone,"+230 5XXX XXXX"]].map(([l,t,v,s,ph])=>
+          h("div",{key:l},h("div",{style:{fontSize:11,color:"#6B7280",marginBottom:4,fontWeight:500}},l),h("input",{type:t,value:v,onChange:e=>s(e.target.value),placeholder:ph,className:"modal-input"}))
+        ),
+        h("p",{style:{fontSize:11,color:"#9CA3AF",fontStyle:"italic",margin:0}},"* Name required. Email or phone (or both).")
+      ),
+      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},loading?"Sending…":"Book a free call →")
+    )
+  );
+}
+
+// ── HERO ──────────────────────────────────────────────────────────────────────
+function Hero({onStart}){
+  return h("div",{className:"hero"},
+    h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup · 3 minutes"),
+    h("h1",{className:"hero-title"},"Will your money last",h("br")," ",h("span",{style:{color:"#1A56DB"}},"as long as you do?")),
+    h("p",{className:"hero-sub"},"Most people have no idea. In 3 minutes you'll know exactly where you stand — and what it takes to retire on your own terms."),
+    h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
+    h("p",{className:"hero-micro"},"No email required. Takes 3 minutes."),
+    h("div",{className:"hero-feats"},
+      [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored server-side"]].map(([icon,title,sub])=>
+        h("div",{key:title,className:"hero-feat"},h("div",{className:"hero-feat-icon"},icon),h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2}},title),h("div",{style:{fontSize:11,color:"#6B7280",lineHeight:1.4}},sub))
+      )
+    )
+  );
+}
+function Tog({opts,val,onChange}){
+  return h("div",{className:"tog"},opts.map(([k,lbl,icon])=>h("button",{key:k,className:`tog-btn${val===k?" on":""}`,onClick:()=>onChange(k)},icon&&h("span",{style:{marginRight:4,fontSize:13}},icon),lbl)));
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
+function App(){
+  const[hero,setHero]=useState(true),[tab,setTab]=useState("plan"),[modal,setModal]=useState(false),[goalsOpen,setGoalsOpen]=useState(false);
+  const{cur,setCur,disp,toB,frB,sym}=useCur();
+  const[hh,setHH]=useState(false),[sf,setSF]=useState("likely");
+  const DEF={age:35,gender:"female",income:7500,monthlySpend:3200,savings:45000,savingsRate:12,retireAge:65,
+    debtBalance:0,debtRate:0,debtTerm:60,incomeMode:"rule4",retireMonthlyExpenses:0,lifeGoals:[]};
+  const PDEF={age:33,gender:"male",income:6250,savings:30000,savingsRate:10,retireAge:65,debtBalance:0,debtRate:0,debtTerm:60};
+  const[base,setBase]=useState(DEF),[partner,setPartner]=useState(PDEF),[st,setST]=useState(null);
+  const sr={tough:0.04,likely:0.05,best:0.06}[sf]||0.05;
+  const res=useMemo(()=>hh?hhProj(base,partner,sr):proj(base,sr),[JSON.stringify(base),JSON.stringify(partner),hh,sr]);
+  useEffect(()=>setST(hh?hhStress(base,partner):stress(base)),[JSON.stringify(base),JSON.stringify(partner),hh]);
+  const sB=(k,v)=>setBase(p=>({...p,[k]:v}));
+  const sP=(k,v)=>setPartner(p=>({...p,[k]:v}));
+  const addG=gt=>sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.da,atAge:Math.min(gt.dage,base.retireAge-1),recurYears:gt.id==="trip"?3:0}]);
+  const remG=id=>sB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
+  const updG=(id,k,v)=>sB("lifeGoals",(base.lifeGoals||[]).map(g=>g.id===id?{...g,[k]:v}:g));
+  const hl=res?hlabel(res.health):{l:"",c:"#1A56DB"};
+
+  // Slider params
+  const iD=frB(base.income),spD=frB(base.monthlySpend),svD=frB(base.savings);
+  const minI=cur==="MUR"?8000:150,maxI=cur==="MUR"?1000000:100000,stepI=cur==="MUR"?5000:500;
+  const minSp=cur==="MUR"?5000:100,maxSp=cur==="MUR"?250000:25000,stepSp=cur==="MUR"?2500:100;
+  const maxSv=cur==="MUR"?100000000:10000000,stepSv=cur==="MUR"?100000:10000;
+  const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
+  const fmtS=v=>v===0?"None":fmtAmt(v,sym);
+  const fmtSp=v=>fmtAmt(v,sym)+"/mo";
+
+  const scens=useMemo(()=>{
+    if(!res)return[];
+    const my=hh?"our":"my";
+    const e5=earlyCalc(base,5,sr);
+    const er=hh?hhProj({...base,retireAge:e5.targetAge},partner,sr):proj({...base,retireAge:e5.targetAge},sr);
+    const a20=hh?hhProj({...base,savingsRate:20},partner,sr):proj({...base,savingsRate:20},sr);
+    const ih=hh?hhProj(base,partner,Math.max(0.01,sr-0.025)):proj(base,Math.max(0.01,sr-0.025));
+    const hr=hh?hhProj(base,partner,0.075):proj(base,0.075);
+    return[
+      {id:"e",q:`Retire at ${e5.targetAge} — 5 years earlier?`,hook:e5.rn<=base.savingsRate?"Already saving enough.":` Need ${e5.rn.toFixed(1)}% savings rate.`,res:er,badge:e5.rn<=base.savingsRate?"Achievable":"Stretch goal",bc:e5.rn<=base.savingsRate?"#16A34A":"#D97706"},
+      {id:"s",q:`Save 20% of ${my} income?`,hook:`Adds ${disp(Math.abs(a20.retP-res.retP))} to ${my} pot.`,res:a20,badge:"Easy win",bc:"#1A56DB"},
+      {id:"i",q:"Inflation rises to 5%?",hook:`Real return erodes — pot worth ${disp(ih.retP)} in real terms.`,res:ih,badge:"Risk",bc:"#DC2626"},
+      {id:"r",q:"Investments return 7.5%?",hook:`${disp(Math.abs(hr.retP-res.retP))} more than base case.`,res:hr,badge:"Upside",bc:"#16A34A"},
+    ];
+  },[JSON.stringify(base),JSON.stringify(partner),hh,sr,JSON.stringify(res)]);
+
+  function verdict(res,base,disp,isHH){
+    const sf2=res.le-res.ro,tmo=base.incomeMode==="expenses"?base.monthlySpend:base.incomeMode==="custom"&&base.retireMonthlyExpenses>0?base.retireMonthlyExpenses:0;
+    const pmo=res.wd/12,gap=tmo>0?tmo-pmo:0;
+    if(!res.lasts)return{c:"#DC2626",icon:"⚠",h:sf2>=15?`Funds run out ${sf2} years too soon.`:`${sf2}-year shortfall. Fixable — but not on autopilot.`,s:`${isHH?"Combined pot":"Your pot"} of ${disp(res.retP)} exhausts before life exp. (age ${res.le}).`,a:isHH?"Raise combined savings rate or stagger retirement dates.":`Save ${Math.min(50,base.savingsRate+8)}% instead of ${base.savingsRate}% and retire at ${Math.min(80,base.retireAge+3)}.`};
+    if(res.sur<5)return{c:"#D97706",icon:"!",h:"On track — but the margin is thin.",s:`Funds last ${res.sur} yrs past age ${res.le}.`,a:"A 3% savings bump now buys real breathing room."};
+    if(tmo>0&&gap>0)return{c:"#D97706",icon:"!",h:`${disp(gap)}/mo short of your retirement goal.`,s:`You want ${disp(tmo)}/mo. Your pot delivers ${disp(pmo)}/mo.`,a:`Saving ${res.rsr?.toFixed(1)||"more"}% closes the gap.`};
+    return{c:"#16A34A",icon:"✓",h:isHH?`Household plan is solid — ${res.sur} years beyond life exp.`:`Solid. Funds last ${res.sur} years past your life exp.`,s:`${isHH?"Combined pot":"Pot"}: ${disp(res.retP)}. Monthly income: ${disp(pmo)}/mo.`,a:isHH?"Focus on tax efficiency and estate planning.":"Focus shifts to tax efficiency and protecting what you've built."};
+  }
+  const vd=res?verdict(res,base,disp,hh):null;
+  const SD=[
+    {k:"tough",lbl:"Worst case",rate:"4%",c:"#DC2626",pot:st?.tP||0,mo:st?.tM||0},
+    {k:"likely",lbl:"Base case",rate:"5%",c:"#D97706",pot:st?.lP||0,mo:st?.lM||0},
+    {k:"best",lbl:"Best case",rate:"6%",c:"#16A34A",pot:st?.bP||0,mo:st?.bM||0},
+  ];
+  const secL={fontSize:11,fontWeight:600,color:"#6B7280",textTransform:"uppercase",letterSpacing:".08em",marginBottom:10};
+  const cardS={background:"#fff",border:"1px solid #E8EAF0",borderRadius:16,padding:20,marginBottom:12};
+  const ctaS={width:"100%",padding:14,borderRadius:8,background:"#1A56DB",border:"none",color:"#fff",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"};
+
+  const GChips=({val,onChange,ac})=>h("div",{style:{marginBottom:14}},
+    h("div",{style:secL},"Biological sex"),
+    h("div",{className:"g-chips"},
+      [["female","♀ Female"],["male","♂ Male"]].map(([g,l])=>
+        h("button",{key:g,className:"g-chip",style:{borderColor:val===g?ac:"#E8EAF0",background:val===g?ac+"15":"transparent",color:val===g?ac:"#6B7280"},onClick:()=>onChange(g)},l)
+      )
+    )
+  );
+
+  const PersonCard=({card,setFn,col,label,sub,num})=>h("div",{className:`person-card ${num===1?"p1":"p2"}`},
+    h("div",{className:"person-hdr"},
+      h("div",{className:"avatar",style:{background:col+"18",color:col}},num),
+      h("div",null,h("div",{style:{fontSize:13,fontWeight:600}},label),h("div",{style:{fontSize:11,color:"#6B7280"}},sub))
+    ),
+    h(Slider,{label:"Age",value:card.age,min:18,max:70,fmt:v=>`${v} yrs`,onChange:v=>setFn("age",v),color:col}),
+    h(GChips,{val:card.gender,onChange:g=>setFn("gender",g),ac:col}),
+    h(Slider,{label:`Income (${cur})`,value:frB(card.income),min:frB(150),max:frB(maxI),step:frB(stepI),fmt:fmtI,onChange:v=>setFn("income",toB(v)),color:col}),
+    h(Slider,{label:`Savings (${cur})`,value:frB(card.savings),min:0,max:frB(maxSv),step:frB(stepSv),fmt:fmtS,onChange:v=>setFn("savings",toB(v)),color:col}),
+    h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:col}),
+    h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,fmt:v=>`Age ${v}`,onChange:v=>setFn("retireAge",v),color:"#B45309"}),
+    h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||60,
+      onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),
+      disp,frB,toB,cur,sym})
+  );
+
+  if(hero)return h(Hero,{onStart:()=>setHero(false)});
+
+  return h("div",{style:{minHeight:"100vh",background:"#F7F8FA"}},
+    modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp,hhMode:hh}),
+
+    h("header",{className:"hdr"},
+      h("div",{className:"wrap hdr-inner"},
+        h("button",{className:"logo-btn",onClick:()=>setHero(true)},
+          h("div",{className:"logo-mark"},"A"),
+          h("div",null,h("div",{className:"logo-name"},"ARK Financial Planners"),h("div",{className:"logo-sub"},"Retirement Planning"))
+        ),
+        h("div",{className:"hdr-right"},
+          h(Tog,{opts:[["USD","USD $"],["MUR","MUR ₨"]],val:cur,onChange:setCur}),
+          h("div",{className:"desktop-only"},h(Tog,{opts:[["plan","Plan"],["results","Results"]],val:tab,onChange:setTab}))
+        )
+      )
+    ),
+
+    h("nav",{className:"bnav"},
+      [["plan","Plan",'M4 6h16M4 12h16M4 18h16'],["results","Results",'M22 12h-4l-3 9L9 3l-3 9H2']].map(([id,lbl,d])=>
+        h("button",{key:id,className:`bnav-btn${tab===id?" on":""}`,onClick:()=>setTab(id)},
+          h("svg",{className:"bnav-icon",viewBox:"0 0 24 24"},h("path",{d})),h("span",null,lbl)
+        )
+      )
+    ),
+
+    h("div",{className:"wrap",style:{paddingTop:24,paddingBottom:48}},
+
+      tab==="plan"&&h("div",{className:"fade"},
+        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:4}},hh?"Your household plan":"Where do you stand?"),
+        h("p",{style:{fontSize:13,color:"#6B7280",marginBottom:20}},"Results update as you move the sliders."),
+
+        h("div",{style:{marginBottom:16}},
+          h("div",{style:secL},"Planning for"),
+          h("div",{className:"mode-tog"},
+            [["solo","👤 Just me",false],["hh","👫 Me & partner",true]].map(([k,lbl,isHH])=>
+              h("button",{key:k,className:`mode-btn${hh===isHH?" on":""}`,onClick:()=>setHH(isHH)},lbl)
+            )
+          ),
+          hh&&h("div",{style:{fontSize:12,color:"#6B7280",padding:"8px 12px",background:"#EEF3FD",borderRadius:8,border:"1px solid rgba(26,86,219,.15)",marginBottom:8}},"Shared expenses & goals entered once. Each partner has their own income, savings, debt & target date.")
+        ),
+
+        hh&&h("div",{style:cardS},
+          h("div",{style:secL},"Shared household finances"),
+          h(Slider,{label:`Monthly expenses (${cur})`,value:spD,min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"#D97706",hint:"rent, food, bills…"}),
+          h("div",{style:{borderTop:"1px solid #E8EAF0",paddingTop:14,marginTop:4}},
+            h("button",{className:`goals-tog${(base.lifeGoals||[]).length>0?" has":""}`,onClick:()=>setGoalsOpen(p=>!p)},
+              h("span",null,(base.lifeGoals||[]).length>0?`${(base.lifeGoals||[]).length} shared life goal${(base.lifeGoals||[]).length>1?"s":""}  — tap to edit`:"+ Add shared life goals"),
+              h("span",null,goalsOpen?"▲":"▼")
+            ),
+            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:Math.min(base.age,partner.age),ra:Math.min(base.retireAge,partner.retireAge),disp,toB,frB,cur,sym}))
+          )
+        ),
+
+        hh?h("div",null,
+          h("div",{style:secL},"Individual finances"),
+          h("div",{className:"person-pair"},
+            h(PersonCard,{card:base,setFn:sB,col:"#1A56DB",label:"You",sub:"income, savings & debt",num:1}),
+            h(PersonCard,{card:partner,setFn:sP,col:"#7C3AED",label:"Partner",sub:"income, savings & debt",num:2})
+          ),
+          res&&res.p1P!=null&&h("div",{className:"hh-snap"},
+            h("div",{style:{...secL,marginBottom:8}},"Projected pots"),
+            h("div",{className:"hh-snap-row"},
+              [["Your pot ("+base.retireAge+")",res.p1P,"#1A56DB"],["Partner ("+partner.retireAge+")",res.p2P,"#7C3AED"],["Combined",res.retP,"#16A34A"]].map(([l,v,c])=>
+                h("div",{key:l,className:"hh-snap-item"},
+                  h("div",{style:{fontSize:9,color:"#6B7280",textTransform:"uppercase",letterSpacing:".06em",marginBottom:2}},l),
+                  h("div",{style:{fontSize:14,fontWeight:600,color:c}},disp(v,true))
+                )
+              )
+            )
+          )
+        ):h("div",{style:cardS},
+          h(Slider,{label:"Your age",value:base.age,min:18,max:70,fmt:v=>`${v} years`,onChange:v=>sB("age",v),color:"#1A56DB"}),
+          h(GChips,{val:base.gender,onChange:g=>sB("gender",g),ac:"#1A56DB"}),
+          h(Slider,{label:`Monthly income (${cur})`,value:iD,min:frB(150),max:frB(maxI),step:frB(stepI),fmt:fmtI,onChange:v=>sB("income",toB(v)),color:"#1A56DB",hint:"gross"}),
+          h(Slider,{label:`Monthly spending (${cur})`,value:spD,min:frB(minSp),max:frB(maxSp),step:frB(stepSp),fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"#D97706",hint:"all living costs"}),
+          h(Slider,{label:`Savings to date (${cur})`,value:svD,min:0,max:frB(maxSv),step:frB(stepSv),fmt:fmtS,onChange:v=>sB("savings",toB(v)),color:"#1A56DB",hint:"cash + investments"}),
+          h(SavSlider,{income:base.income,sr:base.savingsRate,onChange:v=>sB("savingsRate",v),disp}),
+          h(Slider,{label:"Target retirement age",value:base.retireAge,min:Math.max(base.age+2,40),max:80,fmt:v=>`Age ${v} · ${v-base.age} yrs away`,onChange:v=>sB("retireAge",v),color:"#B45309"}),
+          h(DebtSection,{db:base.debtBalance||0,dr:base.debtRate||0,dt:base.debtTerm||60,
+            onDB:v=>sB("debtBalance",v),onDR:v=>sB("debtRate",v),onDT:v=>sB("debtTerm",v),
+            disp,frB,toB,cur,sym})
+        ),
+
+        !hh&&h("div",{style:{marginBottom:12}},
+          h("button",{className:`goals-tog${(base.lifeGoals||[]).length>0?" has":""}`,onClick:()=>setGoalsOpen(p=>!p)},
+            h("span",null,(base.lifeGoals||[]).length>0?`${(base.lifeGoals||[]).length} life goal${(base.lifeGoals||[]).length>1?"s":""} added`:"+ Add life goals (house, car, trips…)"),
+            h("span",null,goalsOpen?"▲":"▼")
+          ),
+          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:base.age,ra:base.retireAge,disp,toB,frB,cur,sym}))
+        ),
+
+        res&&vd&&h("div",{className:"teaser",onClick:()=>setTab("results")},
+          h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
+            h("span",{style:{fontSize:11,fontWeight:600,color:"#1A56DB",textTransform:"uppercase",letterSpacing:".07em"}},"Your snapshot"),
+            h("span",{style:{fontSize:11,color:"#1A56DB"}},"Full results →")
+          ),
+          h("div",{style:{display:"flex",alignItems:"center",gap:14}},
+            h(Ring,{score:res.health,color:hl.c}),
+            h("div",null,
+              h("div",{style:{fontSize:13,fontWeight:600,color:vd.c,marginBottom:2}},`${vd.icon} ${vd.h}`),
+              h("div",{style:{fontSize:11,color:"#6B7280"}},`Showing ${sf==="best"?"best case 6%":sf==="tough"?"worst case 4%":"base case 5%"} · adjust on Results page`)
+            )
+          )
+        ),
+        h("button",{style:ctaS,onClick:()=>setTab("results")},hh?"See our full retirement picture →":"See my full retirement picture →")
+      ),
+
+      tab==="results"&&res&&h("div",{className:"fade"},
+        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16}},hh?"Household results":"Your results"),
+
+        h("div",{style:cardS},h(IncomeMode,{mode:base.incomeMode||"rule4",onChange:m=>sB("incomeMode",m),ms:base.monthlySpend,ca:base.retireMonthlyExpenses||0,onCA:v=>sB("retireMonthlyExpenses",v),result:res,disp,toB,frB,cur,sym,isHH:hh})),
+
+        st&&h("div",{style:{marginBottom:14}},
+          h("div",{style:secL},"Return scenarios"),
+          h("div",{className:"scen-grid"},
+            SD.map(sc=>h("button",{key:sc.k,className:"scen-btn",
+              style:{borderColor:sf===sc.k?sc.c:"#E8EAF0",borderWidth:sf===sc.k?2:1,background:sf===sc.k?sc.c+"10":"#fff"},
+              onClick:()=>setSF(sc.k)},
+              h("div",{style:{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",color:sc.c,marginBottom:3}},sc.lbl),
+              h("div",{style:{fontSize:17,fontWeight:600,color:sc.c,letterSpacing:"-.4px",lineHeight:1.2,marginBottom:2}},disp(sc.pot,true)),
+              h("div",{style:{fontSize:10,color:"#6B7280",marginBottom:6}},sc.rate+" return"),
+              h("div",{style:{borderTop:"1px solid #E8EAF0",paddingTop:6}},h("div",{style:{fontSize:13,fontWeight:600,color:"#6B7280"}},disp(sc.mo)),h("div",{style:{fontSize:10,color:"#6B7280"}},"/mo at retirement"))
+            ))
+          )
+        ),
+
+        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:res.lasts?"#F0FDF4":"#FEF2F2",border:`1px solid ${res.lasts?"rgba(22,163,74,.2)":"rgba(220,38,38,.2)"}`,borderRadius:8,marginBottom:10}},
+          h("span",{style:{fontSize:13,fontWeight:600,color:res.lasts?"#16A34A":"#DC2626"}},res.lasts?`✓ Funds last to age ${res.le} — ${res.sur} yrs to spare`:`⚠ Runs out at age ${res.ro} — ${res.le-res.ro} yrs short`)
+        ),
+
+        hh&&res.p1P!=null&&h("div",{style:{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}},
+          [["👤 You",res.p1P,base.retireAge,"#1A56DB"],["👤 Partner",res.p2P,partner.retireAge,"#7C3AED"]].map(([l,v,a,c])=>
+            h("div",{key:l,style:{flex:1,padding:"8px 12px",background:"#F3F4F6",borderRadius:8,border:`1px solid ${c}22`}},
+              h("div",{style:{fontSize:10,color:"#6B7280",marginBottom:1}},`${l} — retires age ${a}`),
+              h("div",{style:{fontSize:15,fontWeight:600,color:c}},disp(v))
+            )
+          )
+        ),
+
+        h("div",{style:cardS},
+          h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+            h("span",{style:{fontSize:11,fontWeight:600,color:"#6B7280",textTransform:"uppercase",letterSpacing:".07em"}},"Your money over time"),
+            h("span",{style:{fontSize:10,color:SD.find(s=>s.k===sf)?.c,fontWeight:600}},SD.find(s=>s.k===sf)?.lbl+" · "+SD.find(s=>s.k===sf)?.rate)
+          ),
+          h(Chart,{data:res.data,ra:hh?res.hra:base.retireAge,le:res.le,hdd:hh?res.hdd:null}),
+          h(LifeBar,{ra:hh?res.hra:base.retireAge,le:res.le,ro:res.ro})
+        ),
+
+        hh&&res.p1mt!=null&&h("div",{style:{marginBottom:14}},
+          h("div",{style:secL},"Monthly income at retirement"),
+          h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
+            [{l:"👤 You",c:"#1A56DB",mo:res.wd/12*res.p1s,today:res.p1mt,pct:Math.round(res.p1s*100)},
+             {l:"👤 Partner",c:"#7C3AED",mo:res.wd/12*res.p2s,today:res.p2mt,pct:Math.round(res.p2s*100)}].map(p=>
+              h("div",{key:p.l,style:{background:"#fff",border:`1px solid ${p.c}28`,borderRadius:12,padding:"14px 16px"}},
+                h("div",{style:{fontSize:10,color:p.c,textTransform:"uppercase",letterSpacing:".07em",fontWeight:600,marginBottom:5}},`${p.l} · ${p.pct}%`),
+                h("div",{style:{fontSize:20,fontWeight:600,color:p.c,letterSpacing:"-.5px",lineHeight:1,marginBottom:2}},disp(p.mo),h("span",{style:{fontSize:11,color:"#6B7280",fontWeight:400}},"/mo")),
+                h("div",{style:{fontSize:11,color:"#6B7280",marginBottom:8}},`≈ ${disp(p.today)}/mo today`),
+                h("div",{style:{height:3,background:"#E8EAF0",borderRadius:2}},h("div",{style:{height:"100%",width:`${p.pct}%`,background:p.c,borderRadius:2}}))
+              )
+            )
+          )
+        ),
+
+        // Debt impact summary
+        (base.debtBalance>0||(hh&&partner.debtBalance>0))&&h("div",{style:{background:"#FEF2F2",border:"1px solid rgba(220,38,38,.15)",borderRadius:10,padding:"12px 14px",marginBottom:14,fontSize:12,color:"#6B7280",lineHeight:1.8}},
+          h("div",{style:{fontWeight:600,color:"#DC2626",marginBottom:4}},"Debt impact on your plan"),
+          base.debtBalance>0&&h("div",null,"Your debt: ",h("b",{style:{color:"#DC2626"}},disp(base.debtBalance)),` @ ${base.debtRate||0}% / ${base.debtTerm||60} months → `,h("b",null,`${sym}${Math.round(frB(res.debtMonthlyPmt||0)).toLocaleString()}/mo repayment`)),
+          hh&&partner.debtBalance>0&&h("div",null,"Partner's debt: ",h("b",{style:{color:"#DC2626"}},disp(partner.debtBalance)),` @ ${partner.debtRate||0}% / ${partner.debtTerm||60} months`),
+          h("div",{style:{marginTop:4,fontSize:11,color:"#9CA3AF"}},"Repayments are deducted from savings each year until debt is cleared.")
+        ),
+
+        h("div",{className:"stat-grid"},
+          [["Health score",`${res.health}/100`,hl.l,hl.c],["Success probability",`${res.sp}%`,"funds last to life exp.",res.sp>=75?"#16A34A":res.sp>=55?"#D97706":"#DC2626"],
+           ["Coverage",`${res.cm.toFixed(1)}×`,"annual spending",res.cm>=22?"#16A34A":res.cm>=16?"#D97706":"#DC2626"],["Monthly income",disp(res.wd/12),"at retirement","#111827"]].map(([l,v,s,c])=>
+            h("div",{key:l,className:"stat-box"},h("div",{className:"stat-lbl"},l),h("div",{className:"stat-val",style:{color:c}},v),h("div",{className:"stat-sub"},s))
+          )
+        ),
+
+        h(WhatIfSection,{scens,res,disp,secL}),
+
+        vd&&h("div",{className:"verdict",style:{background:vd.c+"0d",border:`1px solid ${vd.c}30`}},
+          h("div",{style:{fontSize:14,fontWeight:600,color:vd.c,marginBottom:4}},`${vd.icon} ${vd.h}`),
+          h("div",{style:{fontSize:13,color:"#6B7280",lineHeight:1.6,marginBottom:5}},vd.s),
+          h("div",{style:{fontSize:12,fontStyle:"italic",color:"#6B7280"}},`→ ${vd.a}`)
+        ),
+        h("button",{style:ctaS,onClick:()=>setModal(true)},"Get a personalised plan →")
+      )
+    ),
+
+    h("footer",{className:"footer"},
+      h("div",{className:"wrap footer-inner"},
+        h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+          h("div",{className:"logo-mark",style:{width:24,height:24,borderRadius:7,fontSize:12}},"A"),
+          h("span",{style:{fontSize:13,fontWeight:600}},"ARK Financial Planners"),
+          h("span",{style:{fontSize:11,color:"#6B7280",marginLeft:4}},`1 USD = ${FX} MUR`)
+        ),
+        h("div",{style:{fontSize:11,color:"#9CA3AF",maxWidth:380,lineHeight:1.55}},"For educational purposes only. Not financial advice. Consult a qualified financial consultant before making decisions.")
+      )
+    )
+  );
+}
+ReactDOM.createRoot(document.getElementById("app")).render(React.createElement(App));
+</script>
+</body>
+</html>
