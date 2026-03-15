@@ -136,6 +136,7 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 <div id="app"></div>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const {useState,useEffect,useMemo,createElement:h}=React;
 const FX=46.5;
@@ -743,8 +744,9 @@ function Ring({score,color}){
 /* ── PDF GENERATOR ── */
 function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
   try{
-    const{jsPDF}=window.jspdf;
-    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+    const jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
+    if(!jsPDFLib){console.error("jsPDF not found");return false;}
+    const doc=new jsPDFLib({orientation:"portrait",unit:"mm",format:"a4"});
     const W=210,M=18,COL=W-M*2;
     let y=0;
 
@@ -814,7 +816,7 @@ function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
     // ── Health snapshot ──
     section("Financial Health Snapshot");
     const hl=hlabel(result.health);
-    const hCol=hl.c==="var(--ok)"?[22,163,74]:hl.c==="var(--warn)"?[217,119,6]:[220,38,38];
+    const hCol=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
     row("Health score",result.health+"/100 — "+hl.l,hCol);
     row("Success probability",result.sp+"%",result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]);
     row("Coverage ratio",result.cm.toFixed(1)+"× annual spending");
