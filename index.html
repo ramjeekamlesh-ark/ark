@@ -393,7 +393,7 @@ function SavSlider({income,sr,onChange,disp,color}){
   const trackW=92,thumbL=4+p*trackW/100;
   return h("div",{className:"sl-wrap"},
     h("div",{className:"sl-hdr"},
-      h("span",{className:"sl-label"},"Savings rate ",h("span",{style:{fontSize:10,color:"var(--hint)",fontWeight:400}},"% of income")),
+      h("span",{className:"sl-label"},"Savings rate ",h("span",{style:{fontSize:10,color:"var(--hint)",fontWeight:400}},"% of monthly gross income")),
       h("span",{className:"sl-val",style:{color:col}},loc+"%")
     ),
     h("div",{className:"sl-sub",style:{color:col}},disp(income*(loc/100))+"/mo · "+(loc<10?"aim for 15%+":loc<20?"good — aim for 20%":"excellent ✓")),
@@ -436,10 +436,7 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDbDisp,ste
             }})
         )
       ),
-      hasDebt&&(dr>0||termYears>0)&&h("div",{style:{display:"flex",gap:16,fontSize:11,color:"var(--muted)",flexWrap:"wrap",marginTop:2}},
-        h("span",null,"Monthly: ",h("b",{style:{color:"var(--danger)"}},sym+Math.round(frB(dbt.monthlyPmt)).toLocaleString()+"/mo")),
-        dr>0&&h("span",null,"Total interest: ",h("b",{style:{color:"var(--warn)"}},fmtAmt(frB(dbt.totalInterest),sym)))
-      )
+
     )
   );
 }
@@ -548,23 +545,26 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
     ),
     goals.map(g=>{
       const isTrip=g.id==="trip",isHouse=g.id==="house";
-      const{max:maxA,step:stepA}=getCaps(g.id,cur);
+      // caps are already in display units — no frB() needed
+      const{max:maxDisp,step:stepDisp}=getCaps(g.id,cur);
+      const minDisp=cur==="MUR"?1000:100;
       const atAge=Math.max(ageMin,Math.min(g.atAge,ageMax));
       return h("div",{key:g.id,style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.2)",borderRadius:10,padding:14,marginBottom:8}},
         h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
           h("span",{style:{fontSize:12,fontWeight:600,color:"var(--text)"}},g.icon+" "+g.label),
           h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:17}},"×")
         ),
+        // value and onChange in display units; store in base via toB/frB
         h(Slider,{label:isTrip?"Cost per trip":"Purchase price",
-          value:frB(g.amount),min:cur==="MUR"?1000:100,max:frB(maxA),step:frB(stepA),
+          value:frB(g.amount),min:minDisp,max:maxDisp,step:stepDisp,
           fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"var(--gold)"}),
         h(Slider,{label:isTrip?"First trip at age":"At age",
-          value:atAge,min:ageMin,max:ageMax,
+          value:atAge,min:ageMin,max:ageMax,step:1,
           fmt:v=>"Age "+v,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--warn)"}),
         isHouse&&h("div",{style:{marginTop:4}},
           h(Slider,{label:"% financed via mortgage",
             value:g.mortgagePct||0,min:0,max:100,step:5,
-            fmt:v=>v+"%  (down payment: "+disp(toB(frB(g.amount)*(1-v/100)))+")",
+            fmt:v=>v+"% (down payment: "+disp(toB(frB(g.amount)*(1-v/100)))+")",
             onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
           (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:4}},
             h("div",null,
@@ -771,7 +771,25 @@ function Hero({onStart,dark,setDark}){
       style:{position:"absolute",top:16,right:16},title:"Toggle theme"},dark?"☀️":"🌙"),
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup"),
     h("h1",{className:"hero-title"},"Will your money last",h("br"),h("span",{style:{color:"var(--accent)"}},"as long as you do?")),
-    h("p",{className:"hero-sub"},"Most people have no idea.",h("br"),"Know where you stand before your coffee gets cold."),
+    h("p",{className:"hero-sub"},
+      "Most people have ",
+      h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),
+      " if their money will last — or if it will be ",
+      h("span",{style:{fontWeight:600,color:"var(--text)"}},"enough"),
+      ".",
+      h("br"),h("br"),
+      "They're relying on ",
+      h("span",{style:{fontStyle:"italic",textDecoration:"underline",textDecorationStyle:"wavy",textDecorationColor:"var(--warn)",textUnderlineOffset:"3px"}},"hope"),
+      ".",
+      h("br"),h("br"),
+      "At ",
+      h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),
+      ", we turn ",
+      h("span",{style:{fontWeight:600,color:"var(--danger)"}},"uncertainty"),
+      " into a ",
+      h("span",{style:{fontWeight:600,color:"var(--ok)"}},"plan"),
+      "."
+    ),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
       [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored server-side"]].map(function(arr){
@@ -845,8 +863,8 @@ function App(){
   const hl=res?hlabel(res.health):{l:"",c:"var(--accent)"};
 
   /* slider params — all in display units */
-  const minI=cur==="MUR"?0:150,maxI=cur==="MUR"?2500000:100000,stepI=cur==="MUR"?1000:500;
-  const minSp=cur==="MUR"?0:100,maxSp=cur==="MUR"?500000:25000,stepSp=cur==="MUR"?1000:100;
+  const minI=cur==="MUR"?0:150,maxI=cur==="MUR"?1000000:100000,stepI=cur==="MUR"?1000:500;
+  const minSp=cur==="MUR"?0:100,maxSp=cur==="MUR"?250000:25000,stepSp=cur==="MUR"?1000:100;
   const maxSv=cur==="MUR"?25000000:10000000,stepSv=cur==="MUR"?1000:10000;
   const maxDb=cur==="MUR"?50000000:5000000,stepDb=1000;
   const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
@@ -959,7 +977,7 @@ function App(){
       /* ── PLAN TAB ── */
       tab==="plan"&&h("div",{className:"fade"},
         h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:4}},hh?"Your household plan":"Where do you stand?"),
-        h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:20}},"Results update as you move the sliders."),
+
 
         h("div",{style:{marginBottom:16}},
           h("div",{style:secL},"Planning for"),
