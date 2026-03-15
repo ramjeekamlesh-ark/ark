@@ -740,45 +740,252 @@ function Ring({score,color}){
   );
 }
 
+/* ── PDF GENERATOR ── */
+function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
+  try{
+    const{jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+    const W=210,M=18,COL=W-M*2;
+    let y=0;
+
+    // ── Header band ──
+    doc.setFillColor(26,86,219);doc.rect(0,0,W,32,"F");
+    doc.setFillColor(255,255,255);doc.rect(0,28,W,6,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(18);doc.setTextColor(255,255,255);
+    doc.text("ARK Financial Planners",M,16);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(180,210,255);
+    doc.text("Personalised Retirement Plan",M,23);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(120,140,180);
+    doc.text("Generated "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),W-M,23,{align:"right"});
+    y=42;
+
+    // ── Helper functions ──
+    const section=(title)=>{
+      y+=4;
+      doc.setFillColor(240,244,255);doc.rect(M,y,COL,8,"F");
+      doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(26,86,219);
+      doc.text(title.toUpperCase(),M+3,y+5.5);
+      y+=12;
+    };
+    const row=(label,value,valColor)=>{
+      doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(100,110,130);
+      doc.text(label,M,y);
+      doc.setFont("helvetica","bold");doc.setFontSize(9);
+      if(valColor)doc.setTextColor(...valColor);else doc.setTextColor(17,24,39);
+      doc.text(String(value),W-M,y,{align:"right"});
+      doc.setDrawColor(230,234,240);doc.setLineWidth(0.2);doc.line(M,y+2,W-M,y+2);
+      y+=8;
+    };
+    const note=(txt,color)=>{
+      doc.setFont("helvetica","italic");doc.setFontSize(8);
+      doc.setTextColor(...(color||[100,110,130]));
+      doc.text(txt,M,y,{maxWidth:COL});y+=6;
+    };
+    const badge=(label,value,bg,fg)=>{
+      doc.setFillColor(...bg);doc.roundedRect(M,y,COL/2-4,14,2,2,"F");
+      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg);
+      doc.text(label,M+4,y+5);
+      doc.setFont("helvetica","bold");doc.setFontSize(11);
+      doc.text(String(value),M+4,y+11);
+      y+=18;
+    };
+    const twoCol=(items)=>{
+      const half=COL/2-4;
+      items.forEach((item,i)=>{
+        const x=i%2===0?M:M+half+8;
+        if(i%2===0&&i>0)y+=16;
+        doc.setFillColor(245,247,252);doc.roundedRect(x,y,half,14,2,2,"F");
+        doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(100,110,130);
+        doc.text(item[0],x+4,y+5);
+        doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(17,24,39);
+        doc.text(String(item[1]),x+4,y+11);
+      });
+      y+=18;
+    };
+
+    // ── Client info ──
+    section("Client Information");
+    row("Name",info.name);
+    row("Email",info.email);
+    if(info.phone)row("Phone",info.phone);
+    row("Planning mode",hh?"Household (two partners)":"Individual");
+    y+=2;
+
+    // ── Health snapshot ──
+    section("Financial Health Snapshot");
+    const hl=hlabel(result.health);
+    const hCol=hl.c==="var(--ok)"?[22,163,74]:hl.c==="var(--warn)"?[217,119,6]:[220,38,38];
+    row("Health score",result.health+"/100 — "+hl.l,hCol);
+    row("Success probability",result.sp+"%",result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]);
+    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending");
+    row("Funds status",result.lasts?"✓ Lasts to age "+result.le+" ("+result.sur+" yrs surplus)":"⚠ Runs short at age "+result.ro,result.lasts?[22,163,74]:[220,38,38]);
+    y+=2;
+
+    // ── Retirement income ──
+    section("Projected Retirement Income");
+    const inf=result.inf||1;
+    row("Monthly income at retirement",disp(result.wd/12));
+    row("In today's purchasing power",disp(result.wd/12/inf));
+    row("Inflation applied","2.5% per year over "+result.ytr+" years");
+    if(hh&&result.p1mt!=null){
+      y+=2;
+      row("Your share ("+Math.round(result.p1s*100)+"%)",disp(result.wd/12*result.p1s)+" / "+disp(result.p1mt)+" today",[26,86,219]);
+      row("Partner's share ("+Math.round(result.p2s*100)+"%)",disp(result.wd/12*result.p2s)+" / "+disp(result.p2mt)+" today",[124,58,237]);
+    }
+    y+=2;
+
+    // ── Portfolio ──
+    section("Retirement Portfolio");
+    if(hh&&result.p1P!=null){
+      row("Your pot (retires age "+base.retireAge+")",disp(result.p1P),[26,86,219]);
+      row("Partner's pot (retires age "+partner.retireAge+")",disp(result.p2P),[124,58,237]);
+      row("Combined pot",disp(result.retP),[22,163,74]);
+    } else {
+      row("Projected retirement pot",disp(result.retP));
+    }
+    y+=2;
+
+    // ── Input summary ──
+    section("Your Inputs");
+    if(hh){
+      row("Your monthly income",disp(base.income));
+      row("Your savings to date",disp(base.savings));
+      row("Your savings rate",base.savingsRate+"%");
+      row("Your retirement age","Age "+base.retireAge);
+      row("Partner monthly income",disp(partner.income));
+      row("Partner savings",disp(partner.savings));
+      row("Partner savings rate",partner.savingsRate+"%");
+      row("Partner retirement age","Age "+partner.retireAge);
+      row("Monthly household expenses",disp(base.monthlySpend));
+    } else {
+      row("Monthly income",disp(base.income));
+      row("Monthly spending",disp(base.monthlySpend));
+      row("Savings to date",disp(base.savings));
+      row("Savings rate",base.savingsRate+"% of gross income");
+      row("Target retirement age","Age "+base.retireAge);
+      if(base.debtBalance>0)row("Outstanding debt",disp(base.debtBalance)+" @ "+base.debtRate+"% / "+Math.round((base.debtTerm||0)/12)+" yrs");
+    }
+    if((base.lifeGoals||[]).length>0){
+      y+=2;
+      section("Life Goals");
+      (base.lifeGoals||[]).forEach(g=>{
+        const label=g.icon+" "+g.label+(g.id==="trip"&&g.recurYears>0?" (every "+g.recurYears+" yrs)":"");
+        row(label,disp(g.amount)+" at age "+g.atAge);
+      });
+    }
+
+    // ── Stress test ──
+    y+=2;
+    section("Return Scenario Summary");
+    row("Worst case (4% return) — pot",disp(result.retP*0.85,true));
+    row("Base case (5% return) — pot",disp(result.retP),null);
+    row("Best case (6% return) — pot",disp(result.retP*1.18,true));
+    y+=2;
+
+    // ── Footer ──
+    if(y>260){doc.addPage();y=20;}
+    doc.setFillColor(26,86,219);doc.rect(0,282,W,15,"F");
+    doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(180,210,255);
+    doc.text("ARK Financial Planners · arkfinancialplanners.com · 1 USD = 46.5 MUR",W/2,289,{align:"center"});
+    doc.setTextColor(140,170,220);
+    doc.text("For educational purposes only. Not financial advice. Consult a qualified financial consultant before making decisions.",W/2,294,{align:"center",maxWidth:COL});
+
+    doc.save("ARK-Retirement-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
+    return true;
+  }catch(e){console.error(e);return false;}
+}
+
 /* ── MODAL ── */
-function Modal({result,onClose,disp}){
-  const[name,setName]=useState(""),[email,setEmail]=useState(""),[phone,setPhone]=useState("");
-  const[done,setDone]=useState(false),[loading,setLoading]=useState(false);
+function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
+  const[name,setName]=useState("");
+  const[email,setEmail]=useState("");
+  const[phone,setPhone]=useState("");
+  const[saveCRM,setSaveCRM]=useState(false);
+  const[done,setDone]=useState(false);
+  const[loading,setLoading]=useState(false);
+  const[pdfError,setPdfError]=useState(false);
   const ok=result.lasts,hl=hlabel(result.health);
-  const valid=name.trim()&&(email.trim()||phone.trim());
+  const valid=name.trim()&&email.trim();
+
   const submit=async function(){
-    if(!valid)return;setLoading(true);
-    await new Promise(res=>setTimeout(res,600));
-    setDone(true);setLoading(false);
-    try{await window.storage.set("lead:"+Date.now(),JSON.stringify({name,email,phone,health:result.health,ts:new Date().toISOString()}));}catch(e){}
+    if(!valid)return;
+    setLoading(true);
+    const info={name,email,phone};
+    // Generate PDF
+    const pdfOk=generatePDF(info,result,base,partner,hh,disp,sym,frB,cur);
+    if(!pdfOk)setPdfError(true);
+    // Save to CRM if opted in
+    if(saveCRM){
+      try{
+        await window.storage.set("lead:"+Date.now(),JSON.stringify({
+          name,email,phone,
+          health:result.health,successProb:result.sp,
+          pot:disp(result.retP),monthlyIncome:disp(result.wd/12),
+          verdict:result.lasts?"On track":"Needs action",
+          retireAge:base.retireAge,age:base.age,
+          savingsRate:base.savingsRate,cur,hhMode:hh,
+          ts:new Date().toISOString()
+        }));
+      }catch(e){console.error("CRM save failed",e);}
+    }
+    setLoading(false);
+    setDone(true);
   };
+
   if(done)return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation(),style:{textAlign:"center"}},
-      h("div",{style:{fontSize:40,marginBottom:14}},"✅"),
-      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8}},"We'll be in touch soon."),
-      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:20}},"A consultant will reach out personally."),
+      h("div",{style:{fontSize:40,marginBottom:14}},pdfError?"⚠️":"✅"),
+      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8,color:"var(--text)"}},pdfError?"Almost there":"Your plan is ready!"),
+      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:pdfError?16:8}},
+        pdfError?"PDF generation failed — please try again or contact us directly."
+          :"Your retirement plan PDF has been downloaded."
+      ),
+      !pdfError&&saveCRM&&h("p",{style:{fontSize:12,color:"var(--ok)",marginBottom:16}},"✓ Your details have been saved. A consultant may reach out."),
+      !pdfError&&!saveCRM&&h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:16}},"No details stored — your privacy is protected."),
       h("button",{className:"cta",onClick:onClose},"Close")
     )
   );
+
   return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
       h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
-      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:4}},"Get your personalised plan"),
-      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Leave your details and a consultant will reach out."),
+      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:4,color:"var(--text)"}},"Download your plan"),
+      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Fill in your details to generate a personalised PDF retirement plan."),
+      // Health badge
       h("div",{style:{background:ok?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(ok?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),borderRadius:10,padding:"10px 14px",marginBottom:18,fontSize:12,color:"var(--muted)",lineHeight:1.6}},
-        h("b",{style:{color:ok?"var(--ok)":"var(--danger)"}},ok?"On track":"Action needed"),
-        " · Health: ",h("b",{style:{color:hl.c}},result.health+"/100 · "+hl.l)
+        h("b",{style:{color:ok?"var(--ok)":"var(--danger)"}},ok?"✓ On track":"⚠ Action needed"),
+        " · Health: ",h("b",{style:{color:hl.c}},result.health+"/100 · "+hl.l),
+        " · Monthly income: ",h("b",{style:{color:"var(--text)"}},disp(result.wd/12)+"/mo")
       ),
-      h("div",{style:{display:"flex",flexDirection:"column",gap:10,marginBottom:18}},
-        [["Name *","text",name,setName,"Full name"],["Email","email",email,setEmail,"you@example.com"],["Phone","tel",phone,setPhone,"+230 5XXX XXXX"]].map(function(arr){
-          return h("div",{key:arr[0]},
-            h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},arr[0]),
-            h("input",{type:arr[1],value:arr[2],onChange:e=>arr[3](e.target.value),placeholder:arr[4],className:"modal-input"})
-          );
-        }),
-        h("p",{style:{fontSize:11,color:"var(--hint)",fontStyle:"italic",margin:0}},"* Name required. Email or phone (or both).")
+      // Fields
+      h("div",{style:{display:"flex",flexDirection:"column",gap:10,marginBottom:16}},
+        h("div",null,
+          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Full name *"),
+          h("input",{type:"text",value:name,onChange:e=>setName(e.target.value),placeholder:"Your name",className:"modal-input"})
+        ),
+        h("div",null,
+          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Email address *"),
+          h("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"you@example.com",className:"modal-input"})
+        ),
+        h("div",null,
+          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Phone (optional)"),
+          h("input",{type:"tel",value:phone,onChange:e=>setPhone(e.target.value),placeholder:"+230 5XXX XXXX",className:"modal-input"})
+        )
       ),
-      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},loading?"Sending…":"Book a free call →")
+      // CRM opt-in checkbox
+      h("label",{style:{display:"flex",alignItems:"flex-start",gap:10,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.2)",borderRadius:10,marginBottom:18,cursor:"pointer"}},
+        h("input",{type:"checkbox",checked:saveCRM,onChange:e=>setSaveCRM(e.target.checked),
+          style:{marginTop:2,accentColor:"var(--accent)",width:16,height:16,flexShrink:0,cursor:"pointer"}}),
+        h("div",null,
+          h("div",{style:{fontSize:12,fontWeight:600,color:"var(--accent)",marginBottom:2}},"Save my plan & get consultant support"),
+          h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.55}},"Tick this to store your details securely. An ARK consultant will reach out to help you execute your plan.")
+        )
+      ),
+      h("p",{style:{fontSize:11,color:"var(--hint)",marginBottom:14}},
+        "* Name and email required to generate your PDF."+(saveCRM?" Your details will be saved to our CRM.":" Your details will not be stored.")
+      ),
+      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},
+        loading?"Generating your plan…":"Download my plan →")
     )
   );
 }
@@ -805,7 +1012,7 @@ function Hero({onStart,dark,setDark}){
     ),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
-      [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored server-side"]].map(function(arr){
+      [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored without your permission"]].map(function(arr){
         return h("div",{key:arr[1],className:"hero-feat"},
           h("div",{className:"hero-feat-icon"},arr[0]),
           h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2}},arr[1]),
@@ -833,6 +1040,7 @@ function App(){
   const[goalsOpen,setGoalsOpen]=useState(false);
   const[dark,setDark]=useDark();
   const{cur,setCur,disp,toB,frB,sym}=useCur();
+  useEffect(()=>{setCur("MUR");},[]);
   const[hh,setHH]=useState(false);
   const[sf,setSF]=useState("likely");
 
@@ -959,7 +1167,7 @@ function App(){
   if(hero)return h(Hero,{onStart:()=>setHero(false),dark,setDark});
 
   return h("div",{style:{minHeight:"100vh",background:"var(--bg)"}},
-    modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp}),
+    modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp,base,partner,hh,frB,sym,cur}),
 
     /* HEADER */
     h("header",{className:"hdr"},
@@ -1168,12 +1376,6 @@ function App(){
         h(WhatIf,{scens,res,disp}),
 
         h(WhatIf,{scens,res,disp}),
-
-        vd&&h("div",{className:"verdict",style:{background:vd.c+"18",border:"1px solid "+vd.c+"44"}},
-          h("div",{style:{fontSize:14,fontWeight:600,color:vd.c,marginBottom:4}},vd.icon+" "+vd.h),
-          h("div",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.6,marginBottom:5}},vd.s),
-          h("div",{style:{fontSize:12,fontStyle:"italic",color:"var(--muted)"}},"→ "+vd.a)
-        ),
 
         h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:16,padding:"20px 22px",marginBottom:14}},
           h("div",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:8}},"Ready to act?"),
