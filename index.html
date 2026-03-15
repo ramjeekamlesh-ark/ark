@@ -680,7 +680,6 @@ function WhatIf({scens,res,disp}){
           h("span",{style:{fontSize:13,color:"var(--muted)",marginLeft:8}},open===s.id?"▲":"▼")
         ),
         open===s.id&&sc&&h("div",{className:"wi-detail"},
-          h("div",{style:{fontSize:12,color:"var(--muted)",marginBottom:10,lineHeight:1.6}},sc.hook),
           h("div",{className:"wi-nums"},
             [["Pot",disp(sc.res.retP,true),sc.bc],
              ["Monthly",disp(sc.res.wd/12,true),"var(--muted)"],
@@ -770,25 +769,21 @@ function Hero({onStart,dark,setDark}){
     h("button",{className:"dm-btn",onClick:()=>setDark(d=>!d),
       style:{position:"absolute",top:16,right:16},title:"Toggle theme"},dark?"☀️":"🌙"),
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup"),
-    h("h1",{className:"hero-title"},"Will your money last",h("br"),h("span",{style:{color:"var(--accent)"}},"as long as you do?")),
+    h("h1",{className:"hero-title"},
+      "Ever wondered if your money",h("br"),
+      h("span",{style:{color:"var(--accent)"}},"will be enough"),
+      " to live",h("br"),"all your dreams?"
+    ),
     h("p",{className:"hero-sub"},
-      "Most people have ",
-      h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),
+      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),
       " if their money will last — or if it will be ",
-      h("span",{style:{fontWeight:600,color:"var(--text)"}},"enough"),
-      ".",
+      h("span",{style:{fontWeight:600,color:"var(--text)"}},"enough"),".",
       h("br"),h("br"),
       "They're relying on ",
-      h("span",{style:{fontStyle:"italic",textDecoration:"underline",textDecorationStyle:"wavy",textDecorationColor:"var(--warn)",textUnderlineOffset:"3px"}},"hope"),
-      ".",
+      h("span",{style:{fontStyle:"italic",textDecoration:"underline",textDecorationStyle:"wavy",textDecorationColor:"var(--warn)",textUnderlineOffset:"3px"}},"hope"),".",
       h("br"),h("br"),
-      "At ",
-      h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),
-      ", we turn ",
-      h("span",{style:{fontWeight:600,color:"var(--danger)"}},"uncertainty"),
-      " into a ",
-      h("span",{style:{fontWeight:600,color:"var(--ok)"}},"plan"),
-      "."
+      "At ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),
+      ", we bring ",h("span",{style:{fontWeight:600,color:"var(--ok)"}},"clarity"),"."
     ),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
@@ -1059,7 +1054,7 @@ function App(){
             )
           )
         ),
-        h("button",{style:ctaS,onClick:()=>setTab("results")},hh?"See our full retirement picture →":"See my full retirement picture →")
+        h("button",{style:ctaS,onClick:()=>setTab("results")},hh?"Show me our reality →":"Show me my reality →")
       ),
 
       /* ── RESULTS TAB ── */
@@ -1136,11 +1131,7 @@ function App(){
           )
         ),
 
-        (base.debtBalance>0||(hh&&partner.debtBalance>0))&&h("div",{style:{background:"var(--danger-lt)",border:"1px solid rgba(239,68,68,.15)",borderRadius:10,padding:"12px 14px",marginBottom:14,fontSize:12,color:"var(--muted)",lineHeight:1.8}},
-          h("div",{style:{fontWeight:600,color:"var(--danger)",marginBottom:4}},"Debt impact"),
-          base.debtBalance>0&&h("div",null,h("span",{style:{color:"var(--text)"}},"You: "),disp(base.debtBalance)," @ "+base.debtRate+"% / "+Math.round((base.debtTerm||0)/12)+" yrs — ",h("b",{style:{color:"var(--danger)"}},sym+Math.round(frB(res.debtMonthlyPmt||0)).toLocaleString()+"/mo")),
-          hh&&partner.debtBalance>0&&h("div",null,h("span",{style:{color:"var(--text)"}},"Partner: "),disp(partner.debtBalance)," @ "+partner.debtRate+"% / "+Math.round((partner.debtTerm||0)/12)+" yrs")
-        ),
+
 
         h("div",{className:"stat-grid"},
           [["Health score",res.health+"/100",hl.l,hl.c],
@@ -1164,12 +1155,20 @@ function App(){
           h("div",{style:{fontSize:12,fontStyle:"italic",color:"var(--muted)"}},"→ "+vd.a)
         ),
 
+        h(WhatIf,{scens,res,disp}),
+
+        vd&&h("div",{className:"verdict",style:{background:vd.c+"18",border:"1px solid "+vd.c+"44"}},
+          h("div",{style:{fontSize:14,fontWeight:600,color:vd.c,marginBottom:4}},vd.icon+" "+vd.h),
+          h("div",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.6,marginBottom:5}},vd.s),
+          h("div",{style:{fontSize:12,fontStyle:"italic",color:"var(--muted)"}},"→ "+vd.a)
+        ),
+
         h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:16,padding:"20px 22px",marginBottom:14}},
           h("div",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:8}},"Ready to act?"),
           h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--text)",letterSpacing:"-.3px",lineHeight:1.3}},"Plans are great,"),
           h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--accent)",letterSpacing:"-.3px",marginBottom:14,lineHeight:1.3}},"but execution is key."),
           h("p",{style:{fontSize:12,color:"var(--muted)",lineHeight:1.65,marginBottom:16}},"Your numbers are ready. The next step is a conversation with a consultant who can turn this plan into action."),
-          h("button",{style:ctaS,onClick:()=>setModal(true)},"Book a free consultation →")
+          h("button",{style:ctaS,onClick:()=>setModal(true)},"Guide me to achieve my dreams →")
         )
       )
     ),
