@@ -694,8 +694,9 @@ function Modal({result,onClose,disp,hhMode}){
 }
 
 // ── HERO ──────────────────────────────────────────────────────────────────────
-function Hero({onStart}){
+function Hero({onStart,dark,setDark}){
   return h("div",{className:"hero"},
+    h("button",{className:"dm-btn",onClick:()=>setDark(d=>!d),title:dark?"Switch to light mode":"Switch to dark mode",style:{position:"fixed",top:12,right:16,zIndex:200}},dark?"☀️":"🌙"),
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup · 3 minutes"),
     h("h1",{className:"hero-title"},"Will your money last",h("br")," ",h("span",{style:{color:"var(--accent)"}},"as long as you do?")),
     h("p",{className:"hero-sub"},"Most people have no idea.",h("br"),"Know where you stand before your coffee gets cold."),
@@ -811,7 +812,7 @@ function App(){
       disp,frB,toB,cur,sym,maxDb:mxDb||maxDb,stepDb:stDb||stepDb})
   );
 
-  if(hero)return h(Hero,{onStart:()=>setHero(false)});
+  if(hero)return h(Hero,{onStart:()=>setHero(false),dark,setDark});
 
   return h("div",{style:{minHeight:"100vh",background:"var(--bg)"}},
     modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp,hhMode:hh}),
