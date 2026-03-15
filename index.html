@@ -519,12 +519,12 @@ const GOALS=[
   {id:"other",icon:"⭐",label:"Other",da:40000,dage:43},
 ];
 function getCaps(id,cur){
-  if(id==="house")return{max:cur==="MUR"?100000000:3000000,step:cur==="MUR"?500000:10000};
-  if(id==="edu")  return{max:cur==="MUR"?25000000:500000,  step:cur==="MUR"?100000:5000};
-  if(id==="trip") return{max:cur==="MUR"?2000000:50000,    step:cur==="MUR"?5000:500};
+  if(id==="house")return{max:cur==="MUR"?50000000:3000000,step:cur==="MUR"?100000:10000};
+  if(id==="edu")  return{max:cur==="MUR"?10000000:500000,  step:cur==="MUR"?100000:5000};
+  if(id==="trip") return{max:cur==="MUR"?1000000:50000,    step:cur==="MUR"?50000:500};
   if(id==="other")return{max:cur==="MUR"?25000000:500000,  step:cur==="MUR"?100000:5000};
-  if(id==="car")  return{max:cur==="MUR"?5000000:200000,   step:cur==="MUR"?50000:1000};
-  if(id==="wed")  return{max:cur==="MUR"?5000000:150000,   step:cur==="MUR"?50000:1000};
+  if(id==="car")  return{max:cur==="MUR"?50000000:3000000,  step:cur==="MUR"?100000:10000};
+  if(id==="wed")  return{max:cur==="MUR"?5000000:150000,   step:cur==="MUR"?50000:5000};
   return{max:cur==="MUR"?10000000:500000,step:cur==="MUR"?50000:1000};
 }
 function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
@@ -837,7 +837,7 @@ function App(){
   const minI=cur==="MUR"?0:150,maxI=cur==="MUR"?2500000:100000,stepI=cur==="MUR"?1000:500;
   const minSp=cur==="MUR"?0:100,maxSp=cur==="MUR"?500000:25000,stepSp=cur==="MUR"?1000:100;
   const maxSv=cur==="MUR"?25000000:10000000,stepSv=cur==="MUR"?1000:10000;
-  const maxDb=cur==="MUR"?50000000:5000000,stepDb=cur==="MUR"?1000:1000;
+  const maxDb=cur==="MUR"?50000000:5000000,stepDb=1000;
   const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
   const fmtS=v=>v===0?"None":fmtAmt(v,sym);
   const fmtSp=v=>v===0?"None":fmtAmt(v,sym)+"/mo";
@@ -908,7 +908,9 @@ function App(){
       h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,fmt:v=>"Age "+v,onChange:v=>setFn("retireAge",v),color:"var(--gold)"}),
       h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||0,
         onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),
-        disp,frB,toB,cur,sym,maxDb,stepDb})
+        disp,frB,toB,cur,sym,
+        maxDb:cur==="MUR"?50000000:5000000,
+        stepDb:1000})
     );
   }
 
