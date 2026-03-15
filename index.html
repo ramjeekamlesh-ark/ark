@@ -747,117 +747,114 @@ function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
     const jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
     if(!jsPDFLib){console.error("jsPDF not found");return false;}
     const doc=new jsPDFLib({orientation:"portrait",unit:"mm",format:"a4"});
-    const W=210,M=18,COL=W-M*2;
+    const W=210,M=16,COL=W-M*2;
     let y=0;
+    const newPageIfNeeded=(need)=>{if(y+need>272){doc.addPage();y=20;}};
 
-    // ── Header band ──
-    doc.setFillColor(26,86,219);doc.rect(0,0,W,32,"F");
-    doc.setFillColor(255,255,255);doc.rect(0,28,W,6,"F");
-    doc.setFont("helvetica","bold");doc.setFontSize(18);doc.setTextColor(255,255,255);
-    doc.text("ARK Financial Planners",M,16);
-    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(180,210,255);
+    // ── HEADER ──────────────────────────────────────────────────────────
+    doc.setFillColor(26,86,219);doc.rect(0,0,W,36,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(20);doc.setTextColor(255,255,255);
+    doc.text("ARK Financial Planners",M,15);
+    doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(180,210,255);
     doc.text("Personalised Retirement Plan",M,23);
-    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(120,140,180);
-    doc.text("Generated "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),W-M,23,{align:"right"});
-    y=42;
+    doc.setFontSize(8);doc.setTextColor(140,175,240);
+    doc.text("Prepared for: "+info.name+"   |   "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),M,30);
+    y=44;
 
-    // ── Helper functions ──
-    const section=(title)=>{
-      y+=4;
-      doc.setFillColor(240,244,255);doc.rect(M,y,COL,8,"F");
-      doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(26,86,219);
-      doc.text(title.toUpperCase(),M+3,y+5.5);
-      y+=12;
+    // ── Helpers ─────────────────────────────────────────────────────────
+    const sectionTitle=(title)=>{
+      newPageIfNeeded(14);
+      doc.setFillColor(237,242,255);doc.rect(M,y,COL,8,"F");
+      doc.setDrawColor(26,86,219);doc.setLineWidth(0.5);doc.line(M,y,M,y+8);
+      doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(26,86,219);
+      doc.text(title.toUpperCase(),M+4,y+5.5);
+      y+=13;
     };
-    const row=(label,value,valColor)=>{
-      doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(100,110,130);
+    const row=(label,value,rgb)=>{
+      newPageIfNeeded(8);
+      doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90,100,120);
       doc.text(label,M,y);
-      doc.setFont("helvetica","bold");doc.setFontSize(9);
-      if(valColor)doc.setTextColor(...valColor);else doc.setTextColor(17,24,39);
+      doc.setFont("helvetica","bold");
+      if(rgb)doc.setTextColor(...rgb);else doc.setTextColor(17,24,39);
       doc.text(String(value),W-M,y,{align:"right"});
-      doc.setDrawColor(230,234,240);doc.setLineWidth(0.2);doc.line(M,y+2,W-M,y+2);
+      doc.setDrawColor(225,229,238);doc.setLineWidth(0.2);doc.line(M,y+2.5,W-M,y+2.5);
       y+=8;
     };
-    const note=(txt,color)=>{
-      doc.setFont("helvetica","italic");doc.setFontSize(8);
-      doc.setTextColor(...(color||[100,110,130]));
-      doc.text(txt,M,y,{maxWidth:COL});y+=6;
+    const bigCard=(label,value,sub,bg,fg)=>{
+      newPageIfNeeded(22);
+      doc.setFillColor(...bg);doc.roundedRect(M,y,COL,18,3,3,"F");
+      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+60)));
+      doc.text(label,M+5,y+6);
+      doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...fg);
+      doc.text(String(value),M+5,y+13.5);
+      if(sub){doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+60)));doc.text(sub,W-M-2,y+13.5,{align:"right"});}
+      y+=23;
     };
-    const badge=(label,value,bg,fg)=>{
-      doc.setFillColor(...bg);doc.roundedRect(M,y,COL/2-4,14,2,2,"F");
-      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg);
-      doc.text(label,M+4,y+5);
-      doc.setFont("helvetica","bold");doc.setFontSize(11);
-      doc.text(String(value),M+4,y+11);
-      y+=18;
-    };
-    const twoCol=(items)=>{
-      const half=COL/2-4;
+    const twoCards=(items)=>{
+      newPageIfNeeded(20);
+      const hw=(COL-6)/2;
       items.forEach((item,i)=>{
-        const x=i%2===0?M:M+half+8;
-        if(i%2===0&&i>0)y+=16;
-        doc.setFillColor(245,247,252);doc.roundedRect(x,y,half,14,2,2,"F");
-        doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(100,110,130);
-        doc.text(item[0],x+4,y+5);
-        doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(17,24,39);
-        doc.text(String(item[1]),x+4,y+11);
+        const x=i===0?M:M+hw+6;
+        doc.setFillColor(...item[2]);doc.roundedRect(x,y,hw,16,3,3,"F");
+        doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...item[3].map(c=>Math.min(255,c+80)));
+        doc.text(item[0],x+4,y+6);
+        doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...item[3]);
+        doc.text(String(item[1]),x+4,y+13);
       });
-      y+=18;
+      y+=21;
     };
 
-    // ── Client info ──
-    section("Client Information");
-    row("Name",info.name);
-    row("Email",info.email);
-    if(info.phone)row("Phone",info.phone);
-    row("Planning mode",hh?"Household (two partners)":"Individual");
-    y+=2;
-
-    // ── Health snapshot ──
-    section("Financial Health Snapshot");
-    const hl=hlabel(result.health);
-    const hCol=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
-    row("Health score",result.health+"/100 — "+hl.l,hCol);
-    row("Success probability",result.sp+"%",result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]);
-    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending");
-    row("Funds status",result.lasts?"✓ Lasts to age "+result.le+" ("+result.sur+" yrs surplus)":"⚠ Runs short at age "+result.ro,result.lasts?[22,163,74]:[220,38,38]);
-    y+=2;
-
-    // ── Retirement income ──
-    section("Projected Retirement Income");
+    // ── 1. WHAT MATTERS MOST — RETIREMENT INCOME ────────────────────────
+    sectionTitle("Your Retirement Income");
     const inf=result.inf||1;
-    row("Monthly income at retirement",disp(result.wd/12));
-    row("In today's purchasing power",disp(result.wd/12/inf));
-    row("Inflation applied","2.5% per year over "+result.ytr+" years");
+    const moAtRet=result.wd/12;
+    const moToday=moAtRet/inf;
+    const incomeMode=base.incomeMode||"rule4";
+    const modeLabel=incomeMode==="expenses"?"Based on maintaining your current lifestyle":incomeMode==="custom"?"Based on your custom target":"Based on the 4% withdrawal rule";
+    bigCard("Monthly income at retirement",disp(moAtRet),"in today's money: "+disp(moToday),[26,86,219],[255,255,255]);
+    row("Income strategy",modeLabel);
+    row("Inflation adjusted at","2.5% per year over "+result.ytr+" years");
     if(hh&&result.p1mt!=null){
       y+=2;
-      row("Your share ("+Math.round(result.p1s*100)+"%)",disp(result.wd/12*result.p1s)+" / "+disp(result.p1mt)+" today",[26,86,219]);
-      row("Partner's share ("+Math.round(result.p2s*100)+"%)",disp(result.wd/12*result.p2s)+" / "+disp(result.p2mt)+" today",[124,58,237]);
+      twoCards([
+        ["Your share ("+Math.round(result.p1s*100)+"%)",disp(moAtRet*result.p1s),[235,242,255],[26,86,219]],
+        ["Partner's share ("+Math.round(result.p2s*100)+"%)",disp(moAtRet*result.p2s),[243,238,255],[124,58,237]]
+      ]);
+      row("Your share in today's money",disp(result.p1mt));
+      row("Partner's share in today's money",disp(result.p2mt));
     }
-    y+=2;
+    y+=4;
 
-    // ── Portfolio ──
-    section("Retirement Portfolio");
+    // ── 2. RETIREMENT POT ────────────────────────────────────────────────
+    sectionTitle("Your Retirement Pot");
     if(hh&&result.p1P!=null){
-      row("Your pot (retires age "+base.retireAge+")",disp(result.p1P),[26,86,219]);
-      row("Partner's pot (retires age "+partner.retireAge+")",disp(result.p2P),[124,58,237]);
-      row("Combined pot",disp(result.retP),[22,163,74]);
+      twoCards([
+        ["Your pot (age "+base.retireAge+")",disp(result.p1P),[235,242,255],[26,86,219]],
+        ["Partner's pot (age "+partner.retireAge+")",disp(result.p2P),[243,238,255],[124,58,237]]
+      ]);
+      bigCard("Combined retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);
     } else {
-      row("Projected retirement pot",disp(result.retP));
+      bigCard("Projected retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);
     }
-    y+=2;
+    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending (target: 20–25×)");
+    row("Funds status",result.lasts?"✓ Lasts "+result.sur+" years beyond life expectancy":"⚠ Runs short by "+(result.le-result.ro)+" years",result.lasts?[22,163,74]:[220,38,38]);
+    y+=4;
 
-    // ── Input summary ──
-    section("Your Inputs");
+    // ── 3. SAVINGS & FINANCIAL HEALTH ────────────────────────────────────
+    sectionTitle("Savings & Financial Health");
+    const hl=hlabel(result.health);
+    const hRgb=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
+    twoCards([
+      ["Health score",result.health+"/100 — "+hl.l,[245,247,255],hRgb],
+      ["Success probability",result.sp+"%",[245,247,255],result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]]
+    ]);
     if(hh){
       row("Your monthly income",disp(base.income));
+      row("Your savings rate",base.savingsRate+"% of gross income");
       row("Your savings to date",disp(base.savings));
-      row("Your savings rate",base.savingsRate+"%");
-      row("Your retirement age","Age "+base.retireAge);
       row("Partner monthly income",disp(partner.income));
-      row("Partner savings",disp(partner.savings));
-      row("Partner savings rate",partner.savingsRate+"%");
-      row("Partner retirement age","Age "+partner.retireAge);
+      row("Partner savings rate",partner.savingsRate+"% of gross income");
+      row("Partner savings to date",disp(partner.savings));
       row("Monthly household expenses",disp(base.monthlySpend));
     } else {
       row("Monthly income",disp(base.income));
@@ -865,36 +862,57 @@ function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
       row("Savings to date",disp(base.savings));
       row("Savings rate",base.savingsRate+"% of gross income");
       row("Target retirement age","Age "+base.retireAge);
-      if(base.debtBalance>0)row("Outstanding debt",disp(base.debtBalance)+" @ "+base.debtRate+"% / "+Math.round((base.debtTerm||0)/12)+" yrs");
+      if(base.debtBalance>0){
+        row("Outstanding debt",disp(base.debtBalance),[220,38,38]);
+        row("Debt rate / term",base.debtRate+"% p.a. / "+Math.round((base.debtTerm||0)/12)+" years");
+      }
     }
+    y+=4;
+
+    // ── 4. LIFE GOALS ────────────────────────────────────────────────────
     if((base.lifeGoals||[]).length>0){
-      y+=2;
-      section("Life Goals");
+      sectionTitle("Life Goals & Milestones");
       (base.lifeGoals||[]).forEach(g=>{
-        const label=g.icon+" "+g.label+(g.id==="trip"&&g.recurYears>0?" (every "+g.recurYears+" yrs)":"");
-        row(label,disp(g.amount)+" at age "+g.atAge);
+        newPageIfNeeded(10);
+        const freq=g.id==="trip"&&(g.recurYears||0)>0?" · every "+g.recurYears+" yrs":"";
+        const mortgage=g.id==="house"&&(g.mortgagePct||0)>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
+        row(g.icon+" "+g.label+" (age "+g.atAge+")"+freq+mortgage,disp(g.amount));
       });
+      const totalGoals=(base.lifeGoals||[]).reduce((s,g)=>{
+        if(g.id==="trip"&&(g.recurYears||0)>0){
+          const trips=Math.max(1,Math.ceil((base.retireAge-g.atAge)/g.recurYears));
+          return s+g.amount*trips;
+        }
+        return s+g.amount;
+      },0);
+      y+=2;
+      row("Total goal cost (estimated)",disp(totalGoals),[217,119,6]);
+      y+=4;
     }
 
-    // ── Stress test ──
-    y+=2;
-    section("Return Scenario Summary");
-    row("Worst case (4% return) — pot",disp(result.retP*0.85,true));
-    row("Base case (5% return) — pot",disp(result.retP),null);
-    row("Best case (6% return) — pot",disp(result.retP*1.18,true));
-    y+=2;
+    // ── 5. SCENARIO OUTLOOK ──────────────────────────────────────────────
+    sectionTitle("Scenario Outlook");
+    const baseP=result.retP;
+    [["Worst case","4% return",Math.round(baseP*0.85),[254,242,242],[220,38,38]],
+     ["Base case","5% return",baseP,[240,253,244],[22,163,74]],
+     ["Best case","6% return",Math.round(baseP*1.16),[240,253,244],[22,163,74]]
+    ].forEach(sc=>{
+      row(sc[0]+" ("+sc[1]+")",disp(sc[2]),sc[4]);
+    });
+    y+=4;
 
-    // ── Footer ──
-    if(y>260){doc.addPage();y=20;}
-    doc.setFillColor(26,86,219);doc.rect(0,282,W,15,"F");
-    doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(180,210,255);
-    doc.text("ARK Financial Planners · arkfinancialplanners.com · 1 USD = 46.5 MUR",W/2,289,{align:"center"});
-    doc.setTextColor(140,170,220);
-    doc.text("For educational purposes only. Not financial advice. Consult a qualified financial consultant before making decisions.",W/2,294,{align:"center",maxWidth:COL});
+    // ── FOOTER ───────────────────────────────────────────────────────────
+    const footerY=285;
+    doc.setFillColor(26,86,219);doc.rect(0,footerY,W,12,"F");
+    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(180,210,255);
+    doc.text("ARK Financial Planners · arkfinancialplanners.com",M,footerY+5);
+    doc.text("For educational purposes only. Not financial advice.",W-M,footerY+5,{align:"right"});
+    doc.setTextColor(140,175,240);
+    doc.text("Consult a qualified financial consultant before making decisions. · 1 USD = 46.5 MUR",W/2,footerY+9.5,{align:"center"});
 
-    doc.save("ARK-Retirement-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
+    doc.save("ARK-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
     return true;
-  }catch(e){console.error(e);return false;}
+  }catch(e){console.error("PDF error:",e);return false;}
 }
 
 /* ── MODAL ── */
