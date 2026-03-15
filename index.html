@@ -415,9 +415,29 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDbDisp,ste
   const termYears=dt?Math.round(dt/12):0;
   const dbt=debtCalc(db,dr,dt);
   const fmtV=v=>v===0?"None":fmtAmt(v,sym);
+  const dbDisp=frB(db);
+  // Dynamic step: Rs1k below Rs1m, Rs100k above
+  const dynamicStep=cur==="MUR"?(dbDisp<1000000?1000:100000):stepDbDisp;
+  const dec=()=>{const n=Math.max(0,dbDisp-dynamicStep);onDB(toB(n));};
+  const inc=()=>{const n=Math.min(maxDbDisp,dbDisp+dynamicStep);onDB(toB(n));};
+  const p=Math.min(100,(dbDisp/maxDbDisp)*100);
   return h("div",null,
-    h(Slider,{label:"Outstanding debt ("+cur+")",value:frB(db),min:0,max:maxDbDisp,step:stepDbDisp,
-      fmt:fmtV,onChange:v=>onDB(toB(v)),color:"var(--danger)"}),
+    h("div",{className:"sl-wrap"},
+      h("div",{className:"sl-hdr"},
+        h("span",{className:"sl-label"},"Outstanding debt ("+cur+")"),
+        h("span",{className:"sl-val",style:{color:"var(--danger)"}},fmtV(dbDisp))
+      ),
+      h("div",{className:"sl-row"},
+        h("button",{className:"sl-pm",onClick:dec,tabIndex:-1},"−"),
+        h("div",{className:"sl-track-wrap"},
+          h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:"var(--danger)"}})),
+          h("div",{className:"sl-thumb",style:{left:p+"%",background:"var(--danger)"}}),
+          h("input",{type:"range",className:"sl-input",min:0,max:maxDbDisp,step:dynamicStep,value:dbDisp,
+            onChange:e=>onDB(toB(+e.target.value))})
+        ),
+        h("button",{className:"sl-pm",onClick:inc,tabIndex:-1},"+")
+      )
+    ),
     hasDebt&&h("div",{className:"debt-box"},
       h("div",{className:"row2"},
         h("div",null,
@@ -775,12 +795,10 @@ function Hero({onStart,dark,setDark}){
       " to live",h("br"),"all your dreams?"
     ),
     h("p",{className:"hero-sub"},
-      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),
-      " if their money will last — or if it will be ",
-      h("span",{style:{fontWeight:600,color:"var(--text)"}},"enough"),".",
+      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),".",
       h("br"),h("br"),
       "They're relying on ",
-      h("span",{style:{fontStyle:"italic",textDecoration:"underline",textDecorationStyle:"wavy",textDecorationColor:"var(--warn)",textUnderlineOffset:"3px"}},"hope"),".",
+      h("span",{style:{fontWeight:600,color:"var(--danger)"}},"hope"),".",
       h("br"),h("br"),
       "At ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),
       ", we bring ",h("span",{style:{fontWeight:600,color:"var(--ok)"}},"clarity"),"."
@@ -1148,12 +1166,6 @@ function App(){
         ),
 
         h(WhatIf,{scens,res,disp}),
-
-        vd&&h("div",{className:"verdict",style:{background:vd.c+"18",border:"1px solid "+vd.c+"44"}},
-          h("div",{style:{fontSize:14,fontWeight:600,color:vd.c,marginBottom:4}},vd.icon+" "+vd.h),
-          h("div",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.6,marginBottom:5}},vd.s),
-          h("div",{style:{fontSize:12,fontStyle:"italic",color:"var(--muted)"}},"→ "+vd.a)
-        ),
 
         h(WhatIf,{scens,res,disp}),
 
