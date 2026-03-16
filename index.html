@@ -49,7 +49,7 @@ input{font-family:inherit}
 .sl-val{font-size:17px;font-weight:600;letter-spacing:-.4px}
 .sl-sub{font-size:11px;margin-bottom:4px;min-height:16px}
 .sl-row{display:flex;align-items:center;gap:8px}
-.sl-pm{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--subtle);color:var(--muted);font-size:18px;font-weight:400;display:grid;place-items:center;cursor:pointer;flex-shrink:0;line-height:1;user-select:none;-webkit-user-select:none}
+.sl-pm{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--subtle);color:var(--muted);font-size:18px;display:grid;place-items:center;cursor:pointer;flex-shrink:0;user-select:none;-webkit-user-select:none}
 .sl-pm:active{background:var(--border)}
 .sl-track-wrap{position:relative;height:36px;display:flex;align-items:center;flex:1}
 .sl-track{position:absolute;left:0;right:0;height:4px;background:var(--border);border-radius:2px}
@@ -57,7 +57,7 @@ input{font-family:inherit}
 .sl-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:2.5px solid var(--surface);box-shadow:0 1px 5px rgba(0,0,0,.25);pointer-events:none;z-index:1}
 input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2;-webkit-appearance:none}
 .g-chips{display:flex;gap:6px;margin-bottom:14px}
-.g-chip{flex:1;padding:7px 6px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;text-align:center}
+.g-chip{flex:1;padding:7px 6px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit}
 .mode-tog{display:flex;background:var(--subtle);border-radius:8px;padding:2px;border:1px solid var(--border);margin-bottom:14px}
 .mode-btn{flex:1;padding:8px 0;border-radius:6px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .mode-btn.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
@@ -80,13 +80,6 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 .stat-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
 .stat-val{font-size:20px;font-weight:600;letter-spacing:-.4px;line-height:1.1}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
-.wi-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-.wi-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;font-family:inherit;text-align:left}
-.wi-detail{margin-top:4px;background:var(--subtle);border-radius:10px;padding:14px;border:1px solid var(--border)}
-.wi-nums{display:flex;gap:8px;margin-bottom:10px}
-.wi-num{flex:1;background:var(--card);border-radius:8px;padding:7px 10px;border:1px solid var(--border)}
-.wi-num-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.wi-num-val{font-size:14px;font-weight:600}
 .hh-snap{background:var(--subtle);border-radius:12px;padding:12px 14px;margin-bottom:12px}
 .hh-snap-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .hh-snap-item{background:var(--card);border-radius:8px;padding:8px 10px;text-align:center;border:1px solid var(--border)}
@@ -108,7 +101,7 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:100px;border:1px solid var(--border);font-size:11px;color:var(--muted);margin-bottom:24px;background:var(--surface)}
 .hero-dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
 .hero-title{font-family:Georgia,serif;font-size:clamp(34px,6vw,60px);font-weight:400;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px;color:var(--text)}
-.hero-sub{font-size:clamp(14px,1.8vw,17px);color:var(--muted);max-width:500px;line-height:1.7;margin-bottom:32px}
+.hero-sub{font-size:clamp(14px,1.8vw,17px);color:var(--muted);max-width:500px;line-height:1.9;margin-bottom:32px}
 .hero-cta{padding:14px 48px;border-radius:8px;background:var(--accent);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:40px;font-family:inherit}
 .hero-feats{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
 .hero-feat{text-align:center;max-width:100px}
@@ -140,21 +133,14 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 <script>
 const {useState,useEffect,useMemo,createElement:h}=React;
 const FX=46.5;
-const CURR={
-  USD:{sym:"$",toB:v=>v,frB:v=>v},
-  MUR:{sym:"₨",toB:v=>v/FX,frB:v=>v*FX}
-};
-
-/* ── dark mode ── */
+const CURR={USD:{sym:"$",toB:v=>v,frB:v=>v},MUR:{sym:"₨",toB:v=>v/FX,frB:v=>v*FX}};
 function useDark(){
   const[dark,setDark]=useState(()=>window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
   useEffect(()=>{document.documentElement.setAttribute("data-theme",dark?"dark":"light");},[dark]);
   return[dark,setDark];
 }
-
-/* ── currency ── */
 function useCur(){
-  const[cur,setCur]=useState("USD");
+  const[cur,setCur]=useState("MUR");
   const C=CURR[cur];
   const disp=(v,sh)=>{
     if(typeof v!=="number"||isNaN(v))return"—";
@@ -165,20 +151,13 @@ function useCur(){
   };
   return{cur,setCur,disp,toB:C.toB,frB:C.frB,sym:C.sym};
 }
-
-/* ── debt calc ── */
 function debtCalc(principal,annualRate,termMonths){
   if(!principal||principal<=0)return{monthlyPmt:0,totalInterest:0};
-  if(!annualRate||annualRate<=0){
-    const mp=termMonths>0?principal/termMonths:principal;
-    return{monthlyPmt:mp,totalInterest:0};
-  }
+  if(!annualRate||annualRate<=0){const mp=termMonths>0?principal/termMonths:principal;return{monthlyPmt:mp,totalInterest:0};}
   const mr=annualRate/100/12,n=Math.max(1,termMonths);
   const mp=principal*(mr*Math.pow(1+mr,n))/(Math.pow(1+mr,n)-1);
   return{monthlyPmt:mp,totalInterest:Math.max(0,mp*n-principal)};
 }
-
-/* ── helpers ── */
 function fmtAmt(v,sym){
   if(!v||v<=0)return"None";
   if(v>=1e6)return sym+(v/1e6).toFixed(2)+"M";
@@ -191,38 +170,26 @@ function hlabel(s){
   if(s<75)return{l:"On track",c:"var(--ok)"};
   return{l:"Strong",c:"var(--ok)"};
 }
-
-/* ── projection engine ── */
 function proj(inp,rate){
   const{age,gender,income,monthlySpend:ms,savings,savingsRate:sr,retireAge:ra,
     debtBalance:db=0,debtRate:dr=0,debtTerm:dt=0,
     retireMonthlyExpenses:rme=0,lifeGoals:lg=[],incomeMode:im="rule4"}=inp;
   const ai=income*12,le=gender==="male"?75:85,yir=Math.max(1,le-ra);
-  const INF=0.025,IG=0.03,SWR=0.04,ytr=Math.max(1,ra-age);
-  const r=rate!==undefined?rate:0.05;
+  const INF=0.025,IG=0.03,SWR=0.04,ytr=Math.max(1,ra-age),r=rate!==undefined?rate:0.05;
   const dbt=debtCalc(db,dr,dt);
   const debtMonths=Math.min(dt||0,ytr*12);
-  /* goal withdrawals */
-  const gw={};
-  const mortDrag={};
+  const gw={},mortDrag={};
   (lg||[]).forEach(g=>{
-    const amt=g.amount||0; if(!amt)return;
+    const amt=g.amount||0;if(!amt)return;
     if(g.id==="trip"&&(g.recurYears||0)>0){
-      for(let a2=g.atAge;a2<ra;a2+=g.recurYears){
-        const yr=a2-age; if(yr>0)gw[yr]=(gw[yr]||0)+amt;
-      }
-    } else if(g.atAge>age){
+      for(let a2=g.atAge;a2<ra;a2+=g.recurYears){const yr=a2-age;if(yr>0)gw[yr]=(gw[yr]||0)+amt;}
+    }else if(g.atAge>age){
       const yr=g.atAge-age;
-      const effAmt=(g.id==="house"&&(g.mortgagePct||0)>0)
-        ?amt*(1-(g.mortgagePct/100)):amt;
+      const effAmt=(g.id==="house"&&(g.mortgagePct||0)>0)?amt*(1-(g.mortgagePct/100)):amt;
       gw[yr]=(gw[yr]||0)+effAmt;
       if(g.id==="house"&&(g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0){
-        const principal=amt*(g.mortgagePct/100);
-        const md=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
-        const startYr=yr;
-        for(let t2=startYr;t2<startYr+g.mortgageTerm&&t2<ytr;t2++){
-          mortDrag[t2]=(mortDrag[t2]||0)+md.monthlyPmt*12;
-        }
+        const md=debtCalc(amt*(g.mortgagePct/100),g.mortgageRate,g.mortgageTerm*12);
+        for(let t2=yr;t2<yr+g.mortgageTerm&&t2<ytr;t2++)mortDrag[t2]=(mortDrag[t2]||0)+md.monthlyPmt*12;
       }
     }
   });
@@ -231,8 +198,7 @@ function proj(inp,rate){
   for(let t=0;t<ytr;t++){
     const curIncome=ai*Math.pow(1+IG,t);
     const debtMos=Math.min(12,Math.max(0,debtMonths-t*12));
-    const effSav=Math.max(0,curIncome*(sr/100)-dbt.monthlyPmt*debtMos-(mortDrag[t]||0));
-    port=port*(1+r)+effSav;
+    port=port*(1+r)+Math.max(0,curIncome*(sr/100)-dbt.monthlyPmt*debtMos-(mortDrag[t]||0));
     if(gw[t])port=Math.max(0,port-gw[t]);
     acc.push({yr:age+t,val:Math.max(0,port),phase:"grow"});
   }
@@ -243,15 +209,12 @@ function proj(inp,rate){
   else{wd=Math.max(isp*0.7,rp*SWR);}
   if(tp!==null){
     const PV=Math.max(0,savings-db),mr2=r/12,n2=ytr*12,gr=Math.pow(1+mr2,n2),nd=tp-PV*gr;
-    rms=nd>0?(nd*mr2)/(gr-1):0;
-    rsr=Math.min(80,Math.max(0,(rms/income)*100));
+    rms=nd>0?(nd*mr2)/(gr-1):0;rsr=Math.min(80,Math.max(0,(rms/income)*100));
   }
   const maxD=Math.max(40,yir+15);
-  let ro=ra+maxD,dp=rp;
-  const dds=[];
+  let ro=ra+maxD,dp=rp;const dds=[];
   for(let y=0;y<=maxD;y++){
-    const w=wd*Math.pow(1+INF,y);
-    dp=dp*(1+r)-w;
+    const w=wd*Math.pow(1+INF,y);dp=dp*(1+r)-w;
     if(dp<=0){ro=ra+y;break;}
     if(y<maxD)dds.push({yr:ra+y,val:Math.max(0,dp),phase:"draw"});
   }
@@ -261,18 +224,12 @@ function proj(inp,rate){
   const rb=tp?Math.min(25,(rp/tp)*25):Math.min(25,(rp/(wd*yir))*25);
   const health=Math.round(sc1+sc2+sc3+(lasts?rb:rb*0.5));
   const sp=Math.min(97,Math.max(5,(lasts?60:25)+(sur>=10?18:sur>=5?10:sur>=0?4:0)+(sr>=20?10:sr>=15?6:sr>=10?3:0)+(cm>=25?9:cm>=18?5:0)));
-  return{retP:rp,sp,ro,health,le,yir,r,wd,ytr,lasts,cm,sur,
-    data:[...acc,...dds],tp,rms,rsr,inf:Math.pow(1+INF,ytr),
-    debtMonthlyPmt:dbt.monthlyPmt};
+  return{retP:rp,sp,ro,health,le,yir,r,wd,ytr,lasts,cm,sur,data:[...acc,...dds],tp,rms,rsr,inf:Math.pow(1+INF,ytr),debtMonthlyPmt:dbt.monthlyPmt};
 }
-
 function stressTest(inp){
   const t=proj(inp,0.04),l=proj(inp,0.05),b=proj(inp,0.06);
-  return{tough:t,likely:l,best:b,
-    tP:t.retP,lP:l.retP,bP:b.retP,
-    tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
+  return{tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
 }
-
 function hhProj(p1,p2,rate){
   rate=rate||0.05;
   const INF=0.025,SWR=0.04,r=rate;
@@ -288,9 +245,8 @@ function hhProj(p1,p2,rate){
   const im=p1.incomeMode||"rule4";
   let wd,tp=null;
   if(im==="expenses"){wd=isp;tp=isp/SWR;}
-  else if(im==="custom"&&(p1.retireMonthlyExpenses||0)>0){
-    const d=p1.retireMonthlyExpenses*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;
-  } else{wd=Math.max(isp*0.7,cp*SWR);}
+  else if(im==="custom"&&(p1.retireMonthlyExpenses||0)>0){const d=p1.retireMonthlyExpenses*12*Math.pow(1+INF,ytr);wd=d;tp=d/SWR;}
+  else{wd=Math.max(isp*0.7,cp*SWR);}
   const yir=Math.max(1,hle-hra),maxD=Math.max(40,yir+15);
   let ro=hra+maxD,dp=cp;const dds=[];
   for(let y=0;y<=maxD;y++){
@@ -310,44 +266,97 @@ function hhProj(p1,p2,rate){
   const sp=Math.min(97,Math.max(5,(lasts?60:25)+(sur>=10?18:sur>=5?10:sur>=0?4:0)+(avg>=20?10:avg>=15?6:avg>=10?3:0)+(cm>=25?9:cm>=18?5:0)));
   const inf=Math.pow(1+INF,ytr);
   const p1s=cp>0?pot1/cp:0.5,p2s=cp>0?pot2/cp:0.5,tma=wd/12;
-  let pp1=pot1,pp2=pot2;
-  const sLE=Math.min(le1,le2),p1df=le1<=le2,hdd=[];
+  let pp1=pot1,pp2=pot2;const sLE=Math.min(le1,le2),p1df=le1<=le2,hdd=[];
   for(let y=0;y<=maxD;y++){
     const yr=hra+y;
-    if(yr<=sLE){
-      pp1=pp1*(1+r)-wd*p1s*Math.pow(1+INF,y);
-      pp2=pp2*(1+r)-wd*p2s*Math.pow(1+INF,y);
-    } else {
-      const cb=Math.max(0,pp1)+Math.max(0,pp2);
-      const nc=cb*(1+r)-wd*Math.pow(1+INF,y);
-      if(p1df){pp1=0;pp2=nc;}else{pp2=0;pp1=nc;}
-    }
+    if(yr<=sLE){pp1=pp1*(1+r)-wd*p1s*Math.pow(1+INF,y);pp2=pp2*(1+r)-wd*p2s*Math.pow(1+INF,y);}
+    else{const cb=Math.max(0,pp1)+Math.max(0,pp2),nc=cb*(1+r)-wd*Math.pow(1+INF,y);if(p1df){pp1=0;pp2=nc;}else{pp2=0;pp1=nc;}}
     hdd.push({yr,p1v:Math.max(0,pp1),p2v:Math.max(0,pp2)});
     if(Math.max(0,pp1)+Math.max(0,pp2)<=0)break;
   }
-  return{retP:cp,sp,ro,health,le:hle,yir,wd,ytr,lasts,cm,sur,
-    data:[...grow,...dds],hdd,tp,p1P:r1.retP,p2P:r2.retP,le1,le2,hra,
-    p1s,p2s,p1mt:tma*p1s/inf,p2mt:tma*p2s/inf,tma,inf,
-    debtMonthlyPmt:r1.debtMonthlyPmt};
+  return{retP:cp,sp,ro,health,le:hle,yir,wd,ytr,lasts,cm,sur,data:[...grow,...dds],hdd,tp,p1P:r1.retP,p2P:r2.retP,le1,le2,hra,p1s,p2s,p1mt:tma*p1s/inf,p2mt:tma*p2s/inf,tma,inf,debtMonthlyPmt:r1.debtMonthlyPmt};
 }
-
 function hhStress(p1,p2){
   const t=hhProj(p1,p2,0.04),l=hhProj(p1,p2,0.05),b=hhProj(p1,p2,0.06);
-  return{tough:t,likely:l,best:b,tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
+  return{tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
 }
-
 function earlyCalc(inp,n,rate){
   rate=rate||0.05;
   const target=Math.max(inp.age+2,inp.retireAge-n),ytr=Math.max(1,target-inp.age);
   const isp=inp.monthlySpend*12*Math.pow(1.025,ytr);
-  const need=Math.max(
-    inp.incomeMode==="expenses"||(inp.incomeMode==="custom"&&inp.retireMonthlyExpenses>0)
-      ?((inp.incomeMode==="custom"?inp.retireMonthlyExpenses:inp.monthlySpend)*12*Math.pow(1.025,ytr))/0.04
-      :isp*0.7*25,isp*20);
+  const need=Math.max(isp*0.7*25,isp*20);
   const PV=Math.max(0,inp.savings-(inp.debtBalance||0));
   const mr=rate/12,n2=ytr*12,gr=Math.pow(1+mr,n2);
   const mn=Math.max(0,need-PV*gr)>0?((need-PV*gr)*mr)/(gr-1):0;
   return{targetAge:target,rn:Math.min(80,Math.max(0,(mn/inp.income)*100))};
+}
+
+/* ── PDF ── */
+function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
+  try{
+    const jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
+    if(!jsPDFLib){console.error("jsPDF not found");return false;}
+    const doc=new jsPDFLib({orientation:"portrait",unit:"mm",format:"a4"});
+    const W=210,M=16,COL=W-M*2;let y=0;
+    const np=(need)=>{if(y+need>272){doc.addPage();y=20;}};
+    doc.setFillColor(26,86,219);doc.rect(0,0,W,36,"F");
+    doc.setFont("helvetica","bold");doc.setFontSize(20);doc.setTextColor(255,255,255);
+    doc.text("ARK Financial Planners",M,15);
+    doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(180,210,255);
+    doc.text("Personalised Retirement Plan",M,23);
+    doc.setFontSize(8);doc.setTextColor(140,175,240);
+    doc.text("Prepared for: "+info.name+"   |   "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),M,30);
+    y=44;
+    const sec=(title)=>{np(14);doc.setFillColor(237,242,255);doc.rect(M,y,COL,8,"F");doc.setDrawColor(26,86,219);doc.setLineWidth(0.5);doc.line(M,y,M,y+8);doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(26,86,219);doc.text(title.toUpperCase(),M+4,y+5.5);y+=13;};
+    const row=(label,value,rgb)=>{np(8);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90,100,120);doc.text(label,M,y);doc.setFont("helvetica","bold");if(rgb)doc.setTextColor(...rgb);else doc.setTextColor(17,24,39);doc.text(String(value),W-M,y,{align:"right"});doc.setDrawColor(225,229,238);doc.setLineWidth(0.2);doc.line(M,y+2.5,W-M,y+2.5);y+=8;};
+    const bigCard=(label,value,sub,bg,fg)=>{np(22);doc.setFillColor(...bg);doc.roundedRect(M,y,COL,18,3,3,"F");doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+80)));doc.text(label,M+5,y+6);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...fg);doc.text(String(value),M+5,y+13.5);if(sub){doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+80)));doc.text(sub,W-M-2,y+13.5,{align:"right"});}y+=23;};
+    const twoCards=(items)=>{np(20);const hw=(COL-6)/2;items.forEach((item,i)=>{const x=i===0?M:M+hw+6;doc.setFillColor(...item[2]);doc.roundedRect(x,y,hw,16,3,3,"F");doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...item[3].map(c=>Math.min(255,c+80)));doc.text(item[0],x+4,y+6);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...item[3]);doc.text(String(item[1]),x+4,y+13);});y+=21;};
+    const inf=result.inf||1,moAtRet=result.wd/12,moToday=moAtRet/inf;
+    const incomeMode=base.incomeMode||"rule4";
+    const modeLabel=incomeMode==="expenses"?"Maintaining your current lifestyle":incomeMode==="custom"?"Based on your custom target":"4% withdrawal rule";
+    sec("Your Retirement Income");
+    bigCard("Monthly income at retirement",disp(moAtRet),"in today's money: "+disp(moToday),[26,86,219],[255,255,255]);
+    row("Income strategy",modeLabel);
+    row("Inflation adjusted","2.5% per year over "+result.ytr+" years");
+    if(hh&&result.p1mt!=null){y+=2;twoCards([[" Your share ("+Math.round(result.p1s*100)+"%)",disp(moAtRet*result.p1s),[235,242,255],[26,86,219]],["Partner's share ("+Math.round(result.p2s*100)+"%)",disp(moAtRet*result.p2s),[243,238,255],[124,58,237]]]);row("Your share in today's money",disp(result.p1mt));row("Partner's share in today's money",disp(result.p2mt));}
+    y+=4;
+    sec("Your Retirement Pot");
+    if(hh&&result.p1P!=null){twoCards([["Your pot (age "+base.retireAge+")",disp(result.p1P),[235,242,255],[26,86,219]],["Partner's pot (age "+partner.retireAge+")",disp(result.p2P),[243,238,255],[124,58,237]]]);bigCard("Combined retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);}
+    else{bigCard("Projected retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);}
+    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending (target: 20–25×)");
+    row("Funds status",result.lasts?"✓ Lasts "+result.sur+" years beyond life expectancy":"⚠ Runs short by "+(result.le-result.ro)+" years",result.lasts?[22,163,74]:[220,38,38]);
+    y+=4;
+    sec("Savings & Financial Health");
+    const hRgb=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
+    const hl=hlabel(result.health);
+    twoCards([["Health score",result.health+"/100 — "+hl.l,[245,247,255],hRgb],["Success probability",result.sp+"%",[245,247,255],result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]]]);
+    if(hh){row("Your monthly income",disp(base.income));row("Your savings rate",base.savingsRate+"% of gross income");row("Your savings to date",disp(base.savings));row("Partner monthly income",disp(partner.income));row("Partner savings rate",partner.savingsRate+"% of gross income");row("Partner savings to date",disp(partner.savings));row("Monthly household expenses",disp(base.monthlySpend));}
+    else{row("Monthly income",disp(base.income));row("Monthly spending",disp(base.monthlySpend));row("Savings to date",disp(base.savings));row("Savings rate",base.savingsRate+"% of gross income");row("Target retirement age","Age "+base.retireAge);if(base.debtBalance>0){row("Outstanding debt",disp(base.debtBalance),[220,38,38]);row("Debt rate / term",base.debtRate+"% p.a. / "+Math.round((base.debtTerm||0)/12)+" years");}}
+    y+=4;
+    if((base.lifeGoals||[]).length>0){
+      sec("Life Goals & Milestones");
+      (base.lifeGoals||[]).forEach(g=>{
+        const freq=g.id==="trip"&&(g.recurYears||0)>0?" · every "+g.recurYears+" yrs":"";
+        const mortgage=g.id==="house"&&(g.mortgagePct||0)>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
+        row(g.icon+" "+g.label+" (age "+g.atAge+")"+freq+mortgage,disp(g.amount));
+      });
+      const totalGoals=(base.lifeGoals||[]).reduce((s,g)=>{if(g.id==="trip"&&(g.recurYears||0)>0){return s+g.amount*Math.max(1,Math.ceil((base.retireAge-g.atAge)/g.recurYears));}return s+g.amount;},0);
+      y+=2;row("Total estimated goal cost",disp(totalGoals),[217,119,6]);y+=4;
+    }
+    sec("Scenario Outlook");
+    row("Worst case (4% return)",disp(Math.round(result.retP*0.85)),[220,38,38]);
+    row("Base case (5% return)",disp(result.retP),[22,163,74]);
+    row("Best case (6% return)",disp(Math.round(result.retP*1.16)),[22,163,74]);
+    const fY=285;
+    doc.setFillColor(26,86,219);doc.rect(0,fY,W,12,"F");
+    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(180,210,255);
+    doc.text("ARK Financial Planners · arkfinancialplanners.com",M,fY+5);
+    doc.text("For educational purposes only. Not financial advice.",W-M,fY+5,{align:"right"});
+    doc.setTextColor(140,175,240);
+    doc.text("Consult a qualified financial consultant before making decisions. · 1 USD = 46.5 MUR",W/2,fY+9.5,{align:"center"});
+    doc.save("ARK-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
+    return true;
+  }catch(e){console.error("PDF error:",e);return false;}
 }
 
 /* ── SLIDER ── */
@@ -355,12 +364,9 @@ function Slider({label,value,min,max,step,fmt,onChange,color,sub,hint}){
   color=color||"var(--accent)";step=step||1;
   const[loc,setLoc]=useState(value);
   useEffect(()=>setLoc(value),[value]);
-  const clamp=v=>Math.min(max,Math.max(min,v));
-  const span=max-min||1;
-  const p=Math.min(100,Math.max(0,((loc-min)/span)*100));
-  const commit=v=>{const n=clamp(+v);setLoc(n);onChange(n);};
-  const dec=()=>commit(clamp(loc-step));
-  const inc=()=>commit(clamp(loc+step));
+  const clamp=v=>Math.min(max,Math.max(min,Math.round(+v/step)*step));
+  const p=Math.min(100,Math.max(0,((loc-min)/(max-min||1))*100));
+  const set=v=>{const n=clamp(v);setLoc(n);onChange(n);};
   return h("div",{className:"sl-wrap"},
     h("div",{className:"sl-hdr"},
       h("span",{className:"sl-label"},label,hint&&h("span",{className:"sl-hint"},hint)),
@@ -368,96 +374,73 @@ function Slider({label,value,min,max,step,fmt,onChange,color,sub,hint}){
     ),
     sub&&h("div",{className:"sl-sub",style:{color}},sub),
     h("div",{className:"sl-row"},
-      h("button",{className:"sl-pm",onClick:dec,tabIndex:-1},"−"),
+      h("button",{className:"sl-pm",onClick:()=>set(loc-step),tabIndex:-1},"−"),
       h("div",{className:"sl-track-wrap"},
-        h("div",{className:"sl-track"},
-          h("div",{className:"sl-fill",style:{width:p+"%",background:color}})
-        ),
+        h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:color}})),
         h("div",{className:"sl-thumb",style:{left:p+"%",background:color}}),
-        h("input",{type:"range",className:"sl-input",min,max,step,value:loc,
-          onChange:e=>setLoc(+e.target.value),
-          onMouseUp:e=>commit(e.target.value),
-          onTouchEnd:e=>commit(e.target.value),
-          onKeyUp:e=>commit(e.target.value)})
+        h("input",{type:"range",className:"sl-input",min,max,step,value:loc,onChange:e=>set(e.target.value)})
       ),
-      h("button",{className:"sl-pm",onClick:inc,tabIndex:-1},"+")
+      h("button",{className:"sl-pm",onClick:()=>set(loc+step),tabIndex:-1},"+")
     )
   );
 }
-
 function SavSlider({income,sr,onChange,disp,color}){
   const[loc,setLoc]=useState(sr);
   useEffect(()=>setLoc(sr),[sr]);
   const col=color||(loc>=20?"var(--ok)":loc>=10?"var(--warn)":"var(--danger)");
-  const commit=v=>{const n=+v;setLoc(n);onChange(n);};
+  const set=v=>{const n=Math.min(50,Math.max(1,Math.round(+v)));setLoc(n);onChange(n);};
   const p=Math.min(100,(loc/50)*100);
-  const trackW=92,thumbL=4+p*trackW/100;
   return h("div",{className:"sl-wrap"},
     h("div",{className:"sl-hdr"},
       h("span",{className:"sl-label"},"Savings rate ",h("span",{style:{fontSize:10,color:"var(--hint)",fontWeight:400}},"% of monthly gross income")),
       h("span",{className:"sl-val",style:{color:col}},loc+"%")
     ),
     h("div",{className:"sl-sub",style:{color:col}},disp(income*(loc/100))+"/mo · "+(loc<10?"aim for 15%+":loc<20?"good — aim for 20%":"excellent ✓")),
-    h("div",{className:"sl-track-wrap"},
-      h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:`${p*trackW/100}%`,background:col}})),
-      h("div",{className:"sl-thumb",style:{left:`${thumbL}%`,background:col}}),
-      h("input",{type:"range",className:"sl-input",min:1,max:50,step:1,value:loc,
-        onChange:e=>setLoc(+e.target.value),
-        onMouseUp:e=>commit(e.target.value),
-        onTouchEnd:e=>commit(e.target.value),
-        onKeyUp:e=>commit(e.target.value)})
+    h("div",{className:"sl-row"},
+      h("button",{className:"sl-pm",onClick:()=>set(loc-1),tabIndex:-1},"−"),
+      h("div",{className:"sl-track-wrap"},
+        h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:col}})),
+        h("div",{className:"sl-thumb",style:{left:p+"%",background:col}}),
+        h("input",{type:"range",className:"sl-input",min:1,max:50,step:1,value:loc,onChange:e=>set(e.target.value)})
+      ),
+      h("button",{className:"sl-pm",onClick:()=>set(loc+1),tabIndex:-1},"+")
     )
   );
 }
 
 /* ── DEBT SECTION ── */
 function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp}){
-  const hasDebt=db>0;
-  const termYears=dt?Math.round(dt/12):0;
-  const dbt=debtCalc(db,dr,dt);
-  const fmtV=v=>v===0?"None":fmtAmt(v,sym);
-  const dbDisp=frB(db);
-  // Dynamic step: Rs1k below Rs1m, Rs100k above
-  const dynamicStep=cur==="MUR"?(dbDisp<1000000?1000:100000):stepDbDisp;
-  const dec=()=>{const n=Math.max(0,dbDisp-dynamicStep);onDB(toB(n));};
-  const inc=()=>{const n=Math.min(maxDbDisp,dbDisp+dynamicStep);onDB(toB(n));};
+  const hasDebt=db>0,termYears=dt?Math.round(dt/12):0;
+  const dbt=debtCalc(db,dr,dt),dbDisp=frB(db);
+  const dynStep=cur==="MUR"?(dbDisp<1000000?1000:100000):stepDbDisp;
   const p=Math.min(100,(dbDisp/maxDbDisp)*100);
   return h("div",null,
     h("div",{className:"sl-wrap"},
       h("div",{className:"sl-hdr"},
         h("span",{className:"sl-label"},"Outstanding debt ("+cur+")"),
-        h("span",{className:"sl-val",style:{color:"var(--danger)"}},fmtV(dbDisp))
+        h("span",{className:"sl-val",style:{color:"var(--danger)"}},dbDisp===0?"None":fmtAmt(dbDisp,sym))
       ),
       h("div",{className:"sl-row"},
-        h("button",{className:"sl-pm",onClick:dec,tabIndex:-1},"−"),
+        h("button",{className:"sl-pm",onClick:()=>onDB(toB(Math.max(0,dbDisp-dynStep))),tabIndex:-1},"−"),
         h("div",{className:"sl-track-wrap"},
           h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:"var(--danger)"}})),
           h("div",{className:"sl-thumb",style:{left:p+"%",background:"var(--danger)"}}),
-          h("input",{type:"range",className:"sl-input",min:0,max:maxDbDisp,step:dynamicStep,value:dbDisp,
-            onChange:e=>onDB(toB(+e.target.value))})
+          h("input",{type:"range",className:"sl-input",min:0,max:maxDbDisp,step:dynStep,value:dbDisp,onChange:e=>onDB(toB(+e.target.value))})
         ),
-        h("button",{className:"sl-pm",onClick:inc,tabIndex:-1},"+")
+        h("button",{className:"sl-pm",onClick:()=>onDB(toB(Math.min(maxDbDisp,dbDisp+dynStep))),tabIndex:-1},"+")
       )
     ),
     hasDebt&&h("div",{className:"debt-box"},
       h("div",{className:"row2"},
         h("div",null,
           h("div",{className:"field-lbl"},"Interest rate (% p.a.)"),
-          h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,
-            value:dr||"",placeholder:"e.g. 6.5",
-            onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})
+          h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:dr||"",placeholder:"e.g. 6.5",onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})
         ),
         h("div",null,
           h("div",{className:"field-lbl"},"Remaining term (years)"),
-          h("input",{className:"mini-input",type:"number",min:0,max:30,step:1,
-            value:termYears===0?"":termYears,placeholder:"0",
-            onChange:e=>{
-              const v=e.target.value;
-              onDT(v===""?0:Math.min(30,Math.max(0,parseInt(v)||0))*12);
-            }})
+          h("input",{className:"mini-input",type:"number",min:0,max:30,step:1,value:termYears===0?"":termYears,placeholder:"0",onChange:e=>{const v=e.target.value;onDT(v===""?0:Math.min(30,Math.max(0,parseInt(v)||0))*12);}})
         )
-      ),
-
+      )
     )
   );
 }
@@ -465,33 +448,24 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDbDisp,ste
 /* ── CHART ── */
 function Chart({data,ra,le,hdd}){
   if(!data||!data.length)return null;
-  const W=600,H=180,P={l:8,r:8,t:14,b:20};
-  const cw=W-P.l-P.r,ch=H-P.t-P.b;
+  const W=600,H=180,P={l:8,r:8,t:14,b:20},cw=W-P.l-P.r,ch=H-P.t-P.b;
   const av=[...data.map(d=>d.val)];
   if(hdd)hdd.forEach(d=>av.push(d.p1v||0,d.p2v||0));
   const maxV=Math.max(...av,1)*1.12;
   const ay=[...data.map(d=>d.yr)];
   if(hdd)hdd.forEach(d=>ay.push(d.yr));
   const minY=Math.min(...ay),maxY=Math.max(...ay),rng=Math.max(1,maxY-minY);
-  const sx=yr=>P.l+((yr-minY)/rng)*cw;
-  const sy=v=>P.t+ch-(Math.max(0,v)/maxV)*ch;
-  const grow=data.filter(d=>d.phase==="grow");
-  const draw=hdd||data.filter(d=>d.phase==="draw");
+  const sx=yr=>P.l+((yr-minY)/rng)*cw,sy=v=>P.t+ch-(Math.max(0,v)/maxV)*ch;
+  const grow=data.filter(d=>d.phase==="grow"),draw=hdd||data.filter(d=>d.phase==="draw");
   const tp=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.val).toFixed(1)).join(" ");
   const tp1=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.p1v||0).toFixed(1)).join(" ");
   const tp2=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.p2v||0).toFixed(1)).join(" ");
   const rx=sx(ra),lx=le>=minY&&le<=maxY?sx(le):null;
   return h("svg",{width:"100%",viewBox:"0 0 "+W+" "+H,style:{overflow:"visible",display:"block"}},
     h("defs",null,
-      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},
-        h("stop",{offset:"0%",stopColor:"#3B82F6",stopOpacity:".15"}),
-        h("stop",{offset:"100%",stopColor:"#3B82F6",stopOpacity:".01"})),
-      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},
-        h("stop",{offset:"0%",stopColor:"#0D9488",stopOpacity:".15"}),
-        h("stop",{offset:"100%",stopColor:"#0D9488",stopOpacity:".01"})),
-      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},
-        h("stop",{offset:"0%",stopColor:"#A78BFA",stopOpacity:".12"}),
-        h("stop",{offset:"100%",stopColor:"#A78BFA",stopOpacity:".01"}))
+      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#3B82F6",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#3B82F6",stopOpacity:".01"})),
+      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#0D9488",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#0D9488",stopOpacity:".01"})),
+      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#A78BFA",stopOpacity:".12"}),h("stop",{offset:"100%",stopColor:"#A78BFA",stopOpacity:".01"}))
     ),
     grow.length>1&&h("path",{d:tp(grow)+" L"+sx(grow[grow.length-1].yr)+","+(P.t+ch)+" L"+sx(grow[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gg)"}),
     grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#3B82F6",strokeWidth:"2",strokeLinejoin:"round"}),
@@ -508,18 +482,12 @@ function Chart({data,ra,le,hdd}){
     h("text",{x:rx+3,y:P.t+9,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif"},"retire "+ra),
     lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#EF4444",strokeWidth:"1.5",strokeDasharray:"4,3",opacity:".8"}),
     lx&&h("text",{x:lx+3,y:P.t+9,fill:"#EF4444",fontSize:"8",fontFamily:"sans-serif"},"age "+le),
-    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>
-      h("text",{key:yr,x:sx(yr),y:H-3,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr)
-    )
+    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>h("text",{key:yr,x:sx(yr),y:H-3,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr))
   );
 }
-
-/* ── LIFE BAR ── */
 function LifeBar({ra,le,ro}){
   const end=Math.max(le+10,ro+4),rng=Math.max(1,end-ra);
-  const lp=((le-ra)/rng)*100;
-  const rp=Math.min(100,((Math.min(ro,end)-ra)/rng)*100);
-  const ok=ro>=le;
+  const lp=((le-ra)/rng)*100,rp=Math.min(100,((Math.min(ro,end)-ra)/rng)*100),ok=ro>=le;
   return h("div",{className:"lifebar"},
     h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:5}},
       h("span",{style:{fontSize:11,color:"var(--muted)"}},"Retire "+ra),
@@ -545,13 +513,13 @@ const GOALS=[
   {id:"other",icon:"⭐",label:"Other",da:40000,dage:43},
 ];
 function getCaps(id,cur){
-  if(id==="house")return{max:cur==="MUR"?50000000:3000000,step:cur==="MUR"?100000:10000};
-  if(id==="edu")  return{max:cur==="MUR"?10000000:500000,  step:cur==="MUR"?100000:5000};
+  if(id==="house")return{max:cur==="MUR"?100000000:3000000,step:cur==="MUR"?100000:10000};
+  if(id==="edu")  return{max:cur==="MUR"?25000000:500000,  step:cur==="MUR"?100000:5000};
   if(id==="trip") return{max:cur==="MUR"?1000000:50000,    step:cur==="MUR"?50000:500};
-  if(id==="other")return{max:cur==="MUR"?25000000:500000,  step:cur==="MUR"?100000:5000};
-  if(id==="car")  return{max:cur==="MUR"?50000000:3000000,  step:cur==="MUR"?100000:10000};
-  if(id==="wed")  return{max:cur==="MUR"?5000000:150000,   step:cur==="MUR"?50000:5000};
-  return{max:cur==="MUR"?10000000:500000,step:cur==="MUR"?50000:1000};
+  if(id==="car")  return{max:cur==="MUR"?15000000:300000,  step:cur==="MUR"?100000:5000};
+  if(id==="wed")  return{max:cur==="MUR"?2500000:100000,   step:cur==="MUR"?50000:2000};
+  if(id==="other")return{max:cur==="MUR"?5000000:150000,   step:cur==="MUR"?50000:2000};
+  return{max:cur==="MUR"?5000000:150000,step:cur==="MUR"?50000:2000};
 }
 function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
   const ageMin=Math.max(ba+1,18),ageMax=Math.min(le-1,99);
@@ -559,51 +527,29 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
     h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}},
       GOALS.map(gt=>{
         const active=goals.some(g=>g.id===gt.id);
-        return h("button",{key:gt.id,className:"goal-pill"+(active?" on":""),
-          onClick:()=>active?onRemove(gt.id):onAdd(gt)},
+        return h("button",{key:gt.id,className:"goal-pill"+(active?" on":""),onClick:()=>active?onRemove(gt.id):onAdd(gt)},
           h("span",{style:{fontSize:14}},gt.icon),h("span",null,gt.label));
       })
     ),
     goals.map(g=>{
       const isTrip=g.id==="trip",isHouse=g.id==="house";
-      // caps are already in display units — no frB() needed
       const{max:maxDisp,step:stepDisp}=getCaps(g.id,cur);
-      const minDisp=cur==="MUR"?1000:100;
       const atAge=Math.max(ageMin,Math.min(g.atAge,ageMax));
       return h("div",{key:g.id,style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.2)",borderRadius:10,padding:14,marginBottom:8}},
         h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
           h("span",{style:{fontSize:12,fontWeight:600,color:"var(--text)"}},g.icon+" "+g.label),
           h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:17}},"×")
         ),
-        // value and onChange in display units; store in base via toB/frB
-        h(Slider,{label:isTrip?"Cost per trip":"Purchase price",
-          value:frB(g.amount),min:minDisp,max:maxDisp,step:stepDisp,
-          fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"var(--gold)"}),
-        h(Slider,{label:isTrip?"First trip at age":"At age",
-          value:atAge,min:ageMin,max:ageMax,step:1,
-          fmt:v=>"Age "+v,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--warn)"}),
+        h(Slider,{label:isTrip?"Cost per trip":"Purchase price",value:frB(g.amount),min:1000,max:frB(maxDisp),step:frB(stepDisp),fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"var(--gold)"}),
+        h(Slider,{label:isTrip?"First trip at age":"At age",value:atAge,min:ageMin,max:ageMax,step:1,fmt:v=>"Age "+v,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--warn)"}),
         isHouse&&h("div",{style:{marginTop:4}},
-          h(Slider,{label:"% financed via mortgage",
-            value:g.mortgagePct||0,min:0,max:100,step:5,
-            fmt:v=>v+"% (down payment: "+disp(toB(frB(g.amount)*(1-v/100)))+")",
-            onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
+          h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,fmt:v=>v+"% (down payment: "+disp(toB(frB(g.amount)*(1-v/100)))+")",onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
           (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:4}},
-            h("div",null,
-              h("div",{className:"field-lbl"},"Mortgage rate (% p.a.)"),
-              h("input",{className:"mini-input",type:"number",min:0,max:20,step:0.1,
-                value:g.mortgageRate||"",placeholder:"e.g. 5.5",
-                onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(20,Math.max(0,parseFloat(e.target.value)||0)))})
-            ),
-            h("div",null,
-              h("div",{className:"field-lbl"},"Term (years)"),
-              h("input",{className:"mini-input",type:"number",min:1,max:30,step:1,
-                value:g.mortgageTerm||"",placeholder:"e.g. 20",
-                onChange:e=>onUpdate(g.id,"mortgageTerm",Math.min(30,Math.max(1,parseInt(e.target.value)||20)))})
-            )
+            h("div",null,h("div",{className:"field-lbl"},"Mortgage rate (% p.a.)"),h("input",{className:"mini-input",type:"number",min:0,max:20,step:0.1,value:g.mortgageRate||"",placeholder:"e.g. 5.5",onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(20,Math.max(0,parseFloat(e.target.value)||0)))})),
+            h("div",null,h("div",{className:"field-lbl"},"Term (years)"),h("input",{className:"mini-input",type:"number",min:1,max:30,step:1,value:g.mortgageTerm||"",placeholder:"e.g. 20",onChange:e=>onUpdate(g.id,"mortgageTerm",Math.min(30,Math.max(1,parseInt(e.target.value)||20)))}))
           ),
           (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&(function(){
-            const principal=g.amount*(g.mortgagePct/100);
-            const dbt=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
+            const principal=g.amount*(g.mortgagePct/100),dbt=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
             return h("div",{style:{display:"flex",gap:14,fontSize:11,color:"var(--muted)",marginTop:4,flexWrap:"wrap"}},
               h("span",null,"Loan: ",h("b",{style:{color:"var(--accent)"}},disp(principal))),
               h("span",null,"Monthly: ",h("b",{style:{color:"var(--danger)"}},sym+Math.round(frB(dbt.monthlyPmt)).toLocaleString()+"/mo")),
@@ -631,11 +577,8 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
 
 /* ── INCOME MODE ── */
 function IncomeMode({mode,onChange,ms,ca,onCA,result,disp,toB,frB,cur,sym,isHH}){
-  const p4=result?result.wd/12:0;
-  const ytr=result?result.ytr:0;
-  // Inflation-adjusted monthly expense at retirement — recomputed from live ms and ytr
-  const ispMo=ms*Math.pow(1.025,ytr);
-  const pct=ispMo>0?Math.round(p4/ispMo*100):0;
+  const p4=result?result.wd/12:0,ytr=result?result.ytr:0;
+  const ispMo=ms*Math.pow(1.025,ytr),pct=ispMo>0?Math.round(p4/ispMo*100):0;
   const pctColor=pct>=100?"var(--ok)":pct>=70?"var(--warn)":"var(--danger)";
   const minC=cur==="MUR"?5000:100,maxC=cur==="MUR"?2500000:50000,stepC=cur==="MUR"?5000:100;
   const modes=[
@@ -644,14 +587,11 @@ function IncomeMode({mode,onChange,ms,ca,onCA,result,disp,toB,frB,cur,sym,isHH})
     {k:"custom",icon:"🎯",label:"My target",sub:"Set a number",ac:"var(--p2)",ab:"var(--p2-lt)"},
   ];
   return h("div",null,
-    h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:12,lineHeight:1.6}},
-      "How much monthly income "+(isHH?"do you both":"do you")+" want in retirement?"),
+    h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:12,lineHeight:1.6}},"How much monthly income "+(isHH?"do you both":"do you")+" want in retirement?"),
     h("div",{className:"imode-wrap"},
       modes.map(function(m){
         const on=mode===m.k;
-        return h("button",{key:m.k,className:"imode-btn"+(on?" on":""),
-          style:{borderColor:on?m.ac:"var(--border)",background:on?m.ab:"transparent",color:on?m.ac:"var(--muted)"},
-          onClick:()=>onChange(m.k)},
+        return h("button",{key:m.k,className:"imode-btn"+(on?" on":""),style:{borderColor:on?m.ac:"var(--border)",background:on?m.ab:"transparent",color:on?m.ac:"var(--muted)"},onClick:()=>onChange(m.k)},
           h("div",{style:{fontSize:16,marginBottom:3}},m.icon),
           h("div",{style:{fontWeight:600}},m.label),
           h("div",{style:{fontSize:10,opacity:.7,marginTop:1}},m.sub),
@@ -662,68 +602,15 @@ function IncomeMode({mode,onChange,ms,ca,onCA,result,disp,toB,frB,cur,sym,isHH})
       })
     ),
     mode==="rule4"&&h("div",{className:"callout",style:{background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.18)"}},
-      h("b",{style:{color:"var(--accent)"}},"4% rule: "),
-      "Withdrawing 4% annually = ",h("b",{style:{color:"var(--accent)"}},disp(p4)+"/mo"),
+      h("b",{style:{color:"var(--accent)"}},"4% rule: "),"Withdrawing 4% annually = ",h("b",{style:{color:"var(--accent)"}},disp(p4)+"/mo"),
       ms>0&&[" — covering ",h("b",{key:"p",style:{color:pctColor}},pct+"%")," of inflation-adjusted monthly expenses."]
     ),
     mode==="expenses"&&h("div",{className:"callout",style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.18)"}},
-      h("b",{style:{color:"var(--gold)"}},"Same lifestyle: "),
-      "Target ",h("b",{style:{color:"var(--gold)"}},disp(ms)+"/mo")," today, adjusted 2.5%/yr for "+ytr+" years."
+      h("b",{style:{color:"var(--gold)"}},"Same lifestyle: "),"Target ",h("b",{style:{color:"var(--gold)"}},disp(ms)+"/mo")," today, adjusted 2.5%/yr for "+ytr+" years."
     ),
     mode==="custom"&&h("div",{className:"callout",style:{background:"var(--p2-lt)",border:"1px solid rgba(167,139,250,.18)"}},
       h("b",{style:{color:"var(--p2)"}},"Your target:"),
-      h("div",{style:{marginTop:8}},
-        h(Slider,{label:"Monthly retirement income",
-          value:frB(ca||ms),min:minC,max:maxC,step:stepC,
-          fmt:v=>sym+(v>=1e6?(v/1e6).toFixed(2)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo",
-          onChange:v=>onCA(toB(v)),color:"var(--p2)"})
-      )
-    )
-  );
-}
-
-/* ── WHAT-IF ── */
-function WhatIf({scens,res,disp}){
-  const[open,setOpen]=useState(null);
-  const sc=open!=null?scens.find(s=>s.id===open):null;
-  return h("div",{style:{marginBottom:14}},
-    h("div",{className:"sec-lbl"},"What-if scenarios"),
-    h("div",{className:"wi-list"},
-      scens.map(s=>h("div",{key:s.id},
-        h("button",{className:"wi-row",
-          style:{borderColor:open===s.id?s.bc:"var(--border)",background:open===s.id?"var(--subtle)":"var(--card)"},
-          onClick:()=>setOpen(open===s.id?null:s.id)},
-          h("div",{style:{display:"flex",alignItems:"center",gap:10,minWidth:0}},
-            h("span",{style:{padding:"2px 8px",borderRadius:100,fontSize:10,fontWeight:600,
-              background:s.bc+"22",color:s.bc,border:"1px solid "+s.bc+"44",flexShrink:0}},s.badge),
-            h("span",{style:{fontSize:13,fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},s.q)
-          ),
-          h("span",{style:{fontSize:13,color:"var(--muted)",marginLeft:8}},open===s.id?"▲":"▼")
-        ),
-        open===s.id&&sc&&h("div",{className:"wi-detail"},
-          h("div",{className:"wi-nums"},
-            [["Pot",disp(sc.res.retP,true),sc.bc],
-             ["Monthly",disp(sc.res.wd/12,true),"var(--muted)"],
-             ["vs base",(sc.res.retP>=res.retP?"+":"")+disp(sc.res.retP-res.retP,true),sc.res.retP>=res.retP?"var(--ok)":"var(--danger)"],
-             ["Mo Δ",(sc.res.wd/12>=res.wd/12?"+":"")+disp(sc.res.wd/12-res.wd/12,true),sc.res.wd/12>=res.wd/12?"var(--ok)":"var(--danger)"]
-            ].map(function(item){
-              return h("div",{key:item[0],className:"wi-num"},
-                h("div",{className:"wi-num-lbl"},item[0]),
-                h("div",{className:"wi-num-val",style:{color:item[2]}},item[1])
-              );
-            })
-          ),
-          h("div",{style:{display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:8}},
-            h("span",{style:{fontSize:11,fontWeight:500,color:sc.res.lasts?"var(--ok)":"var(--danger)"}},
-              sc.res.lasts?"✓ Lasts to age "+sc.res.le+" (+"+(sc.res.sur)+" yrs)":"⚠ Runs out at age "+sc.res.ro
-            ),
-            h("div",{style:{display:"flex",gap:12,fontSize:11,color:"var(--muted)"}},
-              h("span",null,"Health: ",h("b",{style:{color:hlabel(sc.res.health).c}},sc.res.health+"/100")),
-              h("span",null,"Success: ",h("b",null,sc.res.sp+"%"))
-            )
-          )
-        )
-      ))
+      h("div",{style:{marginTop:8}},h(Slider,{label:"Monthly retirement income",value:frB(ca||ms),min:minC,max:maxC,step:stepC,fmt:v=>sym+(v>=1e6?(v/1e6).toFixed(2)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo",onChange:v=>onCA(toB(v)),color:"var(--p2)"}))
     )
   );
 }
@@ -734,278 +621,59 @@ function Ring({score,color}){
   return h("div",{style:{position:"relative",width:56,height:56,flexShrink:0}},
     h("svg",{width:56,height:56,viewBox:"0 0 56 56",style:{transform:"rotate(-90deg)"}},
       h("circle",{cx:28,cy:28,r,fill:"none",stroke:"var(--border)",strokeWidth:4}),
-      h("circle",{cx:28,cy:28,r,fill:"none",stroke:color,strokeWidth:4,
-        strokeDasharray:dash+" "+(circ-dash),strokeLinecap:"round"})
+      h("circle",{cx:28,cy:28,r,fill:"none",stroke:color,strokeWidth:4,strokeDasharray:dash+" "+(circ-dash),strokeLinecap:"round"})
     ),
     h("div",{style:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color}},score)
   );
 }
 
-/* ── PDF GENERATOR ── */
-function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
-  try{
-    const jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
-    if(!jsPDFLib){console.error("jsPDF not found");return false;}
-    const doc=new jsPDFLib({orientation:"portrait",unit:"mm",format:"a4"});
-    const W=210,M=16,COL=W-M*2;
-    let y=0;
-    const newPageIfNeeded=(need)=>{if(y+need>272){doc.addPage();y=20;}};
-
-    // ── HEADER ──────────────────────────────────────────────────────────
-    doc.setFillColor(26,86,219);doc.rect(0,0,W,36,"F");
-    doc.setFont("helvetica","bold");doc.setFontSize(20);doc.setTextColor(255,255,255);
-    doc.text("ARK Financial Planners",M,15);
-    doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(180,210,255);
-    doc.text("Personalised Retirement Plan",M,23);
-    doc.setFontSize(8);doc.setTextColor(140,175,240);
-    doc.text("Prepared for: "+info.name+"   |   "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),M,30);
-    y=44;
-
-    // ── Helpers ─────────────────────────────────────────────────────────
-    const sectionTitle=(title)=>{
-      newPageIfNeeded(14);
-      doc.setFillColor(237,242,255);doc.rect(M,y,COL,8,"F");
-      doc.setDrawColor(26,86,219);doc.setLineWidth(0.5);doc.line(M,y,M,y+8);
-      doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(26,86,219);
-      doc.text(title.toUpperCase(),M+4,y+5.5);
-      y+=13;
-    };
-    const row=(label,value,rgb)=>{
-      newPageIfNeeded(8);
-      doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90,100,120);
-      doc.text(label,M,y);
-      doc.setFont("helvetica","bold");
-      if(rgb)doc.setTextColor(...rgb);else doc.setTextColor(17,24,39);
-      doc.text(String(value),W-M,y,{align:"right"});
-      doc.setDrawColor(225,229,238);doc.setLineWidth(0.2);doc.line(M,y+2.5,W-M,y+2.5);
-      y+=8;
-    };
-    const bigCard=(label,value,sub,bg,fg)=>{
-      newPageIfNeeded(22);
-      doc.setFillColor(...bg);doc.roundedRect(M,y,COL,18,3,3,"F");
-      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+60)));
-      doc.text(label,M+5,y+6);
-      doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...fg);
-      doc.text(String(value),M+5,y+13.5);
-      if(sub){doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+60)));doc.text(sub,W-M-2,y+13.5,{align:"right"});}
-      y+=23;
-    };
-    const twoCards=(items)=>{
-      newPageIfNeeded(20);
-      const hw=(COL-6)/2;
-      items.forEach((item,i)=>{
-        const x=i===0?M:M+hw+6;
-        doc.setFillColor(...item[2]);doc.roundedRect(x,y,hw,16,3,3,"F");
-        doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...item[3].map(c=>Math.min(255,c+80)));
-        doc.text(item[0],x+4,y+6);
-        doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...item[3]);
-        doc.text(String(item[1]),x+4,y+13);
-      });
-      y+=21;
-    };
-
-    // ── 1. WHAT MATTERS MOST — RETIREMENT INCOME ────────────────────────
-    sectionTitle("Your Retirement Income");
-    const inf=result.inf||1;
-    const moAtRet=result.wd/12;
-    const moToday=moAtRet/inf;
-    const incomeMode=base.incomeMode||"rule4";
-    const modeLabel=incomeMode==="expenses"?"Based on maintaining your current lifestyle":incomeMode==="custom"?"Based on your custom target":"Based on the 4% withdrawal rule";
-    bigCard("Monthly income at retirement",disp(moAtRet),"in today's money: "+disp(moToday),[26,86,219],[255,255,255]);
-    row("Income strategy",modeLabel);
-    row("Inflation adjusted at","2.5% per year over "+result.ytr+" years");
-    if(hh&&result.p1mt!=null){
-      y+=2;
-      twoCards([
-        ["Your share ("+Math.round(result.p1s*100)+"%)",disp(moAtRet*result.p1s),[235,242,255],[26,86,219]],
-        ["Partner's share ("+Math.round(result.p2s*100)+"%)",disp(moAtRet*result.p2s),[243,238,255],[124,58,237]]
-      ]);
-      row("Your share in today's money",disp(result.p1mt));
-      row("Partner's share in today's money",disp(result.p2mt));
-    }
-    y+=4;
-
-    // ── 2. RETIREMENT POT ────────────────────────────────────────────────
-    sectionTitle("Your Retirement Pot");
-    if(hh&&result.p1P!=null){
-      twoCards([
-        ["Your pot (age "+base.retireAge+")",disp(result.p1P),[235,242,255],[26,86,219]],
-        ["Partner's pot (age "+partner.retireAge+")",disp(result.p2P),[243,238,255],[124,58,237]]
-      ]);
-      bigCard("Combined retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);
-    } else {
-      bigCard("Projected retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);
-    }
-    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending (target: 20–25×)");
-    row("Funds status",result.lasts?"✓ Lasts "+result.sur+" years beyond life expectancy":"⚠ Runs short by "+(result.le-result.ro)+" years",result.lasts?[22,163,74]:[220,38,38]);
-    y+=4;
-
-    // ── 3. SAVINGS & FINANCIAL HEALTH ────────────────────────────────────
-    sectionTitle("Savings & Financial Health");
-    const hl=hlabel(result.health);
-    const hRgb=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
-    twoCards([
-      ["Health score",result.health+"/100 — "+hl.l,[245,247,255],hRgb],
-      ["Success probability",result.sp+"%",[245,247,255],result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]]
-    ]);
-    if(hh){
-      row("Your monthly income",disp(base.income));
-      row("Your savings rate",base.savingsRate+"% of gross income");
-      row("Your savings to date",disp(base.savings));
-      row("Partner monthly income",disp(partner.income));
-      row("Partner savings rate",partner.savingsRate+"% of gross income");
-      row("Partner savings to date",disp(partner.savings));
-      row("Monthly household expenses",disp(base.monthlySpend));
-    } else {
-      row("Monthly income",disp(base.income));
-      row("Monthly spending",disp(base.monthlySpend));
-      row("Savings to date",disp(base.savings));
-      row("Savings rate",base.savingsRate+"% of gross income");
-      row("Target retirement age","Age "+base.retireAge);
-      if(base.debtBalance>0){
-        row("Outstanding debt",disp(base.debtBalance),[220,38,38]);
-        row("Debt rate / term",base.debtRate+"% p.a. / "+Math.round((base.debtTerm||0)/12)+" years");
-      }
-    }
-    y+=4;
-
-    // ── 4. LIFE GOALS ────────────────────────────────────────────────────
-    if((base.lifeGoals||[]).length>0){
-      sectionTitle("Life Goals & Milestones");
-      (base.lifeGoals||[]).forEach(g=>{
-        newPageIfNeeded(10);
-        const freq=g.id==="trip"&&(g.recurYears||0)>0?" · every "+g.recurYears+" yrs":"";
-        const mortgage=g.id==="house"&&(g.mortgagePct||0)>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
-        row(g.icon+" "+g.label+" (age "+g.atAge+")"+freq+mortgage,disp(g.amount));
-      });
-      const totalGoals=(base.lifeGoals||[]).reduce((s,g)=>{
-        if(g.id==="trip"&&(g.recurYears||0)>0){
-          const trips=Math.max(1,Math.ceil((base.retireAge-g.atAge)/g.recurYears));
-          return s+g.amount*trips;
-        }
-        return s+g.amount;
-      },0);
-      y+=2;
-      row("Total goal cost (estimated)",disp(totalGoals),[217,119,6]);
-      y+=4;
-    }
-
-    // ── 5. SCENARIO OUTLOOK ──────────────────────────────────────────────
-    sectionTitle("Scenario Outlook");
-    const baseP=result.retP;
-    [["Worst case","4% return",Math.round(baseP*0.85),[254,242,242],[220,38,38]],
-     ["Base case","5% return",baseP,[240,253,244],[22,163,74]],
-     ["Best case","6% return",Math.round(baseP*1.16),[240,253,244],[22,163,74]]
-    ].forEach(sc=>{
-      row(sc[0]+" ("+sc[1]+")",disp(sc[2]),sc[4]);
-    });
-    y+=4;
-
-    // ── FOOTER ───────────────────────────────────────────────────────────
-    const footerY=285;
-    doc.setFillColor(26,86,219);doc.rect(0,footerY,W,12,"F");
-    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(180,210,255);
-    doc.text("ARK Financial Planners · arkfinancialplanners.com",M,footerY+5);
-    doc.text("For educational purposes only. Not financial advice.",W-M,footerY+5,{align:"right"});
-    doc.setTextColor(140,175,240);
-    doc.text("Consult a qualified financial consultant before making decisions. · 1 USD = 46.5 MUR",W/2,footerY+9.5,{align:"center"});
-
-    doc.save("ARK-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
-    return true;
-  }catch(e){console.error("PDF error:",e);return false;}
-}
-
 /* ── MODAL ── */
 function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
-  const[name,setName]=useState("");
-  const[email,setEmail]=useState("");
-  const[phone,setPhone]=useState("");
-  const[saveCRM,setSaveCRM]=useState(false);
-  const[done,setDone]=useState(false);
-  const[loading,setLoading]=useState(false);
-  const[pdfError,setPdfError]=useState(false);
-  const ok=result.lasts,hl=hlabel(result.health);
-  const valid=name.trim()&&email.trim();
-
+  const[name,setName]=useState(""),[ email,setEmail]=useState(""),[phone,setPhone]=useState("");
+  const[saveCRM,setSaveCRM]=useState(false),[done,setDone]=useState(false),[loading,setLoading]=useState(false),[pdfError,setPdfError]=useState(false);
+  const ok=result.lasts,hl=hlabel(result.health),valid=name.trim()&&email.trim();
   const submit=async function(){
-    if(!valid)return;
-    setLoading(true);
+    if(!valid)return;setLoading(true);
     const info={name,email,phone};
-    // Generate PDF
     const pdfOk=generatePDF(info,result,base,partner,hh,disp,sym,frB,cur);
     if(!pdfOk)setPdfError(true);
-    // Save to CRM if opted in
     if(saveCRM){
-      try{
-        await window.storage.set("lead:"+Date.now(),JSON.stringify({
-          name,email,phone,
-          health:result.health,successProb:result.sp,
-          pot:disp(result.retP),monthlyIncome:disp(result.wd/12),
-          verdict:result.lasts?"On track":"Needs action",
-          retireAge:base.retireAge,age:base.age,
-          savingsRate:base.savingsRate,cur,hhMode:hh,
-          ts:new Date().toISOString()
-        }));
-      }catch(e){console.error("CRM save failed",e);}
+      try{await window.storage.set("lead:"+Date.now(),JSON.stringify({name,email,phone,health:result.health,sp:result.sp,pot:disp(result.retP),monthlyIncome:disp(result.wd/12),verdict:result.lasts?"On track":"Needs action",retireAge:base.retireAge,age:base.age,savingsRate:base.savingsRate,cur,hhMode:hh,goals:(base.lifeGoals||[]).map(g=>g.label),ts:new Date().toISOString()}));}catch(e){}
     }
-    setLoading(false);
-    setDone(true);
+    setLoading(false);setDone(true);
   };
-
   if(done)return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation(),style:{textAlign:"center"}},
       h("div",{style:{fontSize:40,marginBottom:14}},pdfError?"⚠️":"✅"),
-      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8,color:"var(--text)"}},pdfError?"Almost there":"Your plan is ready!"),
-      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:pdfError?16:8}},
-        pdfError?"PDF generation failed — please try again or contact us directly."
-          :"Your retirement plan PDF has been downloaded."
-      ),
+      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8,color:"var(--text)"}},pdfError?"Something went wrong":"Your plan is ready!"),
+      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:10}},pdfError?"PDF could not be generated. Please try again.":"Your retirement plan PDF has been downloaded."),
       !pdfError&&saveCRM&&h("p",{style:{fontSize:12,color:"var(--ok)",marginBottom:16}},"✓ Your details have been saved. A consultant may reach out."),
-      !pdfError&&!saveCRM&&h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:16}},"No details stored — your privacy is protected."),
+      !pdfError&&!saveCRM&&h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:16}},"Your privacy is protected — no details stored."),
       h("button",{className:"cta",onClick:onClose},"Close")
     )
   );
-
   return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
       h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
       h("div",{style:{fontSize:18,fontWeight:600,marginBottom:4,color:"var(--text)"}},"Download your plan"),
-      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Fill in your details to generate a personalised PDF retirement plan."),
-      // Health badge
+      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Fill in your details to generate your personalised PDF retirement plan."),
       h("div",{style:{background:ok?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(ok?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),borderRadius:10,padding:"10px 14px",marginBottom:18,fontSize:12,color:"var(--muted)",lineHeight:1.6}},
-        h("b",{style:{color:ok?"var(--ok)":"var(--danger)"}},ok?"✓ On track":"⚠ Action needed"),
-        " · Health: ",h("b",{style:{color:hl.c}},result.health+"/100 · "+hl.l),
-        " · Monthly income: ",h("b",{style:{color:"var(--text)"}},disp(result.wd/12)+"/mo")
+        h("b",{style:{color:ok?"var(--ok)":"var(--danger)"}},ok?"✓ On track":"⚠ Action needed")," · Health: ",h("b",{style:{color:hl.c}},result.health+"/100 · "+hl.l)," · Monthly income: ",h("b",{style:{color:"var(--text)"}},disp(result.wd/12)+"/mo")
       ),
-      // Fields
       h("div",{style:{display:"flex",flexDirection:"column",gap:10,marginBottom:16}},
-        h("div",null,
-          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Full name *"),
-          h("input",{type:"text",value:name,onChange:e=>setName(e.target.value),placeholder:"Your name",className:"modal-input"})
-        ),
-        h("div",null,
-          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Email address *"),
-          h("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"you@example.com",className:"modal-input"})
-        ),
-        h("div",null,
-          h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Phone (optional)"),
-          h("input",{type:"tel",value:phone,onChange:e=>setPhone(e.target.value),placeholder:"+230 5XXX XXXX",className:"modal-input"})
-        )
+        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Full name *"),h("input",{type:"text",value:name,onChange:e=>setName(e.target.value),placeholder:"Your name",className:"modal-input"})),
+        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Email address *"),h("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"you@example.com",className:"modal-input"})),
+        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Phone (optional)"),h("input",{type:"tel",value:phone,onChange:e=>setPhone(e.target.value),placeholder:"+230 5XXX XXXX",className:"modal-input"}))
       ),
-      // CRM opt-in checkbox
-      h("label",{style:{display:"flex",alignItems:"flex-start",gap:10,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.2)",borderRadius:10,marginBottom:18,cursor:"pointer"}},
-        h("input",{type:"checkbox",checked:saveCRM,onChange:e=>setSaveCRM(e.target.checked),
-          style:{marginTop:2,accentColor:"var(--accent)",width:16,height:16,flexShrink:0,cursor:"pointer"}}),
+      h("label",{style:{display:"flex",alignItems:"flex-start",gap:10,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.2)",borderRadius:10,marginBottom:16,cursor:"pointer"}},
+        h("input",{type:"checkbox",checked:saveCRM,onChange:e=>setSaveCRM(e.target.checked),style:{marginTop:2,accentColor:"var(--accent)",width:16,height:16,flexShrink:0,cursor:"pointer"}}),
         h("div",null,
           h("div",{style:{fontSize:12,fontWeight:600,color:"var(--accent)",marginBottom:2}},"Save my plan & get consultant support"),
           h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.55}},"Tick this to store your details securely. An ARK consultant will reach out to help you execute your plan.")
         )
       ),
-      h("p",{style:{fontSize:11,color:"var(--hint)",marginBottom:14}},
-        "* Name and email required to generate your PDF."+(saveCRM?" Your details will be saved to our CRM.":" Your details will not be stored.")
-      ),
-      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},
-        loading?"Generating your plan…":"Download my plan →")
+      h("p",{style:{fontSize:11,color:"var(--hint)",marginBottom:14}},"* Name and email required."+(saveCRM?" Your details will be saved to our CRM.":" Your details will not be stored.")),
+      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},loading?"Generating your plan…":"Download my plan →")
     )
   );
 }
@@ -1013,136 +681,57 @@ function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
 /* ── HERO ── */
 function Hero({onStart,dark,setDark}){
   return h("div",{className:"hero"},
-    h("button",{className:"dm-btn",onClick:()=>setDark(d=>!d),
-      style:{position:"absolute",top:16,right:16},title:"Toggle theme"},dark?"☀️":"🌙"),
+    h("button",{className:"dm-btn",onClick:()=>setDark(d=>!d),style:{position:"absolute",top:16,right:16},title:"Toggle theme"},dark?"☀️":"🌙"),
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup"),
-    h("h1",{className:"hero-title"},
-      "Ever wondered if your money",h("br"),
-      h("span",{style:{color:"var(--accent)"}},"will be enough"),
-      " to live",h("br"),"all your dreams?"
-    ),
+    h("h1",{className:"hero-title"},"Ever wondered if your money",h("br"),h("span",{style:{color:"var(--accent)"}},"will be enough")," to live",h("br"),"all your dreams?"),
     h("p",{className:"hero-sub"},
-      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),".",
-      h("br"),h("br"),
-      "They're relying on ",
-      h("span",{style:{fontWeight:600,color:"var(--danger)"}},"hope"),".",
-      h("br"),h("br"),
-      "At ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),
-      ", we bring ",h("span",{style:{fontWeight:600,color:"var(--ok)"}},"clarity"),"."
+      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),".",h("br"),h("br"),
+      "They're relying on ",h("span",{style:{fontWeight:600,color:"var(--danger)"}},"hope"),".",h("br"),h("br"),
+      "At ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),", we bring ",h("span",{style:{fontWeight:600,color:"var(--ok)"}},"clarity"),"."
     ),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
       [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored without your permission"]].map(function(arr){
-        return h("div",{key:arr[1],className:"hero-feat"},
-          h("div",{className:"hero-feat-icon"},arr[0]),
-          h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2}},arr[1]),
-          h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.4}},arr[2])
-        );
+        return h("div",{key:arr[1],className:"hero-feat"},h("div",{className:"hero-feat-icon"},arr[0]),h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2,color:"var(--text)"}},arr[1]),h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.4}},arr[2]));
       })
     )
   );
 }
-
 function Tog({opts,val,onChange}){
-  return h("div",{className:"tog"},
-    opts.map(function(o){
-      return h("button",{key:o[0],className:"tog-btn"+(val===o[0]?" on":""),onClick:()=>onChange(o[0])},
-        o[2]&&h("span",{style:{marginRight:4,fontSize:13}},o[2]),o[1]);
-    })
-  );
+  return h("div",{className:"tog"},opts.map(function(o){return h("button",{key:o[0],className:"tog-btn"+(val===o[0]?" on":""),onClick:()=>onChange(o[0])},o[2]&&h("span",{style:{marginRight:4,fontSize:13}},o[2]),o[1]);}));
 }
 
 /* ── APP ── */
 function App(){
-  const[hero,setHero]=useState(true);
-  const[tab,setTab]=useState("plan");
-  const[modal,setModal]=useState(false);
-  const[goalsOpen,setGoalsOpen]=useState(false);
+  const[hero,setHero]=useState(true),[tab,setTab]=useState("plan"),[modal,setModal]=useState(false),[goalsOpen,setGoalsOpen]=useState(false);
   const[dark,setDark]=useDark();
   const{cur,setCur,disp,toB,frB,sym}=useCur();
-  useEffect(()=>{setCur("MUR");},[]);
-  const[hh,setHH]=useState(false);
-  const[sf,setSF]=useState("likely");
-
-  const DEF={age:35,gender:"female",income:7500,monthlySpend:3200,savings:45000,
-    savingsRate:12,retireAge:65,debtBalance:0,debtRate:0,debtTerm:0,
-    incomeMode:"rule4",retireMonthlyExpenses:0,lifeGoals:[]};
-  const PDEF={age:33,gender:"male",income:6250,savings:30000,savingsRate:10,
-    retireAge:65,debtBalance:0,debtRate:0,debtTerm:0};
-  const[base,setBase]=useState(DEF);
-  const[partner,setPartner]=useState(PDEF);
-  const[st,setST]=useState(null);
-
+  const[hh,setHH]=useState(false),[sf,setSF]=useState("likely");
+  const DEF={age:35,gender:"female",income:7500,monthlySpend:3200,savings:45000,savingsRate:12,retireAge:65,debtBalance:0,debtRate:0,debtTerm:0,incomeMode:"rule4",retireMonthlyExpenses:0,lifeGoals:[]};
+  const PDEF={age:33,gender:"male",income:6250,savings:30000,savingsRate:10,retireAge:65,debtBalance:0,debtRate:0,debtTerm:0};
+  const[base,setBase]=useState(DEF),[partner,setPartner]=useState(PDEF),[st,setST]=useState(null);
   const sr={tough:0.04,likely:0.05,best:0.06}[sf]||0.05;
-  const res=useMemo(function(){
-    return hh?hhProj(base,partner,sr):proj(base,sr);
-  },[JSON.stringify(base),JSON.stringify(partner),hh,sr]);
-
-  useEffect(function(){
-    setST(hh?hhStress(base,partner):stressTest(base));
-  },[JSON.stringify(base),JSON.stringify(partner),hh]);
-
+  const res=useMemo(function(){return hh?hhProj(base,partner,sr):proj(base,sr);},[JSON.stringify(base),JSON.stringify(partner),hh,sr]);
+  useEffect(function(){setST(hh?hhStress(base,partner):stressTest(base));},[JSON.stringify(base),JSON.stringify(partner),hh]);
   const sB=(k,v)=>setBase(p=>({...p,[k]:v}));
   const sP=(k,v)=>setPartner(p=>({...p,[k]:v}));
-
-  const baseLE=base.gender==="male"?75:85;
-  const partnerLE=partner.gender==="male"?75:85;
-  const goalLE=hh?Math.max(baseLE,partnerLE):baseLE;
-  const goalBA=hh?Math.min(base.age,partner.age):base.age;
-
-  const addG=function(gt){
-    sB("lifeGoals",[...(base.lifeGoals||[]),{
-      ...gt,amount:gt.da,
-      atAge:Math.max(goalBA+1,Math.min(gt.dage,goalLE-1)),
-      recurYears:gt.id==="trip"?3:0,
-      mortgagePct:0,mortgageRate:0,mortgageTerm:20
-    }]);
-  };
+  const baseLE=base.gender==="male"?75:85,partnerLE=partner.gender==="male"?75:85;
+  const goalLE=hh?Math.max(baseLE,partnerLE):baseLE,goalBA=hh?Math.min(base.age,partner.age):base.age;
+  const addG=function(gt){sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.da,atAge:Math.max(goalBA+1,Math.min(gt.dage,goalLE-1)),recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20}]);};
   const remG=id=>sB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
   const updG=(id,k,v)=>sB("lifeGoals",(base.lifeGoals||[]).map(g=>g.id===id?{...g,[k]:v}:g));
-
   const hl=res?hlabel(res.health):{l:"",c:"var(--accent)"};
-
-  /* slider params — all in display units */
   const minI=cur==="MUR"?0:150,maxI=cur==="MUR"?1000000:100000,stepI=cur==="MUR"?1000:500;
   const minSp=cur==="MUR"?0:100,maxSp=cur==="MUR"?250000:25000,stepSp=cur==="MUR"?1000:100;
   const maxSv=cur==="MUR"?25000000:10000000,stepSv=cur==="MUR"?1000:10000;
-  const maxDb=cur==="MUR"?50000000:5000000,stepDb=1000;
+  const maxDbDisp=cur==="MUR"?50000000:5000000,stepDbDisp=1000;
   const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
   const fmtS=v=>v===0?"None":fmtAmt(v,sym);
   const fmtSp=v=>v===0?"None":fmtAmt(v,sym)+"/mo";
-
-  const scens=useMemo(function(){
-    if(!res)return[];
-    const my=hh?"our":"my";
-    const e5=earlyCalc(base,5,sr);
-    const er=hh?hhProj({...base,retireAge:e5.targetAge},partner,sr):proj({...base,retireAge:e5.targetAge},sr);
-    const a20=hh?hhProj({...base,savingsRate:20},partner,sr):proj({...base,savingsRate:20},sr);
-    const ih=hh?hhProj(base,partner,Math.max(0.01,sr-0.025)):proj(base,Math.max(0.01,sr-0.025));
-    const hr=hh?hhProj(base,partner,0.075):proj(base,0.075);
-    return[
-      {id:"e",q:"Retire at "+e5.targetAge+" — 5 years earlier?",hook:e5.rn<=base.savingsRate?"Already saving enough.":"Need "+e5.rn.toFixed(1)+"% savings rate.",res:er,badge:e5.rn<=base.savingsRate?"Achievable":"Stretch goal",bc:e5.rn<=base.savingsRate?"#22C55E":"#F59E0B"},
-      {id:"s",q:"Save 20% of "+my+" income?",hook:"Adds "+disp(Math.abs(a20.retP-res.retP))+" to "+my+" pot.",res:a20,badge:"Easy win",bc:"#3B82F6"},
-      {id:"i",q:"Inflation rises to 5%?",hook:"Real return erodes — pot worth "+disp(ih.retP)+" in real terms.",res:ih,badge:"Risk",bc:"#EF4444"},
-      {id:"r",q:"Investments return 7.5%?",hook:disp(Math.abs(hr.retP-res.retP))+" more than base case.",res:hr,badge:"Upside",bc:"#22C55E"},
-    ];
-  },[JSON.stringify(base),JSON.stringify(partner),hh,sr,JSON.stringify(res)]);
-
-  function getVerdict(res,base,isHH){
-    const sf2=res.le-res.ro;
-    const tmo=base.incomeMode==="expenses"?base.monthlySpend:base.incomeMode==="custom"&&base.retireMonthlyExpenses>0?base.retireMonthlyExpenses:0;
-    const pmo=res.wd/12,gap=tmo>0?tmo-pmo:0;
-    if(!res.lasts)return{c:"var(--danger)",icon:"⚠",h:(sf2>=15?"Funds run out "+sf2+" years too soon.":sf2+"-year shortfall. Fixable — but not on autopilot."),s:(isHH?"Combined pot":"Your pot")+" of "+disp(res.retP)+" exhausts before life exp. (age "+res.le+").",a:isHH?"Raise combined savings rate or stagger retirement dates.":"Save "+Math.min(50,base.savingsRate+8)+"% instead of "+base.savingsRate+"% and retire at "+Math.min(80,base.retireAge+3)+"."};
-    if(res.sur<5)return{c:"var(--warn)",icon:"!",h:"On track — but the margin is thin.",s:"Funds last "+res.sur+" yrs past age "+res.le+".",a:"A 3% savings bump now buys real breathing room."};
-    if(tmo>0&&gap>0)return{c:"var(--warn)",icon:"!",h:disp(gap)+"/mo short of your retirement goal.",s:"You want "+disp(tmo)+"/mo. Your pot delivers "+disp(pmo)+"/mo.",a:"Saving "+(res.rsr?res.rsr.toFixed(1):"more")+"% closes the gap."};
-    return{c:"var(--ok)",icon:"✓",h:isHH?"Household plan is solid — "+res.sur+" years beyond life exp.":"Solid. Funds last "+res.sur+" years past your life exp.",s:(isHH?"Combined pot":"Pot")+": "+disp(res.retP)+". Monthly income: "+disp(pmo)+"/mo.",a:isHH?"Focus on tax efficiency and estate planning.":"Focus shifts to tax efficiency and protecting what you've built."};
-  }
-  const vd=res?getVerdict(res,base,hh):null;
-
   const SD=[
     {k:"tough",lbl:"Worst case",rate:"4%",c:"var(--danger)",pot:st?st.tP:0,mo:st?st.tM:0},
-    {k:"likely",lbl:"Base case",rate:"5%",c:"var(--warn)",pot:st?st.lP:0,mo:st?st.lM:0},
-    {k:"best",lbl:"Best case",rate:"6%",c:"var(--ok)",pot:st?st.bP:0,mo:st?st.bM:0},
+    {k:"likely",lbl:"Base case", rate:"5%",c:"var(--warn)", pot:st?st.lP:0,mo:st?st.lM:0},
+    {k:"best",  lbl:"Best case", rate:"6%",c:"var(--ok)",   pot:st?st.bP:0,mo:st?st.bM:0},
   ];
   const secL={fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:10};
   const cardS={background:"var(--card)",border:"1px solid var(--border)",borderRadius:16,padding:20,marginBottom:12};
@@ -1151,36 +740,24 @@ function App(){
   function GChips({val,onChange,ac}){
     return h("div",{style:{marginBottom:14}},
       h("div",{style:secL},"Biological sex"),
-      h("div",{className:"g-chips"},
-        [["female","♀ Female"],["male","♂ Male"]].map(function(arr){
-          return h("button",{key:arr[0],className:"g-chip",
-            style:{borderColor:val===arr[0]?ac:"var(--border)",background:val===arr[0]?ac+"22":"transparent",color:val===arr[0]?ac:"var(--muted)"},
-            onClick:()=>onChange(arr[0])},arr[1]);
-        })
-      )
+      h("div",{className:"g-chips"},[["female","♀ Female"],["male","♂ Male"]].map(function(arr){
+        return h("button",{key:arr[0],className:"g-chip",style:{borderColor:val===arr[0]?ac:"var(--border)",background:val===arr[0]?ac+"22":"transparent",color:val===arr[0]?ac:"var(--muted)"},onClick:()=>onChange(arr[0])},arr[1]);
+      }))
     );
   }
-
   function PersonCard({card,setFn,col,label,sub,num}){
     return h("div",{className:"person-card "+(num===1?"p1":"p2")},
       h("div",{className:"person-hdr"},
         h("div",{className:"avatar",style:{background:col+"22",color:col}},num),
-        h("div",null,
-          h("div",{style:{fontSize:13,fontWeight:600}},label),
-          h("div",{style:{fontSize:11,color:"var(--muted)"}},sub)
-        )
+        h("div",null,h("div",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},label),h("div",{style:{fontSize:11,color:"var(--muted)"}},sub))
       ),
-      h(Slider,{label:"Age",value:card.age,min:18,max:70,fmt:v=>v+" yrs",onChange:v=>setFn("age",v),color:col}),
+      h(Slider,{label:"Age",value:card.age,min:18,max:70,step:1,fmt:v=>v+" yrs",onChange:v=>setFn("age",v),color:col}),
       h(GChips,{val:card.gender,onChange:g=>setFn("gender",g),ac:col}),
       h(Slider,{label:"Income ("+cur+")",value:frB(card.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>setFn("income",toB(v)),color:col}),
       h(Slider,{label:"Savings ("+cur+")",value:frB(card.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>setFn("savings",toB(v)),color:col}),
       h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:col}),
-      h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,fmt:v=>"Age "+v,onChange:v=>setFn("retireAge",v),color:"var(--gold)"}),
-      h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||0,
-        onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),
-        disp,frB,toB,cur,sym,
-        maxDbDisp:cur==="MUR"?50000000:5000000,
-        stepDbDisp:1000})
+      h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,step:1,fmt:v=>"Age "+v,onChange:v=>setFn("retireAge",v),color:"var(--gold)"}),
+      h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||0,onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp})
     );
   }
 
@@ -1188,8 +765,6 @@ function App(){
 
   return h("div",{style:{minHeight:"100vh",background:"var(--bg)"}},
     modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp,base,partner,hh,frB,sym,cur}),
-
-    /* HEADER */
     h("header",{className:"hdr"},
       h("div",{className:"wrap hdr-inner"},
         h("button",{className:"logo-btn",onClick:()=>setHero(true)},
@@ -1203,48 +778,33 @@ function App(){
         )
       )
     ),
-
-    /* MOBILE NAV */
-    h("nav",{className:"bnav"},
-      [["plan","Plan","M4 6h16M4 12h16M4 18h16"],["results","Results","M22 12h-4l-3 9L9 3l-3 9H2"]].map(function(arr){
-        return h("button",{key:arr[0],className:"bnav-btn"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},
-          h("svg",{className:"bnav-icon",viewBox:"0 0 24 24"},h("path",{d:arr[2]})),h("span",null,arr[1]));
-      })
-    ),
-
-    /* MAIN */
+    h("nav",{className:"bnav"},[["plan","Plan","M4 6h16M4 12h16M4 18h16"],["results","Results","M22 12h-4l-3 9L9 3l-3 9H2"]].map(function(arr){
+      return h("button",{key:arr[0],className:"bnav-btn"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},
+        h("svg",{className:"bnav-icon",viewBox:"0 0 24 24"},h("path",{d:arr[2]})),h("span",null,arr[1]));
+    })),
     h("div",{className:"wrap",style:{paddingTop:24,paddingBottom:48}},
 
       /* ── PLAN TAB ── */
       tab==="plan"&&h("div",{className:"fade"},
-        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:4}},hh?"Your household plan":"Where do you stand?"),
-
-
+        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16,color:"var(--text)"}},hh?"Your household plan":"Where do you stand?"),
         h("div",{style:{marginBottom:16}},
           h("div",{style:secL},"Planning for"),
-          h("div",{className:"mode-tog"},
-            [["solo","👤 Just me",false],["hh","👫 Me & partner",true]].map(function(arr){
-              return h("button",{key:arr[0],className:"mode-btn"+(hh===arr[2]?" on":""),onClick:()=>setHH(arr[2])},arr[1]);
-            })
-          ),
-          hh&&h("div",{style:{fontSize:12,color:"var(--muted)",padding:"8px 12px",background:"var(--accent-lt)",borderRadius:8,border:"1px solid rgba(59,130,246,.15)",marginBottom:8}},
-            "Shared expenses & goals entered once. Each partner has their own income, savings, debt & target date.")
+          h("div",{className:"mode-tog"},[["solo","👤 Just me",false],["hh","👫 Me & partner",true]].map(function(arr){
+            return h("button",{key:arr[0],className:"mode-btn"+(hh===arr[2]?" on":""),onClick:()=>setHH(arr[2])},arr[1]);
+          })),
+          hh&&h("div",{style:{fontSize:12,color:"var(--muted)",padding:"8px 12px",background:"var(--accent-lt)",borderRadius:8,border:"1px solid rgba(59,130,246,.15)",marginBottom:8}},"Shared expenses & goals entered once. Each partner has their own income, savings, debt & target date.")
         ),
-
         hh&&h("div",{style:cardS},
           h("div",{style:secL},"Shared household finances"),
           h(Slider,{label:"Monthly expenses ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)"}),
           h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:14,marginTop:4}},
             h("button",{className:"goals-tog"+((base.lifeGoals||[]).length>0?" has":""),onClick:()=>setGoalsOpen(p=>!p)},
-              h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" shared life goal"+((base.lifeGoals||[]).length>1?"s":"")+"  — tap to edit":"+ Add shared life goals"),
+              h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" shared life goal"+((base.lifeGoals||[]).length>1?"s":"")+" — tap to edit":"+ Add shared life goals"),
               h("span",null,goalsOpen?"▲":"▼")
             ),
-            goalsOpen&&h("div",{style:{marginTop:12}},
-              h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym})
-            )
+            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
           )
         ),
-
         hh?h("div",null,
           h("div",{style:secL},"Individual finances"),
           h("div",{className:"person-pair"},
@@ -1253,41 +813,28 @@ function App(){
           ),
           res&&res.p1P!=null&&h("div",{className:"hh-snap"},
             h("div",{style:{...secL,marginBottom:8}},"Projected pots"),
-            h("div",{className:"hh-snap-row"},
-              [["Your pot ("+base.retireAge+")",res.p1P,"var(--accent)"],["Partner ("+partner.retireAge+")",res.p2P,"var(--p2)"],["Combined",res.retP,"var(--ok)"]].map(function(arr){
-                return h("div",{key:arr[0],className:"hh-snap-item"},
-                  h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".06em",marginBottom:2}},arr[0]),
-                  h("div",{style:{fontSize:14,fontWeight:600,color:arr[2]}},disp(arr[1],true))
-                );
-              })
-            )
+            h("div",{className:"hh-snap-row"},[["Your pot ("+base.retireAge+")",res.p1P,"var(--accent)"],["Partner ("+partner.retireAge+")",res.p2P,"var(--p2)"],["Combined",res.retP,"var(--ok)"]].map(function(arr){
+              return h("div",{key:arr[0],className:"hh-snap-item"},h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".06em",marginBottom:2}},arr[0]),h("div",{style:{fontSize:14,fontWeight:600,color:arr[2]}},disp(arr[1],true)));
+            }))
           )
         ):h("div",{style:cardS},
-          h(Slider,{label:"Your age",value:base.age,min:18,max:70,fmt:v=>v+" years",onChange:v=>sB("age",v),color:"var(--accent)"}),
+          h(Slider,{label:"Your age",value:base.age,min:18,max:70,step:1,fmt:v=>v+" years",onChange:v=>sB("age",v),color:"var(--accent)"}),
           h(GChips,{val:base.gender,onChange:g=>sB("gender",g),ac:"var(--accent)"}),
           h(Slider,{label:"Monthly income ("+cur+")",value:frB(base.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>sB("income",toB(v)),color:"var(--accent)",hint:"gross"}),
           h(Slider,{label:"Monthly spending ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)",hint:"all living costs"}),
           h(Slider,{label:"Savings to date ("+cur+")",value:frB(base.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>sB("savings",toB(v)),color:"var(--accent)",hint:"cash + investments"}),
           h(SavSlider,{income:base.income,sr:base.savingsRate,onChange:v=>sB("savingsRate",v),disp}),
-          h(Slider,{label:"Target retirement age",value:base.retireAge,min:Math.max(base.age+2,40),max:80,fmt:v=>"Age "+v+" · "+(v-base.age)+" yrs away",onChange:v=>sB("retireAge",v),color:"var(--gold)"}),
-          h(DebtSection,{db:base.debtBalance||0,dr:base.debtRate||0,dt:base.debtTerm||0,
-            onDB:v=>sB("debtBalance",v),onDR:v=>sB("debtRate",v),onDT:v=>sB("debtTerm",v),
-            disp,frB,toB,cur,sym,
-            maxDbDisp:cur==="MUR"?50000000:5000000,
-            stepDbDisp:1000})
+          h(Slider,{label:"Target retirement age",value:base.retireAge,min:Math.max(base.age+2,40),max:80,step:1,fmt:v=>"Age "+v+" · "+(v-base.age)+" yrs away",onChange:v=>sB("retireAge",v),color:"var(--gold)"}),
+          h(DebtSection,{db:base.debtBalance||0,dr:base.debtRate||0,dt:base.debtTerm||0,onDB:v=>sB("debtBalance",v),onDR:v=>sB("debtRate",v),onDT:v=>sB("debtTerm",v),disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp})
         ),
-
         !hh&&h("div",{style:{marginBottom:12}},
           h("button",{className:"goals-tog"+((base.lifeGoals||[]).length>0?" has":""),onClick:()=>setGoalsOpen(p=>!p)},
             h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" life goal"+((base.lifeGoals||[]).length>1?"s":"")+" added":"+ Add life goals (house, car, trips…)"),
             h("span",null,goalsOpen?"▲":"▼")
           ),
-          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},
-            h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym})
-          )
+          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
         ),
-
-        res&&vd&&h("div",{className:"teaser",onClick:()=>setTab("results")},
+        res&&h("div",{className:"teaser",onClick:()=>setTab("results")},
           h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
             h("span",{style:{fontSize:11,fontWeight:600,color:"var(--accent)",textTransform:"uppercase",letterSpacing:".07em"}},"Your snapshot"),
             h("span",{style:{fontSize:11,color:"var(--accent)"}},"Full results →")
@@ -1295,7 +842,7 @@ function App(){
           h("div",{style:{display:"flex",alignItems:"center",gap:14}},
             h(Ring,{score:res.health,color:hl.c}),
             h("div",null,
-              h("div",{style:{fontSize:13,fontWeight:600,color:vd.c,marginBottom:2}},vd.icon+" "+vd.h),
+              h("div",{style:{fontSize:13,fontWeight:600,color:hl.c,marginBottom:2}},hl.l+" — health score "+res.health+"/100"),
               h("div",{style:{fontSize:11,color:"var(--muted)"}},"Showing "+(sf==="best"?"best case 6%":sf==="tough"?"worst case 4%":"base case 5%")+" · adjust on Results page")
             )
           )
@@ -1305,101 +852,55 @@ function App(){
 
       /* ── RESULTS TAB ── */
       tab==="results"&&res&&h("div",{className:"fade"},
-        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16}},hh?"Household results":"Your results"),
-
-        h("div",{style:cardS},
-          h(IncomeMode,{mode:base.incomeMode||"rule4",onChange:m=>sB("incomeMode",m),
-            ms:base.monthlySpend,ca:base.retireMonthlyExpenses||0,onCA:v=>sB("retireMonthlyExpenses",v),
-            result:res,disp,toB,frB,cur,sym,isHH:hh})
-        ),
-
+        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16,color:"var(--text)"}},hh?"Household results":"Your results"),
+        h("div",{style:cardS},h(IncomeMode,{mode:base.incomeMode||"rule4",onChange:m=>sB("incomeMode",m),ms:base.monthlySpend,ca:base.retireMonthlyExpenses||0,onCA:v=>sB("retireMonthlyExpenses",v),result:res,disp,toB,frB,cur,sym,isHH:hh})),
         st&&h("div",{style:{marginBottom:14}},
           h("div",{style:secL},"Return scenarios"),
-          h("div",{className:"scen-grid"},
-            SD.map(function(sc){
-              return h("button",{key:sc.k,className:"scen-btn",
-                style:{borderColor:sf===sc.k?sc.c:"var(--border)",borderWidth:sf===sc.k?2:1,background:sf===sc.k?"var(--subtle)":"var(--card)"},
-                onClick:()=>setSF(sc.k)},
-                h("div",{style:{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",color:sc.c,marginBottom:3}},sc.lbl),
-                h("div",{style:{fontSize:17,fontWeight:600,color:sc.c,letterSpacing:"-.4px",lineHeight:1.2,marginBottom:2}},disp(sc.pot,true)),
-                h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:6}},sc.rate+" return"),
-                h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:6}},
-                  h("div",{style:{fontSize:13,fontWeight:600,color:"var(--muted)"}},disp(sc.mo)),
-                  h("div",{style:{fontSize:10,color:"var(--muted)"}},"/mo at retirement")
-                )
-              );
-            })
-          )
-        ),
-
-        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",
-          background:res.lasts?"var(--ok-lt)":"var(--danger-lt)",
-          border:"1px solid "+(res.lasts?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),
-          borderRadius:8,marginBottom:10}},
-          h("span",{style:{fontSize:13,fontWeight:600,color:res.lasts?"var(--ok)":"var(--danger)"}},
-            res.lasts?"✓ Funds last to age "+res.le+" — "+res.sur+" yrs to spare":"⚠ Runs out at age "+res.ro+" — "+(res.le-res.ro)+" yrs short")
-        ),
-
-        hh&&res.p1P!=null&&h("div",{style:{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}},
-          [["👤 You",res.p1P,base.retireAge,"var(--accent)"],["👤 Partner",res.p2P,partner.retireAge,"var(--p2)"]].map(function(arr){
-            return h("div",{key:arr[0],style:{flex:1,padding:"8px 12px",background:"var(--subtle)",borderRadius:8,border:"1px solid "+arr[3]+"33"}},
-              h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:1}},arr[0]+" — retires age "+arr[2]),
-              h("div",{style:{fontSize:15,fontWeight:600,color:arr[3]}},disp(arr[1]))
+          h("div",{className:"scen-grid"},SD.map(function(sc){
+            return h("button",{key:sc.k,className:"scen-btn",style:{borderColor:sf===sc.k?sc.c:"var(--border)",borderWidth:sf===sc.k?2:1,background:sf===sc.k?"var(--subtle)":"var(--card)"},onClick:()=>setSF(sc.k)},
+              h("div",{style:{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",color:sc.c,marginBottom:3}},sc.lbl),
+              h("div",{style:{fontSize:17,fontWeight:600,color:sc.c,letterSpacing:"-.4px",lineHeight:1.2,marginBottom:2}},disp(sc.pot,true)),
+              h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:6}},sc.rate+" return"),
+              h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:6}},
+                h("div",{style:{fontSize:13,fontWeight:600,color:"var(--muted)"}},disp(sc.mo)),
+                h("div",{style:{fontSize:10,color:"var(--muted)"}},"/mo at retirement")
+              )
             );
-          })
+          }))
         ),
-
+        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:res.lasts?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(res.lasts?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),borderRadius:8,marginBottom:10}},
+          h("span",{style:{fontSize:13,fontWeight:600,color:res.lasts?"var(--ok)":"var(--danger)"}},res.lasts?"✓ Funds last to age "+res.le+" — "+res.sur+" yrs to spare":"⚠ Runs out at age "+res.ro+" — "+(res.le-res.ro)+" yrs short")
+        ),
+        hh&&res.p1P!=null&&h("div",{style:{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}},[["👤 You",res.p1P,base.retireAge,"var(--accent)"],["👤 Partner",res.p2P,partner.retireAge,"var(--p2)"]].map(function(arr){
+          return h("div",{key:arr[0],style:{flex:1,padding:"8px 12px",background:"var(--subtle)",borderRadius:8,border:"1px solid "+arr[3]+"33"}},
+            h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:1}},arr[0]+" — retires age "+arr[2]),
+            h("div",{style:{fontSize:15,fontWeight:600,color:arr[3]}},disp(arr[1]))
+          );
+        })),
         h("div",{style:cardS},
           h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
             h("span",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".07em"}},"Your money over time"),
-            h("span",{style:{fontSize:10,color:SD.find(s=>s.k===sf)&&SD.find(s=>s.k===sf).c,fontWeight:600}},
-              (SD.find(s=>s.k===sf)||SD[1]).lbl+" · "+(SD.find(s=>s.k===sf)||SD[1]).rate)
+            h("span",{style:{fontSize:10,color:(SD.find(s=>s.k===sf)||SD[1]).c,fontWeight:600}},(SD.find(s=>s.k===sf)||SD[1]).lbl+" · "+(SD.find(s=>s.k===sf)||SD[1]).rate)
           ),
           h(Chart,{data:res.data,ra:hh?res.hra:base.retireAge,le:res.le,hdd:hh?res.hdd:null}),
           h(LifeBar,{ra:hh?res.hra:base.retireAge,le:res.le,ro:res.ro})
         ),
-
         hh&&res.p1mt!=null&&h("div",{style:{marginBottom:14}},
           h("div",{style:secL},"Monthly income at retirement"),
           h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
-            [{l:"👤 You",c:"var(--accent)",mo:res.wd/12*res.p1s,today:res.p1mt,pct:Math.round(res.p1s*100)},
-             {l:"👤 Partner",c:"var(--p2)",mo:res.wd/12*res.p2s,today:res.p2mt,pct:Math.round(res.p2s*100)}
-            ].map(function(p){
+            [{l:"👤 You",c:"var(--accent)",mo:res.wd/12*res.p1s,today:res.p1mt,pct:Math.round(res.p1s*100)},{l:"👤 Partner",c:"var(--p2)",mo:res.wd/12*res.p2s,today:res.p2mt,pct:Math.round(res.p2s*100)}].map(function(p){
               return h("div",{key:p.l,style:{background:"var(--card)",border:"1px solid "+p.c+"33",borderRadius:12,padding:"14px 16px"}},
                 h("div",{style:{fontSize:10,color:p.c,textTransform:"uppercase",letterSpacing:".07em",fontWeight:600,marginBottom:5}},p.l+" · "+p.pct+"%"),
-                h("div",{style:{fontSize:20,fontWeight:600,color:p.c,letterSpacing:"-.5px",lineHeight:1,marginBottom:2}},
-                  disp(p.mo),h("span",{style:{fontSize:11,color:"var(--muted)",fontWeight:400}},"/mo")),
+                h("div",{style:{fontSize:20,fontWeight:600,color:p.c,letterSpacing:"-.5px",lineHeight:1,marginBottom:2}},disp(p.mo),h("span",{style:{fontSize:11,color:"var(--muted)",fontWeight:400}},"/mo")),
                 h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:8}},"≈ "+disp(p.today)+"/mo today"),
-                h("div",{style:{height:3,background:"var(--border)",borderRadius:2}},
-                  h("div",{style:{height:"100%",width:p.pct+"%",background:p.c,borderRadius:2}}))
+                h("div",{style:{height:3,background:"var(--border)",borderRadius:2}},h("div",{style:{height:"100%",width:p.pct+"%",background:p.c,borderRadius:2}}))
               );
             })
           )
         ),
-
-
-
-        h("div",{className:"stat-grid"},
-          [["Health score",res.health+"/100",hl.l,hl.c],
-           ["Success probability",res.sp+"%","funds last to life exp.",res.sp>=75?"var(--ok)":res.sp>=55?"var(--warn)":"var(--danger)"],
-           ["Coverage",res.cm.toFixed(1)+"×","annual spending",res.cm>=22?"var(--ok)":res.cm>=16?"var(--warn)":"var(--danger)"],
-           ["Monthly income",disp(res.wd/12),"at retirement","var(--text)"]
-          ].map(function(arr){
-            return h("div",{key:arr[0],className:"stat-box"},
-              h("div",{className:"stat-lbl"},arr[0]),
-              h("div",{className:"stat-val",style:{color:arr[3]}},arr[1]),
-              h("div",{className:"stat-sub"},arr[2])
-            );
-          })
-        ),
-
-        h(WhatIf,{scens,res,disp}),
-
-        h(WhatIf,{scens,res,disp}),
-
-        h(WhatIf,{scens,res,disp}),
-
-        h(WhatIf,{scens,res,disp}),
+        h("div",{className:"stat-grid"},[["Health score",res.health+"/100",hl.l,hl.c],["Success probability",res.sp+"%","funds last to life exp.",res.sp>=75?"var(--ok)":res.sp>=55?"var(--warn)":"var(--danger)"],["Coverage",res.cm.toFixed(1)+"×","annual spending",res.cm>=22?"var(--ok)":res.cm>=16?"var(--warn)":"var(--danger)"],["Monthly income",disp(res.wd/12),"at retirement","var(--text)"]].map(function(arr){
+          return h("div",{key:arr[0],className:"stat-box"},h("div",{className:"stat-lbl"},arr[0]),h("div",{className:"stat-val",style:{color:arr[3]}},arr[1]),h("div",{className:"stat-sub"},arr[2]));
+        })),
         h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:16,padding:"20px 22px",marginBottom:14}},
           h("div",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:8}},"Ready to act?"),
           h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--text)",letterSpacing:"-.3px",lineHeight:1.3}},"Plans are great,"),
@@ -1409,12 +910,11 @@ function App(){
         )
       )
     ),
-
     h("footer",{className:"footer"},
       h("div",{className:"wrap footer-inner"},
         h("div",{style:{display:"flex",alignItems:"center",gap:8}},
           h("div",{className:"logo-mark",style:{width:24,height:24,borderRadius:7,fontSize:12}},"A"),
-          h("span",{style:{fontSize:13,fontWeight:600}},"ARK Financial Planners"),
+          h("span",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},"ARK Financial Planners"),
           h("span",{style:{fontSize:11,color:"var(--muted)",marginLeft:4}},"1 USD = "+FX+" MUR")
         ),
         h("div",{style:{fontSize:11,color:"var(--hint)",maxWidth:380,lineHeight:1.55}},"For educational purposes only. Not financial advice. Consult a qualified financial consultant before making decisions.")
@@ -1422,7 +922,6 @@ function App(){
     )
   );
 }
-
 ReactDOM.createRoot(document.getElementById("app")).render(React.createElement(App));
 </script>
 </body>
