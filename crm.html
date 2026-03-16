@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ARK CRM — Consultants Portal</title>
+<style>
+:root{
+  --bg:#F7F8FA;--surface:#fff;--card:#fff;--border:#E8EAF0;
+  --text:#111827;--muted:#6B7280;--hint:#9CA3AF;--subtle:#F3F4F6;
+  --accent:#1A56DB;--accent-lt:#EEF3FD;
+  --ok:#16A34A;--ok-lt:#F0FDF4;
+  --warn:#D97706;--warn-lt:#FFFBEB;
+  --danger:#DC2626;--danger-lt:#FEF2F2;
+  --p2:#7C3AED;--p2-lt:#F5F3FF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--text);font-size:14px;line-height:1.6}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Layout */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
+.logo-name{font-size:14px;font-weight:600}
+.logo-tag{font-size:10px;color:var(--muted)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:100%;max-width:380px}
+.login-title{font-size:20px;font-weight:600;marginBottom:4px;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.field{margin-bottom:14px}
+.field-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.inp{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--card);color:var(--text);outline:none}
+.inp:focus{border-color:var(--accent)}
+.btn{padding:11px 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#1447B8}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--border);background:var(--subtle)}
+.btn-danger{background:var(--danger-lt);border:1px solid rgba(220,38,38,.2);color:var(--danger)}
+.btn-ok{background:var(--ok-lt);border:1px solid rgba(22,163,74,.2);color:var(--ok)}
+.btn-warn{background:var(--warn-lt);border:1px solid rgba(217,119,6,.2);color:var(--warn)}
+
+/* Nav tabs */
+.nav-tabs{display:flex;gap:4px;background:var(--subtle);border-radius:10px;padding:3px;border:1px solid var(--border);margin-bottom:24px}
+.nav-tab{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-align:center}
+.nav-tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat-val{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+
+/* Lead table */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.tbl-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.tbl-title{font-size:14px;font-weight:600}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--subtle)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--subtle)}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600}
+.badge-new{background:#EEF3FD;color:#1A56DB}
+.badge-assigned{background:#FFFBEB;color:#B45309}
+.badge-contacted{background:#F0FDF4;color:#16A34A}
+.badge-closed{background:#F3F4F6;color:#6B7280}
+
+/* Search / filter */
+.search-bar{display:flex;gap:8px;flex-wrap:wrap}
+.search-inp{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--card);color:var(--text);outline:none;min-width:180px}
+.search-inp:focus{border-color:var(--accent)}
+select.search-inp{cursor:pointer}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:16px}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:12px;position:relative;padding-bottom:16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-line{position:absolute;left:4px;top:15px;bottom:0;width:2px;background:var(--border)}
+.tl-item:last-child .tl-line{display:none}
+.tl-body{flex:1;min-width:0}
+.tl-date{font-size:10px;color:var(--muted);margin-bottom:2px}
+.tl-text{font-size:13px;line-height:1.5}
+
+/* Consultant card */
+.consultant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:24px}
+.consultant-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .15s}
+.consultant-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(26,86,219,.1)}
+.consultant-card.active{border-color:var(--accent);background:var(--accent-lt)}
+.avatar-big{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:16px;font-weight:700;margin-bottom:12px}
+
+/* Section label */
+.sec-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+
+/* Textarea */
+textarea.inp{resize:vertical;min-height:80px}
+
+/* Alert */
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px}
+.alert-err{background:var(--danger-lt);border:1px solid rgba(220,38,38,.2);color:var(--danger)}
+.alert-ok{background:var(--ok-lt);border:1px solid rgba(22,163,74,.2);color:var(--ok)}
+
+/* Empty state */
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+
+/* Responsive */
+@media(max-width:700px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .consultant-grid{grid-template-columns:1fr 1fr}
+  table{font-size:12px}
+  td,th{padding:8px 10px}
+  .wrap{padding:16px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect,useMemo,createElement:h}=React;
+
+/* ── SEED DATA ── */
+const CONSULTANTS_SEED=[
+  {id:"c1",name:"Sarah Mooten",email:"sarah@arkfp.com",color:"#1A56DB",initials:"SM",role:"Senior Consultant"},
+  {id:"c2",name:"James Ramsamy",email:"james@arkfp.com",color:"#7C3AED",initials:"JR",role:"Consultant"},
+  {id:"c3",name:"Priya Gopal",email:"priya@arkfp.com",color:"#0D9488",initials:"PG",role:"Consultant"},
+];
+const ADMINS=[{id:"admin",name:"Admin",password:"ark2025!",role:"admin"}];
+const CONSULTANT_PASSWORDS={"c1":"sarah123","c2":"james123","c3":"priya123"};
+
+/* ── STORAGE HELPERS ── */
+async function storeGet(key,fallback){
+  try{const r=await window.storage.get(key);return r?JSON.parse(r.value):fallback;}catch(e){return fallback;}
+}
+async function storeSet(key,val){
+  try{await window.storage.set(key,JSON.stringify(val));}catch(e){}
+}
+
+function fmt(ts){
+  if(!ts)return"—";
+  const d=new Date(ts);
+  return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+}
+function fmtShort(ts){
+  if(!ts)return"—";
+  return new Date(ts).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+}
+
+/* ── STATUS BADGE ── */
+function StatusBadge({status}){
+  const map={new:{cls:"badge-new",label:"New"},assigned:{cls:"badge-assigned",label:"Assigned"},contacted:{cls:"badge-contacted",label:"Contacted"},closed:{cls:"badge-closed",label:"Closed"}};
+  const s=map[status]||map.new;
+  return h("span",{className:"badge "+s.cls},s.label);
+}
+
+/* ── LOGIN ── */
+function Login({onLogin}){
+  const[username,setUsername]=useState("");
+  const[password,setPassword]=useState("");
+  const[err,setErr]=useState("");
+  const submit=()=>{
+    setErr("");
+    const admin=ADMINS.find(a=>a.name.toLowerCase()===username.toLowerCase()&&a.password===password);
+    if(admin){onLogin({...admin});return;}
+    const con=CONSULTANTS_SEED.find(c=>c.email.toLowerCase()===username.toLowerCase());
+    if(con&&CONSULTANT_PASSWORDS[con.id]===password){onLogin({...con,role:"consultant"});return;}
+    setErr("Invalid username or password.");
+  };
+  return h("div",{className:"login-wrap"},
+    h("div",{className:"login-card"},
+      h("div",{style:{display:"flex",alignItems:"center",gap:10,marginBottom:20}},
+        h("div",{className:"logo-mark",style:{width:36,height:36,fontSize:16}},"A"),
+        h("div",null,h("div",{style:{fontSize:16,fontWeight:700}},"ARK Financial Planners"),h("div",{style:{fontSize:11,color:"var(--muted)"}},"Consultants Portal"))
+      ),
+      h("div",{className:"login-title"},"Sign in"),
+      h("div",{className:"login-sub"},"For authorised consultants only"),
+      err&&h("div",{className:"alert alert-err"},err),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Username or email"),h("input",{className:"inp",type:"text",value:username,placeholder:"admin or email",onChange:e=>setUsername(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Password"),h("input",{className:"inp",type:"password",value:password,placeholder:"••••••••",onChange:e=>setPassword(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})),
+      h("button",{className:"btn btn-primary",style:{width:"100%",marginTop:8},onClick:submit},"Sign in →"),
+      h("div",{style:{marginTop:16,fontSize:11,color:"var(--hint)",textAlign:"center"}},"Demo: admin / ark2025! · sarah@arkfp.com / sarah123")
+    )
+  );
+}
+
+/* ── LEAD DETAIL MODAL ── */
+function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
+  const[status,setStatus]=useState(lead.status||"new");
+  const[assignedTo,setAssignedTo]=useState(lead.assignedTo||"");
+  const[note,setNote]=useState("");
+  const[priority,setPriority]=useState(lead.priority||"normal");
+  const save=()=>{
+    const history=[...(lead.history||[])];
+    if(note.trim()){history.push({ts:new Date().toISOString(),text:note.trim(),author:isAdmin?"Admin":consultants.find(c=>c.id===assignedTo)?.name||"System"});}
+    if(status!==lead.status)history.push({ts:new Date().toISOString(),text:"Status changed to "+status,author:"System",type:"status"});
+    if(assignedTo&&assignedTo!==lead.assignedTo){const cname=consultants.find(c=>c.id===assignedTo)?.name||assignedTo;history.push({ts:new Date().toISOString(),text:"Assigned to "+cname,author:"Admin",type:"assign"});}
+    onSave({...lead,status,assignedTo,priority,history,updatedAt:new Date().toISOString()});
+  };
+  const con=consultants.find(c=>c.id===lead.assignedTo);
+  return h("div",{className:"modal-ov",onClick:onClose},
+    h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
+      h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
+      h("div",{className:"modal-title"},lead.name||"Unknown"),
+      /* Client info */
+      h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16,fontSize:12}},
+        [["Email",lead.email||"—"],["Phone",lead.phone||"—"],["Currency",lead.cur||"—"],["Mode",lead.hhMode?"Household":"Individual"],["Health score",(lead.health||"—")+"/100"],["Monthly income",lead.monthlyIncome||"—"],["Pot size",lead.pot||"—"],["Verdict",lead.verdict||"—"],["Savings rate",(lead.savingsRate||"—")+"%"],["Retirement age","Age "+(lead.retireAge||"—")]].map(function(arr){
+          return h("div",{key:arr[0],style:{background:"var(--subtle)",borderRadius:8,padding:"8px 10px"}},
+            h("div",{style:{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
+            h("div",{style:{fontWeight:600,fontSize:13}},String(arr[1]))
+          );
+        })
+      ),
+      /* Goals */
+      (lead.goals||[]).length>0&&h("div",{style:{marginBottom:14}},
+        h("div",{className:"sec-lbl"},"Life goals"),
+        h("div",{style:{display:"flex",gap:6,flexWrap:"wrap"}},
+          (lead.goals||[]).map(function(g){return h("span",{key:g,style:{padding:"3px 10px",borderRadius:100,background:"var(--warn-lt)",border:"1px solid rgba(217,119,6,.2)",fontSize:11,color:"var(--warn)"}},g);})
+        )
+      ),
+      /* Assignment & status */
+      isAdmin&&h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}},
+        h("div",null,
+          h("div",{className:"field-lbl"},"Assign to"),
+          h("select",{className:"inp",value:assignedTo,onChange:e=>setAssignedTo(e.target.value),style:{fontSize:12}},
+            h("option",{value:""},"— unassigned —"),
+            consultants.map(c=>h("option",{key:c.id,value:c.id},c.name))
+          )
+        ),
+        h("div",null,
+          h("div",{className:"field-lbl"},"Status"),
+          h("select",{className:"inp",value:status,onChange:e=>setStatus(e.target.value),style:{fontSize:12}},
+            ["new","assigned","contacted","closed"].map(s=>h("option",{key:s,value:s},s.charAt(0).toUpperCase()+s.slice(1)))
+          )
+        ),
+        h("div",null,
+          h("div",{className:"field-lbl"},"Priority"),
+          h("select",{className:"inp",value:priority,onChange:e=>setPriority(e.target.value),style:{fontSize:12}},
+            ["low","normal","high","urgent"].map(s=>h("option",{key:s,value:s},s.charAt(0).toUpperCase()+s.slice(1)))
+          )
+        )
+      ),
+      /* Note */
+      h("div",{style:{marginBottom:14}},
+        h("div",{className:"field-lbl"},"Add note / case update"),
+        h("textarea",{className:"inp",value:note,onChange:e=>setNote(e.target.value),placeholder:"Record call outcome, next steps, client feedback…",style:{resize:"vertical",minHeight:70,fontSize:13}})
+      ),
+      h("button",{className:"btn btn-primary",onClick:save,style:{width:"100%",marginBottom:16}},"Save changes"),
+      /* History */
+      (lead.history||[]).length>0&&h("div",null,
+        h("div",{className:"sec-lbl"},"Case history"),
+        h("div",{className:"timeline"},
+          [...(lead.history||[])].reverse().map(function(item,i){
+            const isSystem=item.type==="status"||item.type==="assign";
+            return h("div",{key:i,className:"tl-item"},
+              h("div",{className:"tl-dot",style:{background:isSystem?"var(--border)":"var(--accent)"}}),
+              h("div",{className:"tl-line"}),
+              h("div",{className:"tl-body"},
+                h("div",{className:"tl-date"},fmt(item.ts)+(item.author?" · "+item.author:"")),
+                h("div",{className:"tl-text",style:{color:isSystem?"var(--muted)":"var(--text)"}},item.text)
+              )
+            );
+          })
+        )
+      )
+    )
+  );
+}
+
+/* ── ADD CONSULTANT MODAL ── */
+function AddConsultantModal({onClose,onAdd}){
+  const[name,setName]=useState("");
+  const[email,setEmail]=useState("");
+  const[role,setRole]=useState("Consultant");
+  const[password,setPassword]=useState("");
+  const colors=["#1A56DB","#7C3AED","#0D9488","#DC2626","#D97706","#16A34A"];
+  const[color,setColor]=useState(colors[0]);
+  const valid=name.trim()&&email.trim()&&password.trim();
+  const submit=()=>{
+    if(!valid)return;
+    const initials=name.trim().split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+    onAdd({id:"c"+Date.now(),name:name.trim(),email:email.trim().toLowerCase(),role,color,initials,password,createdAt:new Date().toISOString()});
+  };
+  return h("div",{className:"modal-ov",onClick:onClose},
+    h("div",{className:"modal-box",style:{maxWidth:400},onClick:e=>e.stopPropagation()},
+      h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
+      h("div",{className:"modal-title"},"Add consultant"),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Full name *"),h("input",{className:"inp",value:name,onChange:e=>setName(e.target.value),placeholder:"e.g. Sarah Mooten"})),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Email *"),h("input",{className:"inp",type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"email@arkfp.com"})),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Role"),h("select",{className:"inp",value:role,onChange:e=>setRole(e.target.value)},["Consultant","Senior Consultant","Manager"].map(r=>h("option",{key:r,value:r},r)))),
+      h("div",{className:"field"},h("div",{className:"field-lbl"},"Temporary password *"),h("input",{className:"inp",type:"password",value:password,onChange:e=>setPassword(e.target.value),placeholder:"Set login password"})),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Avatar colour"),
+        h("div",{style:{display:"flex",gap:8,marginTop:4}},
+          colors.map(c=>h("button",{key:c,onClick:()=>setColor(c),style:{width:28,height:28,borderRadius:8,background:c,border:color===c?"3px solid #111827":"2px solid transparent",cursor:"pointer"}}))
+        )
+      ),
+      h("button",{className:"btn btn-primary",style:{width:"100%",opacity:valid?1:.5},onClick:submit},"Add consultant")
+    )
+  );
+}
+
+/* ── MAIN APP ── */
+function App(){
+  const[user,setUser]=useState(null);
+  const[tab,setTab]=useState("leads");
+  const[leads,setLeads]=useState([]);
+  const[consultants,setConsultants]=useState(CONSULTANTS_SEED);
+  const[selectedLead,setSelectedLead]=useState(null);
+  const[selectedConsultant,setSelectedConsultant]=useState(null);
+  const[search,setSearch]=useState("");
+  const[filterStatus,setFilterStatus]=useState("all");
+  const[filterConsultant,setFilterConsultant]=useState("all");
+  const[showAddCon,setShowAddCon]=useState(false);
+  const[loading,setLoading]=useState(true);
+  const[toast,setToast]=useState("");
+
+  useEffect(function(){
+    async function load(){
+      const l=await storeGet("crm_leads",[]);
+      const c=await storeGet("crm_consultants",CONSULTANTS_SEED);
+      setLeads(l);setConsultants(c);setLoading(false);
+    }
+    load();
+  },[]);
+
+  function showToast(msg){setToast(msg);setTimeout(()=>setToast(""),2500);}
+
+  async function saveLead(updated){
+    const next=leads.map(l=>l.id===updated.id?updated:l);
+    setLeads(next);await storeSet("crm_leads",next);
+    setSelectedLead(null);showToast("Case updated ✓");
+  }
+
+  async function addConsultant(c){
+    const next=[...consultants,c];
+    setConsultants(next);await storeSet("crm_consultants",next);
+    setShowAddCon(false);showToast("Consultant added ✓");
+  }
+
+  async function deleteConsultant(id){
+    if(!window.confirm("Remove this consultant?"))return;
+    const next=consultants.filter(c=>c.id!==id);
+    setConsultants(next);await storeSet("crm_consultants",next);showToast("Consultant removed");
+  }
+
+  // Reload leads from planner storage keys
+  async function refreshLeads(){
+    const stored=await storeGet("crm_leads",[]);
+    // Also pull any new leads from planner (lead:TIMESTAMP keys)
+    const newFromPlanner=[];
+    try{
+      const keys=await window.storage.list("lead:");
+      for(const k of(keys.keys||[])){
+        try{
+          const r=await window.storage.get(k);
+          if(r){
+            const data=JSON.parse(r.value);
+            const already=stored.find(l=>l.sourceKey===k);
+            if(!already){
+              newFromPlanner.push({
+                id:"lead_"+k.replace("lead:",""),
+                sourceKey:k,
+                name:data.name||"Unknown",
+                email:data.email||"",
+                phone:data.phone||"",
+                health:data.health,
+                sp:data.sp,
+                pot:data.pot,
+                monthlyIncome:data.monthlyIncome,
+                verdict:data.verdict,
+                needsAction:data.needsAction,
+                retireAge:data.retireAge,
+                age:data.age,
+                savingsRate:data.savingsRate,
+                cur:data.cur,
+                hhMode:data.hhMode,
+                goals:data.goals||[],
+                status:"new",
+                assignedTo:"",
+                priority:"normal",
+                history:[{ts:new Date().toISOString(),text:"Lead received from planner",author:"System",type:"system"}],
+                createdAt:data.ts||new Date().toISOString(),
+                updatedAt:data.ts||new Date().toISOString()
+              });
+            }
+          }
+        }catch(e){}
+      }
+    }catch(e){}
+    const merged=[...stored,...newFromPlanner];
+    setLeads(merged);
+    if(newFromPlanner.length>0){await storeSet("crm_leads",merged);showToast(newFromPlanner.length+" new lead(s) imported ✓");}
+    else showToast("Leads refreshed ✓");
+  }
+
+  if(!user)return h(Login,{onLogin:setUser});
+  if(loading)return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:"var(--muted)"}},"Loading…");
+
+  const isAdmin=user.role==="admin";
+  const myLeads=isAdmin?leads:leads.filter(l=>l.assignedTo===user.id);
+
+  const filtered=myLeads.filter(function(l){
+    const q=search.toLowerCase();
+    const matchQ=!q||(l.name||"").toLowerCase().includes(q)||(l.email||"").toLowerCase().includes(q)||(l.phone||"").includes(q);
+    const matchS=filterStatus==="all"||l.status===filterStatus;
+    const matchC=filterConsultant==="all"||l.assignedTo===filterConsultant;
+    return matchQ&&matchS&&matchC;
+  });
+
+  const counts={new:leads.filter(l=>l.status==="new").length,assigned:leads.filter(l=>l.status==="assigned").length,contacted:leads.filter(l=>l.status==="contacted").length,closed:leads.filter(l=>l.status==="closed").length};
+
+  function LeadsTable({data,title}){
+    return h("div",{className:"tbl-wrap"},
+      h("div",{className:"tbl-hdr"},
+        h("div",{className:"tbl-title"},title||"Leads"," ",h("span",{style:{fontSize:12,color:"var(--muted)",fontWeight:400}},"("+data.length+")")),
+        h("div",{className:"search-bar"},
+          h("input",{className:"search-inp",placeholder:"Search name, email, phone…",value:search,onChange:e=>setSearch(e.target.value)}),
+          h("select",{className:"search-inp",value:filterStatus,onChange:e=>setFilterStatus(e.target.value)},
+            ["all","new","assigned","contacted","closed"].map(s=>h("option",{key:s,value:s},s==="all"?"All statuses":s.charAt(0).toUpperCase()+s.slice(1)))
+          ),
+          isAdmin&&h("select",{className:"search-inp",value:filterConsultant,onChange:e=>setFilterConsultant(e.target.value)},
+            [h("option",{key:"all",value:"all"},"All consultants"),...consultants.map(c=>h("option",{key:c.id,value:c.id},c.name))]
+          ),
+          isAdmin&&h("button",{className:"btn btn-ghost btn-sm",onClick:refreshLeads},"↻ Sync")
+        )
+      ),
+      data.length===0?h("div",{className:"empty"},h("div",{className:"empty-icon"},"📭"),h("div",null,"No leads found")):
+      h("div",{style:{overflowX:"auto"}},
+        h("table",null,
+          h("thead",null,h("tr",null,
+            h("th",null,"Client"),h("th",null,"Contact"),h("th",null,"Plan"),h("th",null,"Status"),
+            isAdmin&&h("th",null,"Assigned to"),
+            h("th",null,"Priority"),h("th",null,"Received"),h("th",null,"Action")
+          )),
+          h("tbody",null,data.map(function(lead){
+            const con=consultants.find(c=>c.id===lead.assignedTo);
+            const priorityColor={low:"var(--muted)",normal:"var(--text)",high:"var(--warn)",urgent:"var(--danger)"}[lead.priority||"normal"];
+            return h("tr",{key:lead.id},
+              h("td",null,
+                h("div",{style:{fontWeight:600,fontSize:13}},lead.name||"—"),
+                lead.hhMode&&h("span",{style:{fontSize:10,color:"var(--p2)",background:"var(--p2-lt)",padding:"1px 6px",borderRadius:100,marginTop:2,display:"inline-block"}},"HH")
+              ),
+              h("td",null,h("div",{style:{fontSize:12}},lead.email||"—"),h("div",{style:{fontSize:11,color:"var(--muted)"}},lead.phone||"")),
+              h("td",null,
+                h("div",{style:{fontSize:12}},lead.monthlyIncome?lead.monthlyIncome+"/mo":"—"),
+                h("div",{style:{fontSize:11,color:lead.verdict==="On track"?"var(--ok)":"var(--danger)"}},lead.verdict||"")
+              ),
+              h("td",null,h(StatusBadge,{status:lead.status||"new"})),
+              isAdmin&&h("td",null,
+                con?h("div",{style:{display:"flex",alignItems:"center",gap:6}},
+                  h("div",{style:{width:24,height:24,borderRadius:6,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff",flexShrink:0}},con.initials),
+                  h("span",{style:{fontSize:12}},con.name)
+                ):h("span",{style:{fontSize:12,color:"var(--hint)"}},"Unassigned")
+              ),
+              h("td",null,h("span",{style:{fontSize:12,fontWeight:600,color:priorityColor}},(lead.priority||"normal").charAt(0).toUpperCase()+(lead.priority||"normal").slice(1))),
+              h("td",null,h("span",{style:{fontSize:11,color:"var(--muted)"}},fmtShort(lead.createdAt))),
+              h("td",null,h("button",{className:"btn btn-primary btn-sm",onClick:()=>setSelectedLead(lead)},"Open"))
+            );
+          }))
+        )
+      )
+    );
+  }
+
+  return h("div",null,
+    /* Toast */
+    toast&&h("div",{style:{position:"fixed",bottom:24,right:24,background:"#111827",color:"#fff",padding:"10px 18px",borderRadius:10,fontSize:13,fontWeight:500,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,.2)"}},toast),
+
+    /* Modal */
+    selectedLead&&h(LeadModal,{lead:selectedLead,consultants,onClose:()=>setSelectedLead(null),onSave:saveLead,isAdmin}),
+    showAddCon&&h(AddConsultantModal,{onClose:()=>setShowAddCon(false),onAdd:addConsultant}),
+
+    /* Header */
+    h("header",{className:"hdr"},
+      h("div",{className:"logo"},
+        h("div",{className:"logo-mark"},"A"),
+        h("div",null,h("div",{className:"logo-name"},"ARK Financial Planners"),h("div",{className:"logo-tag"},"CRM · Consultants Portal"))
+      ),
+      h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{style:{fontSize:12,color:"var(--muted)"}},
+          h("span",{style:{display:"inline-flex",alignItems:"center",gap:6}},
+            h("div",{style:{width:20,height:20,borderRadius:6,background:user.color||"var(--accent)",display:"grid",placeItems:"center",fontSize:9,fontWeight:700,color:"#fff"}},user.initials||(user.name[0]||"U")),
+            user.name," · ",h("b",null,user.role==="admin"?"Administrator":user.role)
+          )
+        ),
+        h("button",{className:"btn btn-ghost btn-sm",onClick:()=>setUser(null)},"Sign out")
+      )
+    ),
+
+    h("div",{className:"wrap"},
+
+      /* Admin tabs */
+      isAdmin&&h("div",{className:"nav-tabs"},
+        [["leads","📋 All Leads"],["consultants","👥 Consultants"],["dashboard","📊 Dashboard"]].map(function(arr){
+          return h("button",{key:arr[0],className:"nav-tab"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},arr[1]);
+        })
+      ),
+
+      /* ── LEADS TAB ── */
+      (tab==="leads"||!isAdmin)&&h("div",null,
+        isAdmin&&h("div",{className:"stats-row"},
+          [{l:"New",v:counts.new,c:"var(--accent)"},{l:"Assigned",v:counts.assigned,c:"var(--warn)"},{l:"Contacted",v:counts.contacted,c:"var(--ok)"},{l:"Closed",v:counts.closed,c:"var(--muted)"}].map(function(s){
+            return h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l));
+          })
+        ),
+        h(LeadsTable,{data:filtered,title:isAdmin?"All Client Leads":"My Assigned Leads"})
+      ),
+
+      /* ── CONSULTANTS TAB (admin only) ── */
+      tab==="consultants"&&isAdmin&&h("div",null,
+        h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+          h("div",{style:{fontSize:18,fontWeight:600}},"Consultants"),
+          h("button",{className:"btn btn-primary btn-sm",onClick:()=>setShowAddCon(true)},"+ Add consultant")
+        ),
+        h("div",{className:"consultant-grid"},
+          consultants.map(function(con){
+            const myL=leads.filter(l=>l.assignedTo===con.id);
+            const open=myL.filter(l=>l.status!=="closed").length;
+            const closed=myL.filter(l=>l.status==="closed").length;
+            return h("div",{key:con.id,className:"consultant-card",onClick:()=>setSelectedConsultant(selectedConsultant===con.id?null:con.id)},
+              h("div",{className:"avatar-big",style:{background:con.color+"18",color:con.color}},con.initials),
+              h("div",{style:{fontSize:15,fontWeight:600,marginBottom:2}},con.name),
+              h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:10}},con.role," · ",con.email),
+              h("div",{style:{display:"flex",gap:8,marginBottom:10}},
+                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},h("div",{style:{fontSize:18,fontWeight:700,color:"var(--warn)"}},open),h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase"},"letterSpacing":".06em"},"Open")),
+                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},h("div",{style:{fontSize:18,fontWeight:700,color:"var(--ok)"}},closed),h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase"},"letterSpacing":".06em"},"Closed"))
+              ),
+              h("button",{className:"btn btn-danger btn-sm",style:{width:"100%",fontSize:11},onClick:function(e){e.stopPropagation();deleteConsultant(con.id);}},"Remove")
+            );
+          })
+        ),
+        /* Per-consultant leads */
+        selectedConsultant&&h("div",null,
+          h("div",{style:{fontSize:16,fontWeight:600,marginBottom:14}},
+            "Leads for "+consultants.find(c=>c.id===selectedConsultant)?.name
+          ),
+          h(LeadsTable,{data:leads.filter(l=>l.assignedTo===selectedConsultant),title:"Assigned leads"})
+        )
+      ),
+
+      /* ── DASHBOARD TAB ── */
+      tab==="dashboard"&&isAdmin&&h("div",null,
+        h("div",{style:{fontSize:18,fontWeight:600,marginBottom:20}},"Dashboard"),
+        h("div",{className:"stats-row"},
+          [{l:"Total leads",v:leads.length,c:"var(--text)"},{l:"New (unassigned)",v:leads.filter(l=>l.status==="new").length,c:"var(--accent)"},{l:"In progress",v:leads.filter(l=>l.status==="assigned"||l.status==="contacted").length,c:"var(--warn)"},{l:"Closed",v:leads.filter(l=>l.status==="closed").length,c:"var(--ok)"}].map(function(s){
+            return h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l));
+          })
+        ),
+        h("div",{className:"card"},
+          h("div",{className:"sec-lbl"},"Performance by consultant"),
+          h("table",null,
+            h("thead",null,h("tr",null,h("th",null,"Consultant"),h("th",null,"Total assigned"),h("th",null,"New"),h("th",null,"In progress"),h("th",null,"Closed"),h("th",null,"Conversion"))),
+            h("tbody",null,consultants.map(function(con){
+              const cl=leads.filter(l=>l.assignedTo===con.id);
+              const total=cl.length,nw=cl.filter(l=>l.status==="new").length,inprog=cl.filter(l=>l.status==="assigned"||l.status==="contacted").length,closed=cl.filter(l=>l.status==="closed").length;
+              const rate=total>0?Math.round(closed/total*100):0;
+              return h("tr",{key:con.id},
+                h("td",null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},h("div",{style:{width:26,height:26,borderRadius:7,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff"}},con.initials),con.name)),
+                h("td",null,h("b",null,total)),
+                h("td",null,h("span",{style:{color:"var(--accent)"}},nw)),
+                h("td",null,h("span",{style:{color:"var(--warn)"}},inprog)),
+                h("td",null,h("span",{style:{color:"var(--ok)"}},closed)),
+                h("td",null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+                  h("div",{style:{flex:1,height:6,background:"var(--border)",borderRadius:3}},h("div",{style:{height:"100%",width:rate+"%",background:"var(--ok)",borderRadius:3}})),
+                  h("span",{style:{fontSize:12,fontWeight:600}},rate+"%")
+                ))
+              );
+            }))
+          )
+        ),
+        h("div",{className:"card"},
+          h("div",{className:"sec-lbl"},"Recent activity"),
+          leads.filter(l=>(l.history||[]).length>0).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,8).length===0
+            ?h("div",{style:{color:"var(--muted)",fontSize:13,padding:"16px 0"}},"No activity yet.")
+            :h("div",{className:"timeline"},
+              leads.filter(l=>(l.history||[]).length>0).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,8).map(function(lead){
+                const last=(lead.history||[]).slice(-1)[0];
+                return h("div",{key:lead.id,className:"tl-item"},
+                  h("div",{className:"tl-dot",style:{background:"var(--accent)"}}),
+                  h("div",{className:"tl-line"}),
+                  h("div",{className:"tl-body"},
+                    h("div",{className:"tl-date"},fmtShort(lead.updatedAt||lead.createdAt)+" · "+lead.name),
+                    h("div",{className:"tl-text"},last?last.text:"New lead")
+                  )
+                );
+              })
+            )
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(React.createElement(App));
+</script>
+</body>
+</html>
