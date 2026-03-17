@@ -902,9 +902,10 @@ function buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur){
   }catch(e){console.error("Report:",e);return null;}
 }
 
-/* Opens the report in a new tab */
-function generateReport(info,result,base,partner,hh,disp,sym,frB,cur){
-  const html=buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur);
+/* Opens the report in a new tab. Accepts an optional pre-built html string
+   so the caller can reuse the same build for both display and CRM storage. */
+function generateReport(info,result,base,partner,hh,disp,sym,frB,cur,prebuiltHtml){
+  const html=prebuiltHtml||buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur);
   if(!html)return false;
   const w=window.open("","_blank","width=900,height=700,scrollbars=yes");
   if(!w){alert("Please allow pop-ups to view your report.");return false;}
@@ -1291,11 +1292,9 @@ function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
     if(!validate())return;
     setLoading(true);
     const info={name,email,phone};
-    /* Build the report HTML once — used for the pop-up and CRM storage */
+    /* Build report HTML once — open for client, store for CRM */
     const reportHTML=buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur);
-    const reportOk=!!(reportHTML&&(()=>{
-      try{const w=window.open("","_blank","width=900,height=700,scrollbars=yes");if(!w)return false;w.document.write(reportHTML);w.document.close();return true;}catch(e){return false;}
-    })());
+    const reportOk=generateReport(info,result,base,partner,hh,disp,sym,frB,cur,reportHTML);
     if(!reportOk)setPdfError(true);
     if(saveCRM){
       try{
