@@ -13,56 +13,43 @@
   --warn:#D97706;--warn-lt:#FFFBEB;
   --danger:#DC2626;--danger-lt:#FEF2F2;
   --p2:#7C3AED;--p2-lt:#F5F3FF;
+  --archive:#78716C;--archive-lt:#F5F4F2;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--text);font-size:14px;line-height:1.6}
 button{cursor:pointer;font-family:inherit}
 input,select,textarea{font-family:inherit}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-/* Layout */
 .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
 .logo-name{font-size:14px;font-weight:600}
 .logo-tag{font-size:10px;color:var(--muted)}
 .wrap{max-width:1100px;margin:0 auto;padding:24px}
-
-/* Login */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
 .login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:100%;max-width:380px}
-.login-title{font-size:20px;font-weight:600;marginBottom:4px;margin-bottom:4px}
+.login-title{font-size:20px;font-weight:600;margin-bottom:4px}
 .login-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
 .field{margin-bottom:14px}
 .field-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
 .inp{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--card);color:var(--text);outline:none}
 .inp:focus{border-color:var(--accent)}
 .btn{padding:11px 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:#1447B8}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#1447B8}
 .btn-sm{padding:6px 14px;font-size:12px}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.btn-ghost:hover{border-color:var(--border);background:var(--subtle)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{background:var(--subtle)}
 .btn-danger{background:var(--danger-lt);border:1px solid rgba(220,38,38,.2);color:var(--danger)}
-.btn-ok{background:var(--ok-lt);border:1px solid rgba(22,163,74,.2);color:var(--ok)}
-.btn-warn{background:var(--warn-lt);border:1px solid rgba(217,119,6,.2);color:var(--warn)}
-
-/* Nav tabs */
+.btn-archive{background:var(--archive-lt);border:1px solid rgba(120,113,108,.25);color:var(--archive)}.btn-archive:hover{background:#EAE8E6}
 .nav-tabs{display:flex;gap:4px;background:var(--subtle);border-radius:10px;padding:3px;border:1px solid var(--border);margin-bottom:24px}
 .nav-tab{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-align:center}
 .nav-tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-
-/* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
-
-/* Stats row */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
 .stat-val{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1}
 .stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
-
-/* Lead table */
 .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.tbl-wrap.arc{border-color:rgba(120,113,108,.35)}
 .tbl-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .tbl-title{font-size:14px;font-weight:600}
 table{width:100%;border-collapse:collapse}
@@ -70,26 +57,17 @@ th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transf
 td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--subtle)}
-
-/* Badge */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600}
-.badge-new{background:#EEF3FD;color:#1A56DB}
-.badge-assigned{background:#FFFBEB;color:#B45309}
-.badge-contacted{background:#F0FDF4;color:#16A34A}
-.badge-closed{background:#F3F4F6;color:#6B7280}
-
-/* Search / filter */
+.badge-new{background:#EEF3FD;color:#1A56DB}.badge-assigned{background:#FFFBEB;color:#B45309}
+.badge-contacted{background:#F0FDF4;color:#16A34A}.badge-closed{background:#F3F4F6;color:#6B7280}
+.badge-archived{background:var(--archive-lt);color:var(--archive)}
 .search-bar{display:flex;gap:8px;flex-wrap:wrap}
 .search-inp{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;background:var(--card);color:var(--text);outline:none;min-width:180px}
 .search-inp:focus{border-color:var(--accent)}
 select.search-inp{cursor:pointer}
-
-/* Modal */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:560px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
 .modal-title{font-size:17px;font-weight:600;margin-bottom:16px}
-
-/* Timeline */
 .timeline{display:flex;flex-direction:column;gap:0}
 .tl-item{display:flex;gap:12px;position:relative;padding-bottom:16px}
 .tl-item:last-child{padding-bottom:0}
@@ -99,35 +77,24 @@ select.search-inp{cursor:pointer}
 .tl-body{flex:1;min-width:0}
 .tl-date{font-size:10px;color:var(--muted);margin-bottom:2px}
 .tl-text{font-size:13px;line-height:1.5}
-
-/* Consultant card */
 .consultant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:24px}
 .consultant-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .15s}
 .consultant-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(26,86,219,.1)}
-.consultant-card.active{border-color:var(--accent);background:var(--accent-lt)}
 .avatar-big{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:16px;font-weight:700;margin-bottom:12px}
-
-/* Section label */
 .sec-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-
-/* Textarea */
 textarea.inp{resize:vertical;min-height:80px}
-
-/* Alert */
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:14px}
 .alert-err{background:var(--danger-lt);border:1px solid rgba(220,38,38,.2);color:var(--danger)}
-.alert-ok{background:var(--ok-lt);border:1px solid rgba(22,163,74,.2);color:var(--ok)}
-
-/* Empty state */
+.archive-banner{background:var(--archive-lt);border:1px solid rgba(120,113,108,.2);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px;font-size:12px;color:var(--archive)}
 .empty{text-align:center;padding:48px 20px;color:var(--muted)}
 .empty-icon{font-size:40px;margin-bottom:12px}
-
-/* Responsive */
+.spinner{display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:12px;color:var(--muted);font-size:13px}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 @media(max-width:700px){
   .stats-row{grid-template-columns:1fr 1fr}
   .consultant-grid{grid-template-columns:1fr 1fr}
-  table{font-size:12px}
-  td,th{padding:8px 10px}
+  table{font-size:12px}td,th{padding:8px 10px}
   .wrap{padding:16px}
 }
 </style>
@@ -136,36 +103,115 @@ textarea.inp{resize:vertical;min-height:80px}
 <div id="app"></div>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
-const {useState,useEffect,useMemo,createElement:h}=React;
+/* ═══════════════════════════════════════════════════════════════
+   FIREBASE CONFIG
+   ═══════════════════════════════════════════════════════════════ */
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyDeUnYC8hI_QbqYBltxDBPQT63KfyLIekk",
+  authDomain:"ark-financial-3979f.firebaseapp.com",
+  projectId:"ark-financial-3979f",
+  storageBucket:"ark-financial-3979f.firebasestorage.app",
+  messagingSenderId:"74236283385",
+  appId:"1:74236283385:web:7c1604649e5281f1b71528",
+  measurementId:"G-WGGY6R2MLT"
+};
+if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+const db=firebase.firestore();
+const auth=firebase.auth();
+</script>
 
-/* ── SEED DATA ── */
-const CONSULTANTS_SEED=[
-  {id:"c1",name:"Sarah Mooten",email:"sarah@arkfp.com",color:"#1A56DB",initials:"SM",role:"Senior Consultant"},
-  {id:"c2",name:"James Ramsamy",email:"james@arkfp.com",color:"#7C3AED",initials:"JR",role:"Consultant"},
-  {id:"c3",name:"Priya Gopal",email:"priya@arkfp.com",color:"#0D9488",initials:"PG",role:"Consultant"},
-];
-const ADMINS=[{id:"admin",name:"Admin",password:"ark2025!",role:"admin"}];
-const CONSULTANT_PASSWORDS={"c1":"sarah123","c2":"james123","c3":"priya123"};
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   SETUP CHECKLIST (one-time in Firebase Console)
+   ───────────────────────────────────────────────────────────────
+   1. Authentication → Sign-in method → Email/Password → Enable
 
-/* ── STORAGE HELPERS ── */
-async function storeGet(key,fallback){
-  try{const r=await window.storage.get(key);return r?JSON.parse(r.value):fallback;}catch(e){return fallback;}
+   2. Authentication → Users → Add user for each person:
+        ramjee.kamlesh@gmail.com       /  ark2025!   (Admin)
+        kamlesh@megatrendcapital.com   /  ark2025!   (Consultant — display name: Kamshi)
+
+   3. Firestore → Rules → Publish exactly this:
+
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /leads/{id} {
+            allow create: if true;
+            allow read, update: if request.auth != null;
+            allow delete: if false;
+          }
+          match /reports/{id} {
+            allow create: if true;
+            allow read: if request.auth != null;
+            allow update, delete: if false;
+          }
+          match /archived_leads/{id} {
+            allow create, read, update: if request.auth != null;
+            allow delete: if false;
+          }
+        }
+      }
+   ═══════════════════════════════════════════════════════════════ */
+
+const {useState,useEffect,createElement:h}=React;
+
+/* ── Consultant display profiles (auth done by Firebase — these are UI metadata only) ── */
+const PROFILES={
+  "ramjee.kamlesh@gmail.com":       {name:"Kamlesh Ramjee",    role:"admin",      color:"#1A56DB",initials:"KR"},
+  "kamlesh@megatrendcapital.com":   {name:"Kamshi",            role:"consultant", color:"#7C3AED",initials:"KM"},
+};
+
+/* ── Helpers ── */
+function fmt(ts){
+  if(!ts)return"—";
+  const d=new Date(ts);
+  return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
 }
-async function storeSet(key,val){
-  try{await window.storage.set(key,JSON.stringify(val));}catch(e){}
+function fmtShort(ts){
+  if(!ts)return"—";
+  return new Date(ts).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
 }
 
-/* ── REPORT DOWNLOAD ──
-   Fetches the stored HTML from the report: key and triggers a browser download */
+function docToLead(doc){
+  const d=doc.data();
+  return{
+    id:doc.id,
+    name:d.name||"Unknown",email:d.email||"",phone:d.phone||"",
+    health:d.health,sp:d.sp,pot:d.pot,potRaw:d.potRaw,
+    monthlyIncome:d.monthlyIncome,monthlyIncomeRaw:d.monthlyIncomeRaw,
+    verdict:d.verdict,lasts:d.lasts,fundsToAge:d.fundsToAge,
+    surplusYears:d.surplusYears,coverageMultiple:d.coverageMultiple,
+    retireAge:d.retireAge,age:d.age,gender:d.gender,lifeExpectancy:d.lifeExpectancy,
+    savingsRate:d.savingsRate,income:d.income,monthlySpend:d.monthlySpend,
+    savings:d.savings,debtBalance:d.debtBalance||null,
+    incomeMode:d.incomeMode||"rule4",
+    scenarioSelected:d.scenarioSelected||"likely",scenarioRate:d.scenarioRate||"5%",
+    goals:d.goals||[],goalsDetail:d.goalsDetail||[],
+    potWorstCase:d.potWorstCase||null,potBestCase:d.potBestCase||null,
+    cur:d.cur,reportKey:d.reportKey||null,hhMode:d.hhMode,
+    partnerAge:d.partnerAge||null,partnerGender:d.partnerGender||null,
+    partnerRetireAge:d.partnerRetireAge||null,partnerSavingsRate:d.partnerSavingsRate||null,
+    partnerIncome:d.partnerIncome||null,partnerSavings:d.partnerSavings||null,
+    p1Pot:d.p1Pot||null,p2Pot:d.p2Pot||null,
+    status:d.status||"new",assignedTo:d.assignedTo||"",priority:d.priority||"normal",
+    history:d.history||[{ts:new Date().toISOString(),text:"Lead received from planner",author:"System",type:"system"}],
+    createdAt:d.ts||d.createdAt||new Date().toISOString(),
+    updatedAt:d.updatedAt||d.ts||new Date().toISOString(),
+    archived:d.archived||false,archivedAt:d.archivedAt||null,archivedBy:d.archivedBy||null,
+  };
+}
+
 async function downloadReport(lead){
   try{
-    const key=lead.reportKey;
-    if(!key)return false;
-    const r=await window.storage.get(key);
-    if(!r||!r.value)return false;
-    /* r.value is the raw HTML string (stored without JSON.stringify) */
-    const html=r.value;
+    if(!lead.reportKey)return false;
+    const snap=await db.collection("reports").doc(String(lead.reportKey)).get();
+    if(!snap.exists)return false;
+    const html=snap.data().html;
+    if(!html)return false;
     const blob=new Blob([html],{type:"text/html;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const a=document.createElement("a");
@@ -177,102 +223,142 @@ async function downloadReport(lead){
   }catch(e){console.error("Report download:",e);return false;}
 }
 
-function fmt(ts){
-  if(!ts)return"—";
-  const d=new Date(ts);
-  return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
-}
-function fmtShort(ts){
-  if(!ts)return"—";
-  return new Date(ts).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-}
-
-/* ── STATUS BADGE ── */
-function StatusBadge({status}){
+function StatusBadge({status,isArchived}){
+  if(isArchived)return h("span",{className:"badge badge-archived"},"Archived");
   const map={new:{cls:"badge-new",label:"New"},assigned:{cls:"badge-assigned",label:"Assigned"},contacted:{cls:"badge-contacted",label:"Contacted"},closed:{cls:"badge-closed",label:"Closed"}};
   const s=map[status]||map.new;
   return h("span",{className:"badge "+s.cls},s.label);
 }
 
-/* ── LOGIN ── */
-function Login({onLogin}){
-  const[username,setUsername]=useState("");
+/* ═══════════════════════════════════════════════════════════════
+   LOGIN
+   ═══════════════════════════════════════════════════════════════ */
+function Login(){
+  const[email,setEmail]=useState("");
   const[password,setPassword]=useState("");
   const[err,setErr]=useState("");
-  const submit=()=>{
-    setErr("");
-    const admin=ADMINS.find(a=>a.name.toLowerCase()===username.toLowerCase()&&a.password===password);
-    if(admin){onLogin({...admin});return;}
-    const con=CONSULTANTS_SEED.find(c=>c.email.toLowerCase()===username.toLowerCase());
-    if(con&&CONSULTANT_PASSWORDS[con.id]===password){onLogin({...con,role:"consultant"});return;}
-    setErr("Invalid username or password.");
+  const[busy,setBusy]=useState(false);
+  const submit=async()=>{
+    if(!email.trim()||!password)return;
+    setErr("");setBusy(true);
+    try{
+      await auth.signInWithEmailAndPassword(email.trim(),password);
+    }catch(e){
+      setErr(["auth/user-not-found","auth/wrong-password","auth/invalid-credential"].includes(e.code)
+        ?"Invalid email or password.":"Sign-in error: "+e.message);
+    }
+    setBusy(false);
   };
   return h("div",{className:"login-wrap"},
     h("div",{className:"login-card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:10,marginBottom:20}},
         h("div",{className:"logo-mark",style:{width:36,height:36,fontSize:16}},"A"),
-        h("div",null,h("div",{style:{fontSize:16,fontWeight:700}},"ARK Financial Planners"),h("div",{style:{fontSize:11,color:"var(--muted)"}},"Consultants Portal"))
+        h("div",null,
+          h("div",{style:{fontSize:16,fontWeight:700}},"ARK Financial Planners"),
+          h("div",{style:{fontSize:11,color:"var(--muted)"}},"Consultants Portal")
+        )
       ),
       h("div",{className:"login-title"},"Sign in"),
       h("div",{className:"login-sub"},"For authorised consultants only"),
       err&&h("div",{className:"alert alert-err"},err),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Username or email"),h("input",{className:"inp",type:"text",value:username,placeholder:"admin or email",onChange:e=>setUsername(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Password"),h("input",{className:"inp",type:"password",value:password,placeholder:"••••••••",onChange:e=>setPassword(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})),
-      h("button",{className:"btn btn-primary",style:{width:"100%",marginTop:8},onClick:submit},"Sign in →"),
-      h("div",{style:{marginTop:16,fontSize:11,color:"var(--hint)",textAlign:"center"}},"Demo: admin / ark2025! · sarah@arkfp.com / sarah123")
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Email address"),
+        h("input",{className:"inp",type:"email",value:email,placeholder:"you@arkfp.com",
+          onChange:e=>setEmail(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})
+      ),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Password"),
+        h("input",{className:"inp",type:"password",value:password,placeholder:"••••••••",
+          onChange:e=>setPassword(e.target.value),onKeyDown:e=>e.key==="Enter"&&submit()})
+      ),
+      h("button",{className:"btn btn-primary",style:{width:"100%",marginTop:8,opacity:busy?.6:1},
+        onClick:submit,disabled:busy},busy?"Signing in…":"Sign in →")
     )
   );
 }
 
-/* ── LEAD DETAIL MODAL ── */
-function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
+/* ═══════════════════════════════════════════════════════════════
+   LEAD MODAL
+   ═══════════════════════════════════════════════════════════════ */
+function LeadModal({lead,consultants,onClose,onSave,onArchive,isAdmin,isArchived}){
   const[status,setStatus]=useState(lead.status||"new");
   const[assignedTo,setAssignedTo]=useState(lead.assignedTo||"");
   const[note,setNote]=useState("");
   const[priority,setPriority]=useState(lead.priority||"normal");
-  const[dlState,setDlState]=useState("idle"); /* idle | loading | done | none */
+  const[dlState,setDlState]=useState("idle");
+  const[archiving,setArchiving]=useState(false);
+
   const save=()=>{
-    const history=[...(lead.history||[])];
-    if(note.trim()){history.push({ts:new Date().toISOString(),text:note.trim(),author:isAdmin?"Admin":consultants.find(c=>c.id===assignedTo)?.name||"System"});}
-    if(status!==lead.status)history.push({ts:new Date().toISOString(),text:"Status changed to "+status,author:"System",type:"status"});
-    if(assignedTo&&assignedTo!==lead.assignedTo){const cname=consultants.find(c=>c.id===assignedTo)?.name||assignedTo;history.push({ts:new Date().toISOString(),text:"Assigned to "+cname,author:"Admin",type:"assign"});}
-    onSave({...lead,status,assignedTo,priority,history,updatedAt:new Date().toISOString()});
+    const hist=[...(lead.history||[])];
+    if(note.trim())hist.push({ts:new Date().toISOString(),text:note.trim(),author:isAdmin?"Admin":consultants.find(c=>c.id===assignedTo||c.email===assignedTo)?.name||"Consultant"});
+    if(status!==lead.status)hist.push({ts:new Date().toISOString(),text:"Status changed to "+status,author:"System",type:"status"});
+    if(assignedTo&&assignedTo!==lead.assignedTo){
+      const cn=consultants.find(c=>c.id===assignedTo||c.email===assignedTo)?.name||assignedTo;
+      hist.push({ts:new Date().toISOString(),text:"Assigned to "+cn,author:"Admin",type:"assign"});
+    }
+    onSave({...lead,status,assignedTo,priority,history:hist,updatedAt:new Date().toISOString()});
   };
-  const con=consultants.find(c=>c.id===lead.assignedTo);
+
+  const doArchive=async()=>{
+    if(!window.confirm("Move this lead to the archive? It will no longer appear in the active leads list."))return;
+    setArchiving(true);
+    await onArchive(lead);
+    setArchiving(false);
+    onClose();
+  };
+
+  const infoRows=[
+    ["Email",lead.email||"—"],["Phone",lead.phone||"—"],
+    ["Currency",lead.cur||"—"],["Mode",lead.hhMode?"Household":"Individual"],
+    ["Health score",(lead.health||"—")+"/100"],["Monthly income",lead.monthlyIncome||"—"],
+    ["Pot size",lead.pot||"—"],["Verdict",lead.verdict||"—"],
+    ["Savings rate",(lead.savingsRate||"—")+"%"],["Retirement age","Age "+(lead.retireAge||"—")],
+    ["Income strategy",(lead.incomeMode==="expenses"?"Same lifestyle":lead.incomeMode==="custom"?"Custom target":"4% rule")],
+    ["Scenario",(lead.scenarioSelected==="tough"?"Worst 4%":lead.scenarioSelected==="best"?"Best 6%":"Base 5%")],
+    ["Funds last to","Age "+(lead.fundsToAge||"—")],
+    ["Coverage",(lead.coverageMultiple!=null?lead.coverageMultiple.toFixed(1)+"×":"—")],
+    ["Worst-case pot",lead.potWorstCase||"—"],["Best-case pot",lead.potBestCase||"—"],
+  ];
+
   return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
       h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
-      h("div",{className:"modal-title"},lead.name||"Unknown"),
+      h("div",{className:"modal-title"},
+        lead.name||"Unknown",
+        isArchived&&h("span",{style:{marginLeft:10,fontSize:11,background:"var(--archive-lt)",color:"var(--archive)",padding:"2px 10px",borderRadius:100,fontWeight:600,verticalAlign:"middle"}},"Archived")
+      ),
+
       /* Client info */
       h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16,fontSize:12}},
-        [["Email",lead.email||"—"],["Phone",lead.phone||"—"],["Currency",lead.cur||"—"],["Mode",lead.hhMode?"Household":"Individual"],["Health score",(lead.health||"—")+"/100"],["Monthly income",lead.monthlyIncome||"—"],["Pot size",lead.pot||"—"],["Verdict",lead.verdict||"—"],["Savings rate",(lead.savingsRate||"—")+"%"],["Retirement age","Age "+(lead.retireAge||"—")],["Income strategy",(lead.incomeMode==="expenses"?"Same lifestyle":lead.incomeMode==="custom"?"Custom target":"4% rule")||"—"],["Scenario selected",lead.scenarioSelected?(lead.scenarioSelected==="tough"?"Worst case 4%":lead.scenarioSelected==="best"?"Best case 6%":"Base case 5%"):"—"],["Funds last to","Age "+(lead.fundsToAge||"—")],["Coverage multiple",(lead.coverageMultiple!=null?lead.coverageMultiple.toFixed(1)+"×":"—")],["Worst-case pot",lead.potWorstCase||"—"],["Best-case pot",lead.potBestCase||"—"]].map(function(arr){
-          return h("div",{key:arr[0],style:{background:"var(--subtle)",borderRadius:8,padding:"8px 10px"}},
-            h("div",{style:{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
-            h("div",{style:{fontWeight:600,fontSize:13}},String(arr[1]))
-          );
-        })
+        infoRows.map(arr=>h("div",{key:arr[0],style:{background:"var(--subtle)",borderRadius:8,padding:"8px 10px"}},
+          h("div",{style:{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
+          h("div",{style:{fontWeight:600,fontSize:13}},String(arr[1]))
+        ))
       ),
-      /* Partner info (HH mode) */
+
+      /* Partner info */
       lead.hhMode&&lead.partnerAge&&h("div",{style:{marginBottom:14}},
         h("div",{className:"sec-lbl"},"Partner details"),
         h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,fontSize:12}},
-          [["Partner age",lead.partnerAge||"—"],["Partner gender",lead.partnerGender||"—"],["Partner retire age","Age "+(lead.partnerRetireAge||"—")],["Partner savings rate",(lead.partnerSavingsRate||"—")+"%"],["Partner income",lead.partnerIncome||"—"],["Partner savings",lead.partnerSavings||"—"],["Your pot",lead.p1Pot||"—"],["Partner pot",lead.p2Pot||"—"]].map(function(arr){
-            return h("div",{key:arr[0],style:{background:"var(--p2-lt)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(124,58,237,.12)"}},
-              h("div",{style:{fontSize:10,color:"var(--p2)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
-              h("div",{style:{fontWeight:600,fontSize:13,color:"var(--p2)"}},String(arr[1]))
-            );
-          })
+          [["Partner age",lead.partnerAge],["Partner gender",lead.partnerGender],
+           ["Partner retire","Age "+(lead.partnerRetireAge||"—")],["Partner savings rate",(lead.partnerSavingsRate||"—")+"%"],
+           ["Partner income",lead.partnerIncome],["Partner savings",lead.partnerSavings],
+           ["Your pot",lead.p1Pot],["Partner pot",lead.p2Pot]
+          ].map(arr=>h("div",{key:arr[0],style:{background:"var(--p2-lt)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(124,58,237,.12)"}},
+            h("div",{style:{fontSize:10,color:"var(--p2)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
+            h("div",{style:{fontWeight:600,fontSize:13,color:"var(--p2)"}},String(arr[1]||"—"))
+          ))
         )
       ),
-      /* Goals pills */
+
+      /* Goals */
       (lead.goals||[]).length>0&&h("div",{style:{marginBottom:14}},
         h("div",{className:"sec-lbl"},"Life goals"),
         h("div",{style:{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}},
-          (lead.goals||[]).map(function(g){return h("span",{key:g,style:{padding:"3px 10px",borderRadius:100,background:"var(--warn-lt)",border:"1px solid rgba(217,119,6,.2)",fontSize:11,color:"var(--warn)"}},g);})
+          (lead.goals||[]).map(g=>h("span",{key:g,style:{padding:"3px 10px",borderRadius:100,background:"var(--warn-lt)",border:"1px solid rgba(217,119,6,.2)",fontSize:11,color:"var(--warn)"}},g))
         ),
-        /* Goals detail table */
         (lead.goalsDetail||[]).length>0&&h("div",{style:{fontSize:12}},
-          (lead.goalsDetail||[]).map(function(g){
+          (lead.goalsDetail||[]).map(g=>{
             const freq=g.recurYears>0?" · every "+g.recurYears+" yrs":(g.id==="trip"?" · once":"");
             const mort=g.id==="house"&&g.mortgagePct>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
             return h("div",{key:g.id,style:{display:"flex",justifyContent:"space-between",padding:"5px 8px",background:"var(--subtle)",borderRadius:6,marginBottom:4}},
@@ -282,8 +368,9 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
           })
         )
       ),
-      /* Assignment & status */
-      isAdmin&&h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}},
+
+      /* Assignment & status — admin, active only */
+      isAdmin&&!isArchived&&h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}},
         h("div",null,
           h("div",{className:"field-lbl"},"Assign to"),
           h("select",{className:"inp",value:assignedTo,onChange:e=>setAssignedTo(e.target.value),style:{fontSize:12}},
@@ -304,26 +391,26 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
           )
         )
       ),
-      /* Note */
-      h("div",{style:{marginBottom:14}},
+
+      /* Note — active only */
+      !isArchived&&h("div",{style:{marginBottom:14}},
         h("div",{className:"field-lbl"},"Add note / case update"),
-        h("textarea",{className:"inp",value:note,onChange:e=>setNote(e.target.value),placeholder:"Record call outcome, next steps, client feedback…",style:{resize:"vertical",minHeight:70,fontSize:13}})
+        h("textarea",{className:"inp",value:note,onChange:e=>setNote(e.target.value),
+          placeholder:"Record call outcome, next steps, client feedback…",
+          style:{resize:"vertical",minHeight:70,fontSize:13}})
       ),
+
       /* Report download */
       h("div",{style:{marginBottom:14,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(26,86,219,.18)",borderRadius:10}},
         h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}},
           h("div",null,
             h("div",{style:{fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:2}},"Client Report"),
             h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.5}},
-              lead.reportKey
-                ?"Full retirement report is available for this lead."
-                :"No report stored — client submitted without ticking the save box."
-            )
+              lead.reportKey?"Full retirement report available.":"No report — client did not tick the save option.")
           ),
           lead.reportKey&&h("button",{
-            className:"btn btn-primary btn-sm",
-            disabled:dlState==="loading",
-            style:{flexShrink:0,opacity:dlState==="loading"?0.6:1,
+            className:"btn btn-primary btn-sm",disabled:dlState==="loading",
+            style:{flexShrink:0,opacity:dlState==="loading"?.6:1,
               background:dlState==="done"?"var(--ok)":dlState==="none"?"var(--danger-lt)":"var(--accent)",
               border:dlState==="none"?"1px solid rgba(220,38,38,.3)":"none",
               color:dlState==="none"?"var(--danger)":"#fff"},
@@ -333,28 +420,41 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
               setDlState(ok?"done":"none");
               setTimeout(()=>setDlState("idle"),3000);
             }
-          },
-            dlState==="loading"?"Fetching…":
-            dlState==="done"?"✓ Downloaded":
-            dlState==="none"?"Report not found":
-            "⬇ Download Report"
-          )
+          },dlState==="loading"?"Fetching…":dlState==="done"?"✓ Downloaded":dlState==="none"?"Not found":"⬇ Download Report")
         )
       ),
-      /* Save changes */
-      h("button",{className:"btn btn-primary",onClick:save,style:{width:"100%",marginBottom:16}},"Save changes"),
+
+      /* Action buttons */
+      !isArchived&&h("button",{className:"btn btn-primary",onClick:save,style:{width:"100%",marginBottom:10}},"Save changes"),
+
+      /* Archive — admin only, closed leads only */
+      isAdmin&&!isArchived&&lead.status==="closed"&&h("button",{
+        className:"btn btn-archive",disabled:archiving,
+        style:{width:"100%",marginBottom:14,opacity:archiving?.6:1},
+        onClick:doArchive
+      },archiving?"Archiving…":"🗄 Move to Archive"),
+
+      isAdmin&&!isArchived&&lead.status!=="closed"&&h("div",{style:{fontSize:11,color:"var(--hint)",textAlign:"center",marginBottom:14}},
+        "Archive becomes available once status is set to Closed."
+      ),
+
+      /* Archived-by info */
+      isArchived&&lead.archivedAt&&h("div",{style:{marginBottom:14,padding:"10px 14px",background:"var(--archive-lt)",border:"1px solid rgba(120,113,108,.2)",borderRadius:8,fontSize:12,color:"var(--archive)"}},
+        "Archived on "+fmt(lead.archivedAt)+(lead.archivedBy?" by "+lead.archivedBy:"")
+      ),
+
       /* History */
       (lead.history||[]).length>0&&h("div",null,
         h("div",{className:"sec-lbl"},"Case history"),
         h("div",{className:"timeline"},
           [...(lead.history||[])].reverse().map(function(item,i){
-            const isSystem=item.type==="status"||item.type==="assign";
+            const isSys=item.type==="status"||item.type==="assign"||item.type==="system";
             return h("div",{key:i,className:"tl-item"},
-              h("div",{className:"tl-dot",style:{background:isSystem?"var(--border)":"var(--accent)"}}),
+              h("div",{className:"tl-dot",style:{background:isSys?"var(--border)":"var(--accent)"}}),
               h("div",{className:"tl-line"}),
               h("div",{className:"tl-body"},
                 h("div",{className:"tl-date"},fmt(item.ts)+(item.author?" · "+item.author:"")),
-                h("div",{className:"tl-text",style:{color:isSystem?"var(--muted)":"var(--text)"}},item.text)
+                h("div",{className:"tl-text",style:{color:isSys?"var(--muted)":"var(--text)"}},item.text)
               )
             );
           })
@@ -368,233 +468,335 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
 function AddConsultantModal({onClose,onAdd}){
   const[name,setName]=useState("");
   const[email,setEmail]=useState("");
-  const[role,setRole]=useState("Consultant");
   const[password,setPassword]=useState("");
+  const[role,setRole]=useState("Consultant");
+  const[color,setColor]=useState("#7C3AED");
+  const[busy,setBusy]=useState(false);
+  const[err,setErr]=useState("");
+  const[done,setDone]=useState(false);
   const colors=["#1A56DB","#7C3AED","#0D9488","#DC2626","#D97706","#16A34A"];
-  const[color,setColor]=useState(colors[0]);
-  const valid=name.trim()&&email.trim()&&password.trim();
-  const submit=()=>{
+  const valid=name.trim()&&email.trim()&&password.length>=6;
+
+  const submit=async()=>{
     if(!valid)return;
-    const initials=name.trim().split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
-    onAdd({id:"c"+Date.now(),name:name.trim(),email:email.trim().toLowerCase(),role,color,initials,password,createdAt:new Date().toISOString()});
+    setErr("");setBusy(true);
+    try{
+      /* Use a secondary Firebase app instance so creating the new user
+         does NOT sign the admin out of their own session */
+      const secondaryApp=firebase.apps.find(a=>a.name==="secondary")||
+        firebase.initializeApp(FIREBASE_CONFIG,"secondary");
+      const secondaryAuth=secondaryApp.auth();
+      await secondaryAuth.createUserWithEmailAndPassword(email.trim().toLowerCase(),password);
+      await secondaryAuth.signOut();
+
+      /* Add to CRM consultant list */
+      const initials=name.trim().split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+      onAdd({
+        id:"c"+Date.now(),
+        name:name.trim(),
+        email:email.trim().toLowerCase(),
+        role,color,initials,
+        createdAt:new Date().toISOString()
+      });
+      setDone(true);
+    }catch(e){
+      const msg={
+        "auth/email-already-in-use":"This email already has a Firebase account.",
+        "auth/invalid-email":"Please enter a valid email address.",
+        "auth/weak-password":"Password must be at least 6 characters.",
+      }[e.code]||"Error: "+e.message;
+      setErr(msg);
+    }
+    setBusy(false);
   };
+
+  if(done)return h("div",{className:"modal-ov",onClick:onClose},
+    h("div",{className:"modal-box",style:{maxWidth:400,textAlign:"center"},onClick:e=>e.stopPropagation()},
+      h("div",{style:{fontSize:44,marginBottom:12}},"✅"),
+      h("div",{style:{fontSize:16,fontWeight:700,marginBottom:8}},"Consultant created"),
+      h("div",{style:{fontSize:13,color:"var(--muted)",marginBottom:20,lineHeight:1.6}},
+        name+" can now log in to the CRM with ",h("b",null,email)," and their password."
+      ),
+      h("button",{className:"btn btn-primary",style:{width:"100%"},onClick:onClose},"Done")
+    )
+  );
+
   return h("div",{className:"modal-ov",onClick:onClose},
-    h("div",{className:"modal-box",style:{maxWidth:400},onClick:e=>e.stopPropagation()},
+    h("div",{className:"modal-box",style:{maxWidth:420},onClick:e=>e.stopPropagation()},
       h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
       h("div",{className:"modal-title"},"Add consultant"),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Full name *"),h("input",{className:"inp",value:name,onChange:e=>setName(e.target.value),placeholder:"e.g. Sarah Mooten"})),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Email *"),h("input",{className:"inp",type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"email@arkfp.com"})),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Role"),h("select",{className:"inp",value:role,onChange:e=>setRole(e.target.value)},["Consultant","Senior Consultant","Manager"].map(r=>h("option",{key:r,value:r},r)))),
-      h("div",{className:"field"},h("div",{className:"field-lbl"},"Temporary password *"),h("input",{className:"inp",type:"password",value:password,onChange:e=>setPassword(e.target.value),placeholder:"Set login password"})),
+      h("div",{style:{marginBottom:16,padding:"10px 14px",background:"var(--ok-lt)",border:"1px solid rgba(22,163,74,.2)",borderRadius:8,fontSize:12,color:"var(--muted)"}},
+        "✓ Their Firebase login will be created automatically — no need to visit the Firebase Console."
+      ),
+      err&&h("div",{className:"alert alert-err"},err),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Full name *"),
+        h("input",{className:"inp",value:name,onChange:e=>setName(e.target.value),placeholder:"e.g. Sarah Mooten"})
+      ),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Email *"),
+        h("input",{className:"inp",type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"email@example.com"})
+      ),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Password * (min 6 characters)"),
+        h("input",{className:"inp",type:"password",value:password,onChange:e=>setPassword(e.target.value),placeholder:"Temporary password for them to use"})
+      ),
+      h("div",{className:"field"},
+        h("div",{className:"field-lbl"},"Role"),
+        h("select",{className:"inp",value:role,onChange:e=>setRole(e.target.value)},
+          ["Consultant","Senior Consultant","Manager"].map(r=>h("option",{key:r,value:r},r)))
+      ),
       h("div",{className:"field"},
         h("div",{className:"field-lbl"},"Avatar colour"),
         h("div",{style:{display:"flex",gap:8,marginTop:4}},
-          colors.map(c=>h("button",{key:c,onClick:()=>setColor(c),style:{width:28,height:28,borderRadius:8,background:c,border:color===c?"3px solid #111827":"2px solid transparent",cursor:"pointer"}}))
+          colors.map(c=>h("button",{key:c,onClick:()=>setColor(c),
+            style:{width:28,height:28,borderRadius:8,background:c,
+              border:color===c?"3px solid #111827":"2px solid transparent",cursor:"pointer"}}))
         )
       ),
-      h("button",{className:"btn btn-primary",style:{width:"100%",opacity:valid?1:.5},onClick:submit},"Add consultant")
+      h("button",{className:"btn btn-primary",
+        style:{width:"100%",opacity:(valid&&!busy)?1:.5},
+        onClick:submit,disabled:busy||!valid},
+        busy?"Creating account…":"Create consultant →"
+      )
     )
   );
 }
 
-/* ── MAIN APP ── */
+/* ═══════════════════════════════════════════════════════════════
+   MAIN APP
+   ═══════════════════════════════════════════════════════════════ */
 function App(){
-  const[user,setUser]=useState(null);
+  const[authUser,setAuthUser]=useState(null);
+  const[authLoading,setAuthLoading]=useState(true);
+  const[profile,setProfile]=useState(null);
   const[tab,setTab]=useState("leads");
   const[leads,setLeads]=useState([]);
-  const[consultants,setConsultants]=useState(CONSULTANTS_SEED);
-  const[selectedLead,setSelectedLead]=useState(null);
-  const[selectedConsultant,setSelectedConsultant]=useState(null);
+  const[archivedLeads,setArchivedLeads]=useState([]);
+  const[consultants,setConsultants]=useState([]);
+  const[selLead,setSelLead]=useState(null);
+  const[selArchived,setSelArchived]=useState(null);
+  const[selConsultant,setSelConsultant]=useState(null);
   const[search,setSearch]=useState("");
+  const[arcSearch,setArcSearch]=useState("");
   const[filterStatus,setFilterStatus]=useState("all");
-  const[filterConsultant,setFilterConsultant]=useState("all");
+  const[filterCon,setFilterCon]=useState("all");
   const[showAddCon,setShowAddCon]=useState(false);
-  const[loading,setLoading]=useState(true);
+  const[leadsLoading,setLeadsLoading]=useState(true);
   const[toast,setToast]=useState("");
 
+  /* Auth state listener */
   useEffect(function(){
-    async function load(){
-      const l=await storeGet("crm_leads",[]);
-      const c=await storeGet("crm_consultants",CONSULTANTS_SEED);
-      setLeads(l);setConsultants(c);setLoading(false);
-    }
-    load();
+    return auth.onAuthStateChanged(function(user){
+      if(user){
+        setAuthUser(user);
+        /* Check hardcoded PROFILES first, then localStorage consultant list
+           so any consultant created via the CRM modal also gets their
+           proper name, colour and initials when they log in */
+        if(PROFILES[user.email]){
+          setProfile(PROFILES[user.email]);
+        }else{
+          try{
+            const stored=JSON.parse(localStorage.getItem("crm_consultants")||"[]");
+            const match=stored.find(c=>c.email===user.email);
+            if(match){
+              setProfile({name:match.name,role:"consultant",color:match.color||"#7C3AED",initials:match.initials||match.name.slice(0,2).toUpperCase()});
+            }else{
+              setProfile({name:user.email,role:"consultant",color:"#6B7280",initials:"?"});
+            }
+          }catch(e){
+            setProfile({name:user.email,role:"consultant",color:"#6B7280",initials:"?"});
+          }
+        }
+      }else{
+        setAuthUser(false);setProfile(null);
+      }
+      setAuthLoading(false);
+    });
   },[]);
 
-  function showToast(msg){setToast(msg);setTimeout(()=>setToast(""),2500);}
-
-  async function saveLead(updated){
-    const next=leads.map(l=>l.id===updated.id?updated:l);
-    setLeads(next);await storeSet("crm_leads",next);
-    setSelectedLead(null);showToast("Case updated ✓");
-  }
-
-  async function addConsultant(c){
-    const next=[...consultants,c];
-    setConsultants(next);await storeSet("crm_consultants",next);
-    setShowAddCon(false);showToast("Consultant added ✓");
-  }
-
-  async function deleteConsultant(id){
-    if(!window.confirm("Remove this consultant?"))return;
-    const next=consultants.filter(c=>c.id!==id);
-    setConsultants(next);await storeSet("crm_consultants",next);showToast("Consultant removed");
-  }
-
-  // Reload leads from planner storage keys
-  async function refreshLeads(){
-    const stored=await storeGet("crm_leads",[]);
-    // Also pull any new leads from planner (lead:TIMESTAMP keys)
-    const newFromPlanner=[];
+  /* Firestore listeners — only when signed in */
+  useEffect(function(){
+    if(!authUser)return;
     try{
-      const keys=await window.storage.list("lead:");
-      for(const k of(keys.keys||[])){
-        try{
-          const r=await window.storage.get(k);
-          if(r){
-            const data=JSON.parse(r.value);
-            const already=stored.find(l=>l.sourceKey===k);
-            if(!already){
-              newFromPlanner.push({
-                id:"lead_"+k.replace("lead:",""),
-                sourceKey:k,
-                name:data.name||"Unknown",
-                email:data.email||"",
-                phone:data.phone||"",
-                health:data.health,
-                sp:data.sp,
-                pot:data.pot,
-                potRaw:data.potRaw,
-                monthlyIncome:data.monthlyIncome,
-                monthlyIncomeRaw:data.monthlyIncomeRaw,
-                verdict:data.verdict,
-                lasts:data.lasts,
-                fundsToAge:data.fundsToAge,
-                surplusYears:data.surplusYears,
-                coverageMultiple:data.coverageMultiple,
-                retireAge:data.retireAge,
-                age:data.age,
-                gender:data.gender,
-                lifeExpectancy:data.lifeExpectancy,
-                savingsRate:data.savingsRate,
-                income:data.income,
-                monthlySpend:data.monthlySpend,
-                savings:data.savings,
-                debtBalance:data.debtBalance||null,
-                incomeMode:data.incomeMode||"rule4",
-                scenarioSelected:data.scenarioSelected||"likely",
-                scenarioRate:data.scenarioRate||"5%",
-                goals:data.goals||[],
-                goalsDetail:data.goalsDetail||[],
-                potWorstCase:data.potWorstCase||null,
-                potBestCase:data.potBestCase||null,
-                cur:data.cur,
-                reportKey:data.reportKey||null,
-                hhMode:data.hhMode,
-                partnerAge:data.partnerAge||null,
-                partnerGender:data.partnerGender||null,
-                partnerRetireAge:data.partnerRetireAge||null,
-                partnerSavingsRate:data.partnerSavingsRate||null,
-                partnerIncome:data.partnerIncome||null,
-                partnerSavings:data.partnerSavings||null,
-                p1Pot:data.p1Pot||null,
-                p2Pot:data.p2Pot||null,
-                status:"new",
-                assignedTo:"",
-                priority:"normal",
-                history:[{ts:new Date().toISOString(),text:"Lead received from planner",author:"System",type:"system"}],
-                createdAt:data.ts||new Date().toISOString(),
-                updatedAt:data.ts||new Date().toISOString()
-              });
-            }
-          }
-        }catch(e){}
+      const s=localStorage.getItem("crm_consultants");
+      if(s){
+        setConsultants(JSON.parse(s));
+      }else{
+        /* Seed default consultants on first load */
+        const defaults=[
+          {id:"c1",name:"Kamshi",email:"kamlesh@megatrendcapital.com",role:"Consultant",color:"#7C3AED",initials:"KM",createdAt:new Date().toISOString()},
+        ];
+        setConsultants(defaults);
+        localStorage.setItem("crm_consultants",JSON.stringify(defaults));
       }
     }catch(e){}
-    const merged=[...stored,...newFromPlanner];
-    setLeads(merged);
-    if(newFromPlanner.length>0){await storeSet("crm_leads",merged);showToast(newFromPlanner.length+" new lead(s) imported ✓");}
-    else showToast("Leads refreshed ✓");
+
+    const u1=db.collection("leads").orderBy("ts","desc").onSnapshot(function(snap){
+      setLeads(snap.docs.map(docToLead));setLeadsLoading(false);
+    },function(e){console.error(e);setLeadsLoading(false);showToast("Connection error: "+e.message);});
+
+    const u2=db.collection("archived_leads").orderBy("archivedAt","desc").onSnapshot(function(snap){
+      setArchivedLeads(snap.docs.map(docToLead));
+    },function(e){console.error(e);});
+
+    return function(){u1();u2();};
+  },[authUser]);
+
+  function showToast(msg){setToast(msg);setTimeout(()=>setToast(""),3000);}
+
+  async function saveLead(updated){
+    try{
+      await db.collection("leads").doc(String(updated.id)).update({
+        status:updated.status,assignedTo:updated.assignedTo,
+        priority:updated.priority,history:updated.history,
+        updatedAt:new Date().toISOString()
+      });
+      setSelLead(null);showToast("Case updated ✓");
+    }catch(e){showToast("Save failed: "+e.message);}
   }
 
-  if(!user)return h(Login,{onLogin:setUser});
-  if(loading)return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:"var(--muted)"}},"Loading…");
+  async function archiveLead(lead){
+    try{
+      const now=new Date().toISOString();
+      const archivedBy=profile?.name||authUser?.email||"Admin";
+      /* Write full doc to archived_leads */
+      await db.collection("archived_leads").doc(String(lead.id)).set({
+        ...lead,archivedAt:now,archivedBy,
+      });
+      /* Mark original as archived (hides from active view) */
+      await db.collection("leads").doc(String(lead.id)).update({
+        archived:true,archivedAt:now,archivedBy,
+        history:[...(lead.history||[]),{ts:now,text:"Moved to archive by "+archivedBy,author:archivedBy,type:"archive"}],
+        updatedAt:now,
+      });
+      showToast("Lead archived ✓");
+    }catch(e){showToast("Archive failed: "+e.message);}
+  }
 
-  const isAdmin=user.role==="admin";
-  const myLeads=isAdmin?leads:leads.filter(l=>l.assignedTo===user.id);
+  function addConsultant(c){
+    const next=[...consultants,c];setConsultants(next);
+    try{localStorage.setItem("crm_consultants",JSON.stringify(next));}catch(e){}
+    setShowAddCon(false);showToast("Consultant added ✓");
+  }
+  function deleteConsultant(id){
+    if(!window.confirm("Remove this consultant?"))return;
+    const next=consultants.filter(c=>c.id!==id);setConsultants(next);
+    try{localStorage.setItem("crm_consultants",JSON.stringify(next));}catch(e){}
+    showToast("Consultant removed");
+  }
+
+  if(authLoading)return h("div",{className:"spinner"},h("div",{className:"spin"}),h("span",null,"Connecting…"));
+  if(!authUser)return h(Login,null);
+
+  const isAdmin=profile?.role==="admin";
+  const activeLeads=leads.filter(l=>!l.archived);
+  const myLeads=isAdmin?activeLeads:activeLeads.filter(l=>l.assignedTo===authUser.email);
 
   const filtered=myLeads.filter(function(l){
     const q=search.toLowerCase();
-    const matchQ=!q||(l.name||"").toLowerCase().includes(q)||(l.email||"").toLowerCase().includes(q)||(l.phone||"").includes(q);
-    const matchS=filterStatus==="all"||l.status===filterStatus;
-    const matchC=filterConsultant==="all"||l.assignedTo===filterConsultant;
-    return matchQ&&matchS&&matchC;
+    const mQ=!q||(l.name||"").toLowerCase().includes(q)||(l.email||"").toLowerCase().includes(q)||(l.phone||"").includes(q);
+    const mS=filterStatus==="all"||l.status===filterStatus;
+    const mC=filterCon==="all"||l.assignedTo===filterCon;
+    return mQ&&mS&&mC;
   });
 
-  const counts={new:leads.filter(l=>l.status==="new").length,assigned:leads.filter(l=>l.status==="assigned").length,contacted:leads.filter(l=>l.status==="contacted").length,closed:leads.filter(l=>l.status==="closed").length};
+  const filteredArc=archivedLeads.filter(function(l){
+    const q=arcSearch.toLowerCase();
+    return !q||(l.name||"").toLowerCase().includes(q)||(l.email||"").toLowerCase().includes(q);
+  });
 
-  function LeadsTable({data,title}){
-    return h("div",{className:"tbl-wrap"},
+  const counts={
+    new:activeLeads.filter(l=>l.status==="new").length,
+    assigned:activeLeads.filter(l=>l.status==="assigned").length,
+    contacted:activeLeads.filter(l=>l.status==="contacted").length,
+    closed:activeLeads.filter(l=>l.status==="closed").length,
+  };
+
+  /* ── Leads / Archive table ── */
+  function LeadsTable({data,title,isArc}){
+    return h("div",{className:"tbl-wrap"+(isArc?" arc":"")},
       h("div",{className:"tbl-hdr"},
-        h("div",{className:"tbl-title"},title||"Leads"," ",h("span",{style:{fontSize:12,color:"var(--muted)",fontWeight:400}},"("+data.length+")")),
+        h("div",{className:"tbl-title"},title," ",h("span",{style:{fontSize:12,color:"var(--muted)",fontWeight:400}},"("+data.length+")")),
         h("div",{className:"search-bar"},
-          h("input",{className:"search-inp",placeholder:"Search name, email, phone…",value:search,onChange:e=>setSearch(e.target.value)}),
-          h("select",{className:"search-inp",value:filterStatus,onChange:e=>setFilterStatus(e.target.value)},
+          h("input",{className:"search-inp",
+            placeholder:isArc?"Search archived…":"Search name, email, phone…",
+            value:isArc?arcSearch:search,
+            onChange:e=>isArc?setArcSearch(e.target.value):setSearch(e.target.value)
+          }),
+          !isArc&&h("select",{className:"search-inp",value:filterStatus,onChange:e=>setFilterStatus(e.target.value)},
             ["all","new","assigned","contacted","closed"].map(s=>h("option",{key:s,value:s},s==="all"?"All statuses":s.charAt(0).toUpperCase()+s.slice(1)))
           ),
-          isAdmin&&h("select",{className:"search-inp",value:filterConsultant,onChange:e=>setFilterConsultant(e.target.value)},
-            [h("option",{key:"all",value:"all"},"All consultants"),...consultants.map(c=>h("option",{key:c.id,value:c.id},c.name))]
-          ),
-          isAdmin&&h("button",{className:"btn btn-ghost btn-sm",onClick:refreshLeads},"↻ Sync")
+          !isArc&&isAdmin&&h("select",{className:"search-inp",value:filterCon,onChange:e=>setFilterCon(e.target.value)},
+            [h("option",{key:"all",value:"all"},"All consultants"),
+             ...consultants.map(c=>h("option",{key:c.id,value:c.id},c.name))]
+          )
         )
       ),
-      data.length===0?h("div",{className:"empty"},h("div",{className:"empty-icon"},"📭"),h("div",null,"No leads found")):
-      h("div",{style:{overflowX:"auto"}},
-        h("table",null,
-          h("thead",null,h("tr",null,
-            h("th",null,"Client"),h("th",null,"Contact"),h("th",null,"Plan"),h("th",null,"Status"),
-            isAdmin&&h("th",null,"Assigned to"),
-            h("th",null,"Priority"),h("th",null,"Received"),h("th",null,"Action")
-          )),
-          h("tbody",null,data.map(function(lead){
-            const con=consultants.find(c=>c.id===lead.assignedTo);
-            const priorityColor={low:"var(--muted)",normal:"var(--text)",high:"var(--warn)",urgent:"var(--danger)"}[lead.priority||"normal"];
-            return h("tr",{key:lead.id},
-              h("td",null,
-                h("div",{style:{fontWeight:600,fontSize:13}},lead.name||"—"),
-                lead.hhMode&&h("span",{style:{fontSize:10,color:"var(--p2)",background:"var(--p2-lt)",padding:"1px 6px",borderRadius:100,marginTop:2,display:"inline-block"}},"HH")
-              ),
-              h("td",null,h("div",{style:{fontSize:12}},lead.email||"—"),h("div",{style:{fontSize:11,color:"var(--muted)"}},lead.phone||"")),
-              h("td",null,
-                h("div",{style:{fontSize:12}},lead.monthlyIncome?lead.monthlyIncome+"/mo":"—"),
-                h("div",{style:{fontSize:11,color:lead.verdict==="On track"?"var(--ok)":"var(--danger)"}},lead.verdict||"")
-              ),
-              h("td",null,h(StatusBadge,{status:lead.status||"new"})),
-              isAdmin&&h("td",null,
-                con?h("div",{style:{display:"flex",alignItems:"center",gap:6}},
-                  h("div",{style:{width:24,height:24,borderRadius:6,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff",flexShrink:0}},con.initials),
-                  h("span",{style:{fontSize:12}},con.name)
-                ):h("span",{style:{fontSize:12,color:"var(--hint)"}},"Unassigned")
-              ),
-              h("td",null,h("span",{style:{fontSize:12,fontWeight:600,color:priorityColor}},(lead.priority||"normal").charAt(0).toUpperCase()+(lead.priority||"normal").slice(1))),
-              h("td",null,h("span",{style:{fontSize:11,color:"var(--muted)"}},fmtShort(lead.createdAt))),
-              h("td",null,h("button",{className:"btn btn-primary btn-sm",onClick:()=>setSelectedLead(lead)},"Open"))
-            );
-          }))
+      data.length===0
+        ?h("div",{className:"empty"},h("div",{className:"empty-icon"},isArc?"🗄":"📭"),h("div",null,isArc?"No archived leads":"No leads found"))
+        :h("div",{style:{overflowX:"auto"}},
+          h("table",null,
+            h("thead",null,h("tr",null,
+              h("th",null,"Client"),h("th",null,"Contact"),h("th",null,"Plan"),
+              h("th",null,isArc?"Status":"Status"),
+              isAdmin&&!isArc&&h("th",null,"Assigned to"),
+              !isArc&&h("th",null,"Priority"),
+              h("th",null,isArc?"Archived on":"Received"),
+              h("th",null,"Action")
+            )),
+            h("tbody",null,data.map(function(lead){
+              const con=consultants.find(c=>c.id===lead.assignedTo||c.email===lead.assignedTo);
+              const priCol={low:"var(--muted)",normal:"var(--text)",high:"var(--warn)",urgent:"var(--danger)"}[lead.priority||"normal"];
+              return h("tr",{key:lead.id,style:isArc?{opacity:.85}:{}},
+                h("td",null,
+                  h("div",{style:{fontWeight:600,fontSize:13}},lead.name||"—"),
+                  lead.hhMode&&h("span",{style:{fontSize:10,color:"var(--p2)",background:"var(--p2-lt)",padding:"1px 6px",borderRadius:100,marginTop:2,display:"inline-block"}},"HH")
+                ),
+                h("td",null,
+                  h("div",{style:{fontSize:12}},lead.email||"—"),
+                  h("div",{style:{fontSize:11,color:"var(--muted)"}},lead.phone||"")
+                ),
+                h("td",null,
+                  h("div",{style:{fontSize:12}},lead.monthlyIncome?lead.monthlyIncome+"/mo":"—"),
+                  h("div",{style:{fontSize:11,color:lead.verdict==="On track"?"var(--ok)":"var(--danger)"}},lead.verdict||"")
+                ),
+                h("td",null,h(StatusBadge,{status:lead.status,isArchived:isArc})),
+                isAdmin&&!isArc&&h("td",null,
+                  con
+                    ?h("div",{style:{display:"flex",alignItems:"center",gap:6}},
+                        h("div",{style:{width:24,height:24,borderRadius:6,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff",flexShrink:0}},con.initials),
+                        h("span",{style:{fontSize:12}},con.name)
+                      )
+                    :h("span",{style:{fontSize:12,color:"var(--hint)"}},"Unassigned")
+                ),
+                !isArc&&h("td",null,h("span",{style:{fontSize:12,fontWeight:600,color:priCol}},
+                  (lead.priority||"normal").charAt(0).toUpperCase()+(lead.priority||"normal").slice(1)
+                )),
+                h("td",null,h("span",{style:{fontSize:11,color:"var(--muted)"}},
+                  isArc?fmtShort(lead.archivedAt):fmtShort(lead.createdAt)
+                )),
+                h("td",null,h("button",{
+                  className:"btn btn-sm",
+                  style:{background:isArc?"var(--archive)":"var(--accent)",color:"#fff",border:"none"},
+                  onClick:()=>isArc?setSelArchived(lead):setSelLead(lead)
+                },"Open"))
+              );
+            }))
+          )
         )
-      )
     );
   }
 
+  const adminTabs=[["leads","📋 All Leads"],["archive","🗄 Archive"],["consultants","👥 Consultants"],["dashboard","📊 Dashboard"]];
+
   return h("div",null,
-    /* Toast */
     toast&&h("div",{style:{position:"fixed",bottom:24,right:24,background:"#111827",color:"#fff",padding:"10px 18px",borderRadius:10,fontSize:13,fontWeight:500,zIndex:9999,boxShadow:"0 4px 20px rgba(0,0,0,.2)"}},toast),
 
-    /* Modal */
-    selectedLead&&h(LeadModal,{lead:selectedLead,consultants,onClose:()=>setSelectedLead(null),onSave:saveLead,isAdmin}),
+    selLead&&h(LeadModal,{lead:selLead,consultants,onClose:()=>setSelLead(null),onSave:saveLead,onArchive:archiveLead,isAdmin,isArchived:false}),
+    selArchived&&h(LeadModal,{lead:selArchived,consultants,onClose:()=>setSelArchived(null),onSave:()=>{},onArchive:()=>{},isAdmin,isArchived:true}),
     showAddCon&&h(AddConsultantModal,{onClose:()=>setShowAddCon(false),onAdd:addConsultant}),
 
-    /* Header */
     h("header",{className:"hdr"},
       h("div",{className:"logo"},
         h("div",{className:"logo-mark"},"A"),
@@ -603,34 +805,50 @@ function App(){
       h("div",{style:{display:"flex",alignItems:"center",gap:12}},
         h("div",{style:{fontSize:12,color:"var(--muted)"}},
           h("span",{style:{display:"inline-flex",alignItems:"center",gap:6}},
-            h("div",{style:{width:20,height:20,borderRadius:6,background:user.color||"var(--accent)",display:"grid",placeItems:"center",fontSize:9,fontWeight:700,color:"#fff"}},user.initials||(user.name[0]||"U")),
-            user.name," · ",h("b",null,user.role==="admin"?"Administrator":user.role)
+            h("div",{style:{width:20,height:20,borderRadius:6,background:profile?.color||"var(--accent)",display:"grid",placeItems:"center",fontSize:9,fontWeight:700,color:"#fff"}},profile?.initials||"?"),
+            profile?.name||authUser?.email," · ",
+            h("b",null,isAdmin?"Administrator":"Consultant")
           )
         ),
-        h("button",{className:"btn btn-ghost btn-sm",onClick:()=>setUser(null)},"Sign out")
+        h("button",{className:"btn btn-ghost btn-sm",onClick:()=>auth.signOut()},"Sign out")
       )
     ),
 
     h("div",{className:"wrap"},
 
-      /* Admin tabs */
       isAdmin&&h("div",{className:"nav-tabs"},
-        [["leads","📋 All Leads"],["consultants","👥 Consultants"],["dashboard","📊 Dashboard"]].map(function(arr){
-          return h("button",{key:arr[0],className:"nav-tab"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},arr[1]);
-        })
+        adminTabs.map(arr=>h("button",{key:arr[0],className:"nav-tab"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},arr[1]))
       ),
 
       /* ── LEADS TAB ── */
       (tab==="leads"||!isAdmin)&&h("div",null,
-        isAdmin&&h("div",{className:"stats-row"},
-          [{l:"New",v:counts.new,c:"var(--accent)"},{l:"Assigned",v:counts.assigned,c:"var(--warn)"},{l:"Contacted",v:counts.contacted,c:"var(--ok)"},{l:"Closed",v:counts.closed,c:"var(--muted)"}].map(function(s){
-            return h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l));
-          })
-        ),
-        h(LeadsTable,{data:filtered,title:isAdmin?"All Client Leads":"My Assigned Leads"})
+        leadsLoading
+          ?h("div",{style:{textAlign:"center",padding:48,color:"var(--muted)"}},"Loading leads…")
+          :h("div",null,
+            isAdmin&&h("div",{className:"stats-row"},
+              [{l:"New",v:counts.new,c:"var(--accent)"},
+               {l:"Assigned",v:counts.assigned,c:"var(--warn)"},
+               {l:"Contacted",v:counts.contacted,c:"var(--ok)"},
+               {l:"Closed",v:counts.closed,c:"var(--muted)"}
+              ].map(s=>h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l)))
+            ),
+            h(LeadsTable,{data:filtered,title:isAdmin?"All Active Leads":"My Assigned Leads",isArc:false})
+          )
       ),
 
-      /* ── CONSULTANTS TAB (admin only) ── */
+      /* ── ARCHIVE TAB ── */
+      tab==="archive"&&isAdmin&&h("div",null,
+        h("div",{className:"archive-banner"},
+          h("span",{style:{fontSize:22,lineHeight:1}},"🗄"),
+          h("div",null,
+            h("div",{style:{fontWeight:700,marginBottom:3}},"Lead Archive"),
+            h("div",null,"Closed leads moved here by an administrator. All data and reports remain fully accessible. Archived leads do not appear in the active pipeline or dashboard counts.")
+          )
+        ),
+        h(LeadsTable,{data:filteredArc,title:"Archived Leads",isArc:true})
+      ),
+
+      /* ── CONSULTANTS TAB ── */
       tab==="consultants"&&isAdmin&&h("div",null,
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
           h("div",{style:{fontSize:18,fontWeight:600}},"Consultants"),
@@ -638,27 +856,33 @@ function App(){
         ),
         h("div",{className:"consultant-grid"},
           consultants.map(function(con){
-            const myL=leads.filter(l=>l.assignedTo===con.id);
+            const myL=activeLeads.filter(l=>l.assignedTo===con.id||l.assignedTo===con.email);
+            const arcL=archivedLeads.filter(l=>l.assignedTo===con.id||l.assignedTo===con.email);
             const open=myL.filter(l=>l.status!=="closed").length;
             const closed=myL.filter(l=>l.status==="closed").length;
-            return h("div",{key:con.id,className:"consultant-card",onClick:()=>setSelectedConsultant(selectedConsultant===con.id?null:con.id)},
+            return h("div",{key:con.id,className:"consultant-card",onClick:()=>setSelConsultant(selConsultant===con.id?null:con.id)},
               h("div",{className:"avatar-big",style:{background:con.color+"18",color:con.color}},con.initials),
               h("div",{style:{fontSize:15,fontWeight:600,marginBottom:2}},con.name),
               h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:10}},con.role," · ",con.email),
               h("div",{style:{display:"flex",gap:8,marginBottom:10}},
-                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},h("div",{style:{fontSize:18,fontWeight:700,color:"var(--warn)"}},open),h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase"},"letterSpacing":".06em"},"Open")),
-                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},h("div",{style:{fontSize:18,fontWeight:700,color:"var(--ok)"}},closed),h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase"},"letterSpacing":".06em"},"Closed"))
+                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},
+                  h("div",{style:{fontSize:18,fontWeight:700,color:"var(--warn)"}},open),
+                  h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".06em"}},"Open")),
+                h("div",{style:{flex:1,background:"var(--subtle)",borderRadius:8,padding:"8px",textAlign:"center"}},
+                  h("div",{style:{fontSize:18,fontWeight:700,color:"var(--ok)"}},closed),
+                  h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".06em"}},"Closed")),
+                h("div",{style:{flex:1,background:"var(--archive-lt)",borderRadius:8,padding:"8px",textAlign:"center"}},
+                  h("div",{style:{fontSize:18,fontWeight:700,color:"var(--archive)"}},arcL.length),
+                  h("div",{style:{fontSize:9,color:"var(--archive)",textTransform:"uppercase",letterSpacing:".06em"}},"Archived"))
               ),
-              h("button",{className:"btn btn-danger btn-sm",style:{width:"100%",fontSize:11},onClick:function(e){e.stopPropagation();deleteConsultant(con.id);}},"Remove")
+              h("button",{className:"btn btn-danger btn-sm",style:{width:"100%",fontSize:11},
+                onClick:function(e){e.stopPropagation();deleteConsultant(con.id);}},"Remove")
             );
           })
         ),
-        /* Per-consultant leads */
-        selectedConsultant&&h("div",null,
-          h("div",{style:{fontSize:16,fontWeight:600,marginBottom:14}},
-            "Leads for "+consultants.find(c=>c.id===selectedConsultant)?.name
-          ),
-          h(LeadsTable,{data:leads.filter(l=>l.assignedTo===selectedConsultant),title:"Assigned leads"})
+        selConsultant&&h("div",null,
+          h("div",{style:{fontSize:16,fontWeight:600,marginBottom:14}},"Leads for "+consultants.find(c=>c.id===selConsultant)?.name),
+          h(LeadsTable,{data:activeLeads.filter(l=>l.assignedTo===selConsultant||l.assignedTo===consultants.find(c=>c.id===selConsultant)?.email),title:"Assigned leads",isArc:false})
         )
       ),
 
@@ -666,26 +890,38 @@ function App(){
       tab==="dashboard"&&isAdmin&&h("div",null,
         h("div",{style:{fontSize:18,fontWeight:600,marginBottom:20}},"Dashboard"),
         h("div",{className:"stats-row"},
-          [{l:"Total leads",v:leads.length,c:"var(--text)"},{l:"New (unassigned)",v:leads.filter(l=>l.status==="new").length,c:"var(--accent)"},{l:"In progress",v:leads.filter(l=>l.status==="assigned"||l.status==="contacted").length,c:"var(--warn)"},{l:"Closed",v:leads.filter(l=>l.status==="closed").length,c:"var(--ok)"}].map(function(s){
-            return h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l));
-          })
+          [{l:"Active leads",v:activeLeads.length,c:"var(--text)"},
+           {l:"New",v:counts.new,c:"var(--accent)"},
+           {l:"In progress",v:counts.assigned+counts.contacted,c:"var(--warn)"},
+           {l:"Closed",v:counts.closed,c:"var(--ok)"}
+          ].map(s=>h("div",{key:s.l,className:"stat-card"},h("div",{className:"stat-val",style:{color:s.c}},s.v),h("div",{className:"stat-lbl"},s.l)))
+        ),
+        h("div",{className:"stat-card",style:{display:"inline-flex",alignItems:"center",gap:16,marginBottom:24,background:"var(--archive-lt)",border:"1px solid rgba(120,113,108,.25)"}},
+          h("div",{style:{fontSize:28,fontWeight:700,color:"var(--archive)"}},archivedLeads.length),
+          h("div",{style:{fontSize:11,color:"var(--archive)",textTransform:"uppercase",letterSpacing:".06em"}},"Total archived")
         ),
         h("div",{className:"card"},
           h("div",{className:"sec-lbl"},"Performance by consultant"),
           h("table",null,
-            h("thead",null,h("tr",null,h("th",null,"Consultant"),h("th",null,"Total assigned"),h("th",null,"New"),h("th",null,"In progress"),h("th",null,"Closed"),h("th",null,"Conversion"))),
+            h("thead",null,h("tr",null,
+              h("th",null,"Consultant"),h("th",null,"Assigned"),h("th",null,"Open"),h("th",null,"Closed"),h("th",null,"Archived"),h("th",null,"Conversion")
+            )),
             h("tbody",null,consultants.map(function(con){
-              const cl=leads.filter(l=>l.assignedTo===con.id);
-              const total=cl.length,nw=cl.filter(l=>l.status==="new").length,inprog=cl.filter(l=>l.status==="assigned"||l.status==="contacted").length,closed=cl.filter(l=>l.status==="closed").length;
+              const cl=activeLeads.filter(l=>l.assignedTo===con.id||l.assignedTo===con.email);
+              const arc=archivedLeads.filter(l=>l.assignedTo===con.id||l.assignedTo===con.email);
+              const total=cl.length,open=cl.filter(l=>l.status!=="closed").length,closed=cl.filter(l=>l.status==="closed").length;
               const rate=total>0?Math.round(closed/total*100):0;
               return h("tr",{key:con.id},
-                h("td",null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},h("div",{style:{width:26,height:26,borderRadius:7,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff"}},con.initials),con.name)),
-                h("td",null,h("b",null,total)),
-                h("td",null,h("span",{style:{color:"var(--accent)"}},nw)),
-                h("td",null,h("span",{style:{color:"var(--warn)"}},inprog)),
-                h("td",null,h("span",{style:{color:"var(--ok)"}},closed)),
                 h("td",null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},
-                  h("div",{style:{flex:1,height:6,background:"var(--border)",borderRadius:3}},h("div",{style:{height:"100%",width:rate+"%",background:"var(--ok)",borderRadius:3}})),
+                  h("div",{style:{width:26,height:26,borderRadius:7,background:con.color,display:"grid",placeItems:"center",fontSize:10,fontWeight:700,color:"#fff"}},con.initials),
+                  con.name)),
+                h("td",null,h("b",null,total)),
+                h("td",null,h("span",{style:{color:"var(--warn)"}},open)),
+                h("td",null,h("span",{style:{color:"var(--ok)"}},closed)),
+                h("td",null,h("span",{style:{color:"var(--archive)"}},arc.length)),
+                h("td",null,h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+                  h("div",{style:{flex:1,height:6,background:"var(--border)",borderRadius:3}},
+                    h("div",{style:{height:"100%",width:rate+"%",background:"var(--ok)",borderRadius:3}})),
                   h("span",{style:{fontSize:12,fontWeight:600}},rate+"%")
                 ))
               );
@@ -694,20 +930,24 @@ function App(){
         ),
         h("div",{className:"card"},
           h("div",{className:"sec-lbl"},"Recent activity"),
-          leads.filter(l=>(l.history||[]).length>0).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,8).length===0
+          activeLeads.filter(l=>(l.history||[]).length>0)
+            .sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt))
+            .slice(0,8).length===0
             ?h("div",{style:{color:"var(--muted)",fontSize:13,padding:"16px 0"}},"No activity yet.")
             :h("div",{className:"timeline"},
-              leads.filter(l=>(l.history||[]).length>0).sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,8).map(function(lead){
-                const last=(lead.history||[]).slice(-1)[0];
-                return h("div",{key:lead.id,className:"tl-item"},
-                  h("div",{className:"tl-dot",style:{background:"var(--accent)"}}),
-                  h("div",{className:"tl-line"}),
-                  h("div",{className:"tl-body"},
-                    h("div",{className:"tl-date"},fmtShort(lead.updatedAt||lead.createdAt)+" · "+lead.name),
-                    h("div",{className:"tl-text"},last?last.text:"New lead")
-                  )
-                );
-              })
+              activeLeads.filter(l=>(l.history||[]).length>0)
+                .sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt))
+                .slice(0,8).map(function(lead){
+                  const last=(lead.history||[]).slice(-1)[0];
+                  return h("div",{key:lead.id,className:"tl-item"},
+                    h("div",{className:"tl-dot",style:{background:"var(--accent)"}}),
+                    h("div",{className:"tl-line"}),
+                    h("div",{className:"tl-body"},
+                      h("div",{className:"tl-date"},fmtShort(lead.updatedAt||lead.createdAt)+" · "+lead.name),
+                      h("div",{className:"tl-text"},last?last.text:"New lead")
+                    )
+                  );
+                })
             )
         )
       )

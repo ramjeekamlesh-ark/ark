@@ -224,6 +224,48 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
+<!-- ═══════════════════════════════════════════════════════════════════
+     FIREBASE SDK (compat mode — works as plain script tags, no bundler)
+     ═══════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   FIREBASE CONFIGURATION — REPLACE WITH YOUR OWN VALUES
+   ═══════════════════════════════════════════════════════════════════
+   Setup steps (5 minutes, free):
+   1. Go to https://console.firebase.google.com
+   2. Add project → name it e.g. "ark-financial" → Continue → Create
+   3. Click the </> (Web) icon → Register app → name "ARK Planner" → Register
+   4. Copy the firebaseConfig values shown and paste below
+   5. Left menu → Build → Firestore Database → Create database
+      → Start in TEST MODE → pick your region → Enable
+   6. Firestore → Rules tab → paste the rules below → Publish:
+
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /leads/{id}   { allow create: true; allow read, update, delete: if false; }
+          match /reports/{id} { allow create: true; allow read, delete: if false; }
+        }
+      }
+
+   7. Push both files to GitHub — done. Leads appear in the CRM globally.
+   ═══════════════════════════════════════════════════════════════════ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyDeUnYC8hI_QbqYBltxDBPQT63KfyLIekk",
+  authDomain:        "ark-financial-3979f.firebaseapp.com",
+  projectId:         "ark-financial-3979f",
+  storageBucket:     "ark-financial-3979f.firebasestorage.app",
+  messagingSenderId: "74236283385",
+  appId:             "1:74236283385:web:7c1604649e5281f1b71528",
+  measurementId:     "G-WGGY6R2MLT"
+};
+if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.firestore();
+</script>
+
 <script>
 const {useState,useEffect,useMemo,createElement:h}=React;
 const FX=46.5;
@@ -1353,11 +1395,20 @@ function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
           potBestCase:disp(Math.round(result.retP*1.16)),
           /* Currency & report reference */
           cur,
-          reportKey:"report:"+ts,
+          reportKey:String(ts),   /* Firestore doc ID in the reports collection */
           ts:new Date().toISOString()
         };
-        await window.storage.set("lead:"+ts,JSON.stringify(leadPayload));
-        if(reportHTML)await window.storage.set("report:"+ts,reportHTML);
+        /* Write lead to Firestore — visible globally to CRM instantly */
+        await db.collection("leads").doc(String(ts)).set(leadPayload);
+        /* Write report HTML to a separate doc (keeps lead doc small) */
+        if(reportHTML){
+          await db.collection("reports").doc(String(ts)).set({
+            leadId:String(ts),
+            name,
+            html:reportHTML,
+            createdAt:new Date().toISOString()
+          });
+        }
       }catch(e){}
     }
     setLoading(false);setDone(true);
