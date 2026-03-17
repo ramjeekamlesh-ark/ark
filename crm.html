@@ -156,6 +156,27 @@ async function storeSet(key,val){
   try{await window.storage.set(key,JSON.stringify(val));}catch(e){}
 }
 
+/* ── REPORT DOWNLOAD ──
+   Fetches the stored HTML from the report: key and triggers a browser download */
+async function downloadReport(lead){
+  try{
+    const key=lead.reportKey;
+    if(!key)return false;
+    const r=await window.storage.get(key);
+    if(!r||!r.value)return false;
+    /* r.value is the raw HTML string (stored without JSON.stringify) */
+    const html=r.value;
+    const blob=new Blob([html],{type:"text/html;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="ARK-Report-"+(lead.name||"Client").replace(/\s+/g,"-")+".html";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);document.body.removeChild(a);},1000);
+    return true;
+  }catch(e){console.error("Report download:",e);return false;}
+}
+
 function fmt(ts){
   if(!ts)return"—";
   const d=new Date(ts);
@@ -209,6 +230,7 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
   const[assignedTo,setAssignedTo]=useState(lead.assignedTo||"");
   const[note,setNote]=useState("");
   const[priority,setPriority]=useState(lead.priority||"normal");
+  const[dlState,setDlState]=useState("idle"); /* idle | loading | done | none */
   const save=()=>{
     const history=[...(lead.history||[])];
     if(note.trim()){history.push({ts:new Date().toISOString(),text:note.trim(),author:isAdmin?"Admin":consultants.find(c=>c.id===assignedTo)?.name||"System"});}
@@ -223,18 +245,41 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
       h("div",{className:"modal-title"},lead.name||"Unknown"),
       /* Client info */
       h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16,fontSize:12}},
-        [["Email",lead.email||"—"],["Phone",lead.phone||"—"],["Currency",lead.cur||"—"],["Mode",lead.hhMode?"Household":"Individual"],["Health score",(lead.health||"—")+"/100"],["Monthly income",lead.monthlyIncome||"—"],["Pot size",lead.pot||"—"],["Verdict",lead.verdict||"—"],["Savings rate",(lead.savingsRate||"—")+"%"],["Retirement age","Age "+(lead.retireAge||"—")]].map(function(arr){
+        [["Email",lead.email||"—"],["Phone",lead.phone||"—"],["Currency",lead.cur||"—"],["Mode",lead.hhMode?"Household":"Individual"],["Health score",(lead.health||"—")+"/100"],["Monthly income",lead.monthlyIncome||"—"],["Pot size",lead.pot||"—"],["Verdict",lead.verdict||"—"],["Savings rate",(lead.savingsRate||"—")+"%"],["Retirement age","Age "+(lead.retireAge||"—")],["Income strategy",(lead.incomeMode==="expenses"?"Same lifestyle":lead.incomeMode==="custom"?"Custom target":"4% rule")||"—"],["Scenario selected",lead.scenarioSelected?(lead.scenarioSelected==="tough"?"Worst case 4%":lead.scenarioSelected==="best"?"Best case 6%":"Base case 5%"):"—"],["Funds last to","Age "+(lead.fundsToAge||"—")],["Coverage multiple",(lead.coverageMultiple!=null?lead.coverageMultiple.toFixed(1)+"×":"—")],["Worst-case pot",lead.potWorstCase||"—"],["Best-case pot",lead.potBestCase||"—"]].map(function(arr){
           return h("div",{key:arr[0],style:{background:"var(--subtle)",borderRadius:8,padding:"8px 10px"}},
             h("div",{style:{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
             h("div",{style:{fontWeight:600,fontSize:13}},String(arr[1]))
           );
         })
       ),
-      /* Goals */
+      /* Partner info (HH mode) */
+      lead.hhMode&&lead.partnerAge&&h("div",{style:{marginBottom:14}},
+        h("div",{className:"sec-lbl"},"Partner details"),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,fontSize:12}},
+          [["Partner age",lead.partnerAge||"—"],["Partner gender",lead.partnerGender||"—"],["Partner retire age","Age "+(lead.partnerRetireAge||"—")],["Partner savings rate",(lead.partnerSavingsRate||"—")+"%"],["Partner income",lead.partnerIncome||"—"],["Partner savings",lead.partnerSavings||"—"],["Your pot",lead.p1Pot||"—"],["Partner pot",lead.p2Pot||"—"]].map(function(arr){
+            return h("div",{key:arr[0],style:{background:"var(--p2-lt)",borderRadius:8,padding:"8px 10px",border:"1px solid rgba(124,58,237,.12)"}},
+              h("div",{style:{fontSize:10,color:"var(--p2)",textTransform:"uppercase",letterSpacing:".05em",marginBottom:1}},arr[0]),
+              h("div",{style:{fontWeight:600,fontSize:13,color:"var(--p2)"}},String(arr[1]))
+            );
+          })
+        )
+      ),
+      /* Goals pills */
       (lead.goals||[]).length>0&&h("div",{style:{marginBottom:14}},
         h("div",{className:"sec-lbl"},"Life goals"),
-        h("div",{style:{display:"flex",gap:6,flexWrap:"wrap"}},
+        h("div",{style:{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}},
           (lead.goals||[]).map(function(g){return h("span",{key:g,style:{padding:"3px 10px",borderRadius:100,background:"var(--warn-lt)",border:"1px solid rgba(217,119,6,.2)",fontSize:11,color:"var(--warn)"}},g);})
+        ),
+        /* Goals detail table */
+        (lead.goalsDetail||[]).length>0&&h("div",{style:{fontSize:12}},
+          (lead.goalsDetail||[]).map(function(g){
+            const freq=g.recurYears>0?" · every "+g.recurYears+" yrs":(g.id==="trip"?" · once":"");
+            const mort=g.id==="house"&&g.mortgagePct>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
+            return h("div",{key:g.id,style:{display:"flex",justifyContent:"space-between",padding:"5px 8px",background:"var(--subtle)",borderRadius:6,marginBottom:4}},
+              h("span",{style:{color:"var(--muted)"}},(g.icon||"⭐")+" "+g.label+" (age "+g.atAge+")"+freq+mort),
+              h("span",{style:{fontWeight:600,color:"var(--warn)"}},g.amount)
+            );
+          })
         )
       ),
       /* Assignment & status */
@@ -264,6 +309,39 @@ function LeadModal({lead,consultants,onClose,onSave,isAdmin}){
         h("div",{className:"field-lbl"},"Add note / case update"),
         h("textarea",{className:"inp",value:note,onChange:e=>setNote(e.target.value),placeholder:"Record call outcome, next steps, client feedback…",style:{resize:"vertical",minHeight:70,fontSize:13}})
       ),
+      /* Report download */
+      h("div",{style:{marginBottom:14,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(26,86,219,.18)",borderRadius:10}},
+        h("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}},
+          h("div",null,
+            h("div",{style:{fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:2}},"Client Report"),
+            h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.5}},
+              lead.reportKey
+                ?"Full retirement report is available for this lead."
+                :"No report stored — client submitted without ticking the save box."
+            )
+          ),
+          lead.reportKey&&h("button",{
+            className:"btn btn-primary btn-sm",
+            disabled:dlState==="loading",
+            style:{flexShrink:0,opacity:dlState==="loading"?0.6:1,
+              background:dlState==="done"?"var(--ok)":dlState==="none"?"var(--danger-lt)":"var(--accent)",
+              border:dlState==="none"?"1px solid rgba(220,38,38,.3)":"none",
+              color:dlState==="none"?"var(--danger)":"#fff"},
+            onClick:async()=>{
+              setDlState("loading");
+              const ok=await downloadReport(lead);
+              setDlState(ok?"done":"none");
+              setTimeout(()=>setDlState("idle"),3000);
+            }
+          },
+            dlState==="loading"?"Fetching…":
+            dlState==="done"?"✓ Downloaded":
+            dlState==="none"?"Report not found":
+            "⬇ Download Report"
+          )
+        )
+      ),
+      /* Save changes */
       h("button",{className:"btn btn-primary",onClick:save,style:{width:"100%",marginBottom:16}},"Save changes"),
       /* History */
       (lead.history||[]).length>0&&h("div",null,
@@ -386,15 +464,41 @@ function App(){
                 health:data.health,
                 sp:data.sp,
                 pot:data.pot,
+                potRaw:data.potRaw,
                 monthlyIncome:data.monthlyIncome,
+                monthlyIncomeRaw:data.monthlyIncomeRaw,
                 verdict:data.verdict,
-                needsAction:data.needsAction,
+                lasts:data.lasts,
+                fundsToAge:data.fundsToAge,
+                surplusYears:data.surplusYears,
+                coverageMultiple:data.coverageMultiple,
                 retireAge:data.retireAge,
                 age:data.age,
+                gender:data.gender,
+                lifeExpectancy:data.lifeExpectancy,
                 savingsRate:data.savingsRate,
-                cur:data.cur,
-                hhMode:data.hhMode,
+                income:data.income,
+                monthlySpend:data.monthlySpend,
+                savings:data.savings,
+                debtBalance:data.debtBalance||null,
+                incomeMode:data.incomeMode||"rule4",
+                scenarioSelected:data.scenarioSelected||"likely",
+                scenarioRate:data.scenarioRate||"5%",
                 goals:data.goals||[],
+                goalsDetail:data.goalsDetail||[],
+                potWorstCase:data.potWorstCase||null,
+                potBestCase:data.potBestCase||null,
+                cur:data.cur,
+                reportKey:data.reportKey||null,
+                hhMode:data.hhMode,
+                partnerAge:data.partnerAge||null,
+                partnerGender:data.partnerGender||null,
+                partnerRetireAge:data.partnerRetireAge||null,
+                partnerSavingsRate:data.partnerSavingsRate||null,
+                partnerIncome:data.partnerIncome||null,
+                partnerSavings:data.partnerSavings||null,
+                p1Pot:data.p1Pot||null,
+                p2Pot:data.p2Pot||null,
                 status:"new",
                 assignedTo:"",
                 priority:"normal",

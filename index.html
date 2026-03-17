@@ -5,115 +5,209 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ARK Financial Planners</title>
 <style>
+/* ── Facebook brand palette ── */
 :root{
-  --bg:#F7F8FA;--surface:#fff;--card:#fff;--border:#E8EAF0;
-  --text:#111827;--muted:#6B7280;--hint:#9CA3AF;--subtle:#F3F4F6;
-  --accent:#1A56DB;--accent-lt:#EEF3FD;
-  --gold:#B45309;--gold-lt:#FFFBEB;
-  --ok:#16A34A;--ok-lt:#F0FDF4;
-  --warn:#D97706;--warn-lt:#FFFBEB;
-  --danger:#DC2626;--danger-lt:#FEF2F2;
-  --p2:#7C3AED;--p2-lt:#F5F3FF;
+  --bg:#F0F2F5;
+  --surface:#FFFFFF;
+  --card:#FFFFFF;
+  --border:#CED0D4;
+  --text:#1C1E21;
+  --muted:#65676B;
+  --hint:#8A8D91;
+  --subtle:#E4E6EB;
+  /* Primary blue */
+  --accent:#1877F2;
+  --accent-dim:#1558B0;
+  --accent-lt:#E7F3FF;
+  /* Secondary blue for spending/goals */
+  --teal:#0081FB;
+  --teal-lt:#E7F0FF;
+  /* Status colours — reserved for warnings/status only */
+  --ok:#2D8A4E;
+  --ok-lt:#E8F5ED;
+  --warn:#D97706;
+  --warn-lt:#FEF3C7;
+  --danger:#C0392B;
+  --danger-lt:#FDECEA;
+  /* Partner purple */
+  --p2:#7C3AED;
+  --p2-lt:#F5F3FF;
+  /* Gold — for goals */
+  --gold:#B45309;
+  --gold-lt:#FFFBEB;
 }
 [data-theme=dark]{
-  --bg:#0F1117;--surface:#1A1D27;--card:#1E2130;--border:#2A2E40;
-  --text:#F1F5F9;--muted:#94A3B8;--hint:#4B5563;--subtle:#242736;
-  --accent:#3B82F6;--accent-lt:#1E2A40;
-  --gold:#F59E0B;--gold-lt:#1F1A0D;
-  --ok:#22C55E;--ok-lt:#0D2016;
-  --warn:#F59E0B;--warn-lt:#1F1A0D;
-  --danger:#EF4444;--danger-lt:#200D0D;
-  --p2:#A78BFA;--p2-lt:#1E1530;
+  --bg:#18191A;
+  --surface:#242526;
+  --card:#3A3B3C;
+  --border:#3E4042;
+  --text:#E4E6EB;
+  --muted:#B0B3B8;
+  --hint:#6B6F76;
+  --subtle:#3A3B3C;
+  --accent:#2D88FF;
+  --accent-dim:#1877F2;
+  --accent-lt:#263951;
+  --teal:#66BFFF;
+  --teal-lt:#1C2E40;
+  --ok:#3DA35D;
+  --ok-lt:#1A3326;
+  --warn:#F59E0B;
+  --warn-lt:#2D2200;
+  --danger:#EF4444;
+  --danger-lt:#2D0F0F;
+  --p2:#A78BFA;
+  --p2-lt:#1E1530;
+  --gold:#F59E0B;
+  --gold-lt:#1F1A0D;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--text);font-size:14px;line-height:1.6;overflow-x:hidden}
-button{cursor:pointer;font-family:inherit}
-input{font-family:inherit}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;color:var(--text);font-size:14px;line-height:1.5;overflow-x:hidden}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation}
+input,select,textarea{font-family:inherit}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
 .wrap{max-width:660px;margin:0 auto;padding:0 16px}
-.hdr{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+
+/* Header */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 1px 2px rgba(0,0,0,.1)}
 .hdr-inner{height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .logo-btn{display:flex;align-items:center;gap:10px;background:none;border:none;padding:0;color:var(--text);cursor:pointer}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.logo-mark{width:32px;height:32px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tog{display:flex;background:var(--subtle);border-radius:8px;padding:2px;border:1px solid var(--border)}
-.tog-btn{padding:6px 12px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:500;font-family:inherit}
-.tog-btn.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.dm-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--subtle);display:grid;place-items:center;font-size:15px;cursor:pointer}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:12px}
-.sec-lbl{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+
+/* Toggle */
+.tog{display:flex;background:var(--subtle);border-radius:20px;padding:2px;border:1px solid var(--border)}
+.tog-btn{padding:5px 14px;border-radius:20px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;transition:all .15s}
+.tog-btn.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+
+/* Dark mode btn */
+.dm-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--subtle);display:grid;place-items:center;font-size:15px;cursor:pointer}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+/* Section label */
+.sec-lbl{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;letter-spacing:.02em}
+
+/* Slider */
 .sl-wrap{margin-bottom:18px}
 .sl-hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
-.sl-label{font-size:12px;font-weight:500;color:var(--muted)}
-.sl-hint{font-size:10px;color:var(--hint);font-style:italic;font-weight:400;margin-left:5px}
-.sl-val{font-size:17px;font-weight:600;letter-spacing:-.4px}
+.sl-label{font-size:13px;font-weight:500;color:var(--muted)}
+.sl-hint{font-size:11px;color:var(--hint);font-style:italic;font-weight:400;margin-left:5px}
+.sl-val{font-size:17px;font-weight:700;letter-spacing:-.3px}
 .sl-sub{font-size:11px;margin-bottom:4px;min-height:16px}
 .sl-row{display:flex;align-items:center;gap:8px}
-.sl-pm{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--subtle);color:var(--muted);font-size:18px;display:grid;place-items:center;cursor:pointer;flex-shrink:0;user-select:none;-webkit-user-select:none}
+.sl-pm{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--subtle);color:var(--text);font-size:18px;display:grid;place-items:center;cursor:pointer;flex-shrink:0;user-select:none;-webkit-user-select:none;transition:background .12s}
 .sl-pm:active{background:var(--border)}
 .sl-track-wrap{position:relative;height:36px;display:flex;align-items:center;flex:1}
-.sl-track{position:absolute;left:0;right:0;height:4px;background:var(--border);border-radius:2px}
-.sl-fill{position:absolute;left:0;top:0;height:100%;border-radius:2px}
-.sl-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:2.5px solid var(--surface);box-shadow:0 1px 5px rgba(0,0,0,.25);pointer-events:none;z-index:1}
+.sl-track{position:absolute;left:0;right:0;height:5px;background:var(--subtle);border-radius:3px}
+.sl-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px}
+.sl-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.3);pointer-events:none;z-index:1}
 input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;z-index:2;-webkit-appearance:none}
-.g-chips{display:flex;gap:6px;margin-bottom:14px}
-.g-chip{flex:1;padding:7px 6px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit}
-.mode-tog{display:flex;background:var(--subtle);border-radius:8px;padding:2px;border:1px solid var(--border);margin-bottom:14px}
-.mode-btn{flex:1;padding:8px 0;border-radius:6px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.mode-btn.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* Gender chips */
+.g-chips{display:flex;gap:8px;margin-bottom:16px}
+.g-chip{flex:1;padding:8px 6px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit;transition:all .15s}
+
+/* Mode toggle */
+.mode-tog{display:flex;background:var(--subtle);border-radius:12px;padding:3px;border:1px solid var(--border);margin-bottom:14px}
+.mode-btn{flex:1;padding:8px 0;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .18s}
+.mode-btn.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+
+/* Person cards */
 .person-pair{display:flex;gap:12px;margin-bottom:12px}
-.person-card{background:var(--card);border-radius:14px;padding:16px;flex:1;min-width:0}
-.person-card.p1{border:1px solid rgba(59,130,246,.3)}
-.person-card.p2{border:1px solid rgba(167,139,250,.3)}
+.person-card{background:var(--card);border-radius:12px;padding:16px;flex:1;min-width:0;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.person-card.p1{border-top:3px solid var(--accent)}
+.person-card.p2{border-top:3px solid var(--p2)}
 .person-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.avatar{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
-.goals-tog{width:100%;border:1px dashed var(--border);border-radius:8px;padding:11px 14px;background:transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:500;display:flex;justify-content:space-between;cursor:pointer;text-align:left}
-.goals-tog.has{border-color:rgba(245,158,11,.4);color:var(--gold)}
-.goal-pill{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;text-align:left;width:100%;font-family:inherit}
-.goal-pill.on{border-color:var(--gold);background:var(--gold-lt);color:var(--gold)}
+.avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
+
+/* Goals */
+.goals-tog{width:100%;border:1.5px dashed var(--border);border-radius:12px;padding:11px 14px;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:500;display:flex;justify-content:space-between;cursor:pointer;text-align:left;transition:all .15s}
+.goals-tog:hover{border-color:var(--accent);color:var(--accent)}
+.goals-tog.has{border-color:var(--accent);color:var(--accent);background:var(--accent-lt)}
+.goal-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all .15s}
+.goal-pill:hover{border-color:var(--teal);color:var(--teal)}
+.goal-pill.on{border-color:var(--teal);background:var(--teal-lt);color:var(--teal)}
+
+/* Income mode */
 .imode-wrap{display:flex;gap:6px;margin-bottom:12px}
-.imode-btn{flex:1;padding:10px 6px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:500;cursor:pointer;text-align:center;line-height:1.4}
+.imode-btn{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;line-height:1.4;transition:all .15s}
+
+/* Scenario */
 .scen-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.scen-btn{padding:12px 8px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:center;font-family:inherit}
+.scen-btn{padding:12px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;text-align:center;font-family:inherit;transition:all .15s}
+.scen-btn:hover{border-color:var(--accent)}
+
+/* Stat grid */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-box{background:var(--subtle);border-radius:10px;padding:13px 15px}
-.stat-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
-.stat-val{font-size:20px;font-weight:600;letter-spacing:-.4px;line-height:1.1}
+.stat-box{background:var(--subtle);border-radius:10px;padding:14px}
+.stat-lbl{font-size:12px;font-weight:500;color:var(--muted);margin-bottom:3px}
+.stat-val{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1.1}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* HH snap */
 .hh-snap{background:var(--subtle);border-radius:12px;padding:12px 14px;margin-bottom:12px}
 .hh-snap-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .hh-snap-item{background:var(--card);border-radius:8px;padding:8px 10px;text-align:center;border:1px solid var(--border)}
-.cta{width:100%;padding:14px;border-radius:8px;background:var(--accent);border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.teaser{background:var(--accent-lt);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:14px 16px;cursor:pointer;margin-bottom:14px}
-.callout{border-radius:8px;padding:10px 13px;margin-bottom:10px;font-size:12px;line-height:1.7}
+
+/* CTA */
+.cta{width:100%;padding:14px;border-radius:24px;background:var(--accent);border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s;letter-spacing:.01em}
+.cta:hover{background:var(--accent-dim)}
+
+/* Teaser */
+.teaser{background:var(--accent-lt);border:1.5px solid rgba(24,119,242,.25);border-radius:12px;padding:14px 16px;cursor:pointer;margin-bottom:14px;transition:all .15s}
+.teaser:hover{border-color:var(--accent)}
+
+/* Callout */
+.callout{border-radius:10px;padding:11px 14px;margin-bottom:10px;font-size:13px;line-height:1.6}
+
+/* Verdict */
 .verdict{border-radius:12px;padding:16px 18px;margin-bottom:14px}
+
+/* Life bar */
 .lifebar{margin-top:12px}
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:440px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
-.modal-input{font-family:inherit;font-size:14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 13px;width:100%;outline:none}
-.modal-input:focus{border-color:var(--accent)}
-.mini-input{font-family:inherit;font-size:13px;background:var(--subtle);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:7px 10px;outline:none;width:100%}
+
+/* Modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:440px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.25)}
+.modal-input{font-family:inherit;font-size:14px;background:var(--subtle);border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:10px 13px;width:100%;outline:none;transition:border-color .15s}
+.modal-input:focus{border-color:var(--accent);background:var(--card)}
+
+/* Mini input */
+.mini-input{font-family:inherit;font-size:13px;background:var(--subtle);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:7px 10px;outline:none;width:100%;transition:border-color .15s}
 .mini-input:focus{border-color:var(--accent);background:var(--card)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.field-lbl{font-size:10px;color:var(--muted);font-weight:500;margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
-.debt-box{background:var(--danger-lt);border:1px solid rgba(220,38,38,.15);border-radius:10px;padding:12px;margin-top:8px}
+.field-lbl{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:3px;letter-spacing:.02em}
+.debt-box{background:var(--subtle);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px}
+
+/* Hero */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;background:var(--bg);position:relative}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:100px;border:1px solid var(--border);font-size:11px;color:var(--muted);margin-bottom:24px;background:var(--surface)}
-.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
-.hero-title{font-family:Georgia,serif;font-size:clamp(34px,6vw,60px);font-weight:400;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px;color:var(--text)}
-.hero-sub{font-size:clamp(14px,1.8vw,17px);color:var(--muted);max-width:500px;line-height:1.9;margin-bottom:32px}
-.hero-cta{padding:14px 48px;border-radius:8px;background:var(--accent);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:40px;font-family:inherit}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--muted);margin-bottom:24px;background:var(--surface)}
+.hero-dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.hero-title{font-family:Georgia,'Times New Roman',serif;font-size:clamp(34px,6vw,60px);font-weight:400;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px;color:var(--text)}
+.hero-sub{font-size:clamp(15px,1.8vw,18px);color:var(--muted);max-width:500px;line-height:1.8;margin-bottom:32px}
+.hero-cta{padding:15px 52px;border-radius:24px;background:var(--accent);border:none;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:40px;font-family:inherit;transition:all .2s;letter-spacing:.01em}
+.hero-cta:hover{background:var(--accent-dim);transform:translateY(-1px)}
 .hero-feats{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
-.hero-feat{text-align:center;max-width:100px}
-.hero-feat-icon{width:36px;height:36px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;margin:0 auto 8px;font-size:16px}
+.hero-feat{text-align:center;max-width:110px}
+.hero-feat-icon{width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;margin:0 auto 8px;font-size:18px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* Footer */
 .footer{border-top:1px solid var(--border);padding:16px;margin-top:20px;background:var(--surface)}
 .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+
+/* Bottom nav */
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-top:1px solid var(--border);grid-template-columns:repeat(2,1fr);padding:6px 0}
-.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 4px;color:var(--muted);font-size:10px;font-weight:500;font-family:inherit}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:7px 4px;color:var(--muted);font-size:10px;font-weight:600;font-family:inherit}
 .bnav-btn.on{color:var(--accent)}
-.bnav-icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+.bnav-icon{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2}
+
 .fade{animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
 @media(max-width:600px){
   .person-pair{flex-direction:column}
   .hh-snap-row{grid-template-columns:1fr 1fr}
@@ -129,11 +223,12 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 <div id="app"></div>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
 const {useState,useEffect,useMemo,createElement:h}=React;
 const FX=46.5;
 const CURR={USD:{sym:"$",toB:v=>v,frB:v=>v},MUR:{sym:"₨",toB:v=>v/FX,frB:v=>v*FX}};
+
 function useDark(){
   const[dark,setDark]=useState(()=>window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
   useEffect(()=>{document.documentElement.setAttribute("data-theme",dark?"dark":"light");},[dark]);
@@ -170,6 +265,8 @@ function hlabel(s){
   if(s<75)return{l:"On track",c:"var(--ok)"};
   return{l:"Strong",c:"var(--ok)"};
 }
+
+/* ── ENGINE ── */
 function proj(inp,rate){
   const{age,gender,income,monthlySpend:ms,savings,savingsRate:sr,retireAge:ra,
     debtBalance:db=0,debtRate:dr=0,debtTerm:dt=0,
@@ -185,7 +282,7 @@ function proj(inp,rate){
       for(let a2=g.atAge;a2<ra;a2+=g.recurYears){const yr=a2-age;if(yr>0)gw[yr]=(gw[yr]||0)+amt;}
     }else if(g.atAge>age){
       const yr=g.atAge-age;
-      const effAmt=(g.id==="house"&&(g.mortgagePct||0)>0)?amt*(1-(g.mortgagePct/100)):amt;
+      const effAmt=(g.id==="house"&&(g.mortgagePct||0)>0)?amt*(1-g.mortgagePct/100):amt;
       gw[yr]=(gw[yr]||0)+effAmt;
       if(g.id==="house"&&(g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0){
         const md=debtCalc(amt*(g.mortgagePct/100),g.mortgageRate,g.mortgageTerm*12);
@@ -280,83 +377,540 @@ function hhStress(p1,p2){
   const t=hhProj(p1,p2,0.04),l=hhProj(p1,p2,0.05),b=hhProj(p1,p2,0.06);
   return{tP:t.retP,lP:l.retP,bP:b.retP,tM:t.wd/12,lM:l.wd/12,bM:b.wd/12};
 }
-function earlyCalc(inp,n,rate){
-  rate=rate||0.05;
-  const target=Math.max(inp.age+2,inp.retireAge-n),ytr=Math.max(1,target-inp.age);
-  const isp=inp.monthlySpend*12*Math.pow(1.025,ytr);
-  const need=Math.max(isp*0.7*25,isp*20);
-  const PV=Math.max(0,inp.savings-(inp.debtBalance||0));
-  const mr=rate/12,n2=ytr*12,gr=Math.pow(1+mr,n2);
-  const mn=Math.max(0,need-PV*gr)>0?((need-PV*gr)*mr)/(gr-1):0;
-  return{targetAge:target,rn:Math.min(80,Math.max(0,(mn/inp.income)*100))};
+
+/* ── REPORT ── */
+/* Returns the full HTML string for the report — used both for the pop-up
+   window and for storing in the CRM lead payload */
+function buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur){
+  try{
+    const sfKey=window.__sf||"likely";
+    const sfLabel={"tough":"Worst case — 4% annual return","likely":"Base case — 5% annual return","best":"Best case — 6% annual return"}[sfKey]||"Base case — 5% annual return";
+    const inf=result.inf||1,moAtRet=result.wd/12,moToday=moAtRet/inf;
+    const hl=hlabel(result.health);
+    const hCol=result.health>=75?"#2D8A4E":result.health>=55?"#D97706":"#C0392B";
+    const spCol=result.sp>=75?"#2D8A4E":result.sp>=55?"#D97706":"#C0392B";
+    const okCol=result.lasts?"#2D8A4E":"#C0392B";
+    const okBg=result.lasts?"#E8F5ED":"#FDECEA";
+    const okBd=result.lasts?"rgba(45,138,78,.3)":"rgba(192,57,43,.3)";
+    const modeLabel={"rule4":"4% Withdrawal Rule","expenses":"Maintaining Current Lifestyle","custom":"Custom Income Target"}[base.incomeMode||"rule4"]||"4% Withdrawal Rule";
+    const genderLabel=g=>g==="male"?"Male":"Female";
+    const dateStr=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+    const yrsAway=base.retireAge-base.age;
+
+    /* ── row helpers ── */
+    const dataRow=(l,v,vCol)=>`
+      <tr>
+        <td class="td-lbl">${l}</td>
+        <td class="td-val"${vCol?` style="color:${vCol};font-weight:700"`:""}>${v}</td>
+      </tr>`;
+
+    const sectionHead=t=>`
+      <div class="sec-head">
+        <div class="sec-bar"></div>
+        <span>${t}</span>
+      </div>`;
+
+    const kpiCard=(lbl,val,sub,bg,col)=>`
+      <div class="kpi-card" style="background:${bg};border-color:${col}33">
+        <div class="kpi-lbl" style="color:${col}cc">${lbl}</div>
+        <div class="kpi-val" style="color:${col}">${val}</div>
+        ${sub?`<div class="kpi-sub" style="color:${col}99">${sub}</div>`:""}
+      </div>`;
+
+    /* ── Goals HTML ── */
+    let goalsHtml="";
+    if((base.lifeGoals||[]).length>0){
+      const tot=(base.lifeGoals||[]).reduce((s,g)=>{
+        if(g.id==="trip"&&(g.recurYears||0)>0)return s+g.amount*Math.max(1,Math.ceil((base.retireAge-g.atAge)/g.recurYears));
+        return s+g.amount;
+      },0);
+      const goalRows=(base.lifeGoals||[]).map(g=>{
+        const freq=g.id==="trip"?(g.recurYears>0?`Every ${g.recurYears} yrs`:"Once"):"One-off";
+        let mortExtra="";
+        if(g.id==="house"&&(g.mortgagePct||0)>0){
+          const dp=g.amount*(1-(g.mortgagePct||0)/100);
+          const md=debtCalc(g.amount*(g.mortgagePct/100),g.mortgageRate||0,(g.mortgageTerm||0)*12);
+          mortExtra=`<div class="goal-sub">Down payment: <b>${disp(dp)}</b> &nbsp;|&nbsp; Mortgage: <b>${g.mortgagePct}% @ ${g.mortgageRate}% p.a. / ${g.mortgageTerm} yrs</b>${md.monthlyPmt>0?` &nbsp;|&nbsp; Monthly repayment: <b>${disp(md.monthlyPmt)}/mo</b>`:""}</div>`;
+        }
+        return `<tr>
+          <td class="td-lbl">${g.icon} ${g.label}</td>
+          <td class="td-center">Age ${g.atAge}</td>
+          <td class="td-center">${freq}</td>
+          <td class="td-val" style="color:#B45309;font-weight:700">${disp(g.amount)}</td>
+        </tr>${mortExtra?`<tr><td colspan="4" style="padding:0 12px 8px 28px;font-size:11px;color:#65676B">${mortExtra}</td></tr>`:""}`;
+      }).join("");
+      goalsHtml=`
+        ${sectionHead("Life Goals &amp; Milestones")}
+        <table class="data-tbl goals-tbl">
+          <thead><tr>
+            <th>Goal</th><th class="th-c">Target age</th><th class="th-c">Frequency</th><th class="th-r">Amount</th>
+          </tr></thead>
+          <tbody>${goalRows}
+            <tr class="total-row">
+              <td colspan="3" class="td-lbl"><b>Total estimated goal cost</b></td>
+              <td class="td-val" style="color:#B45309;font-weight:700">${disp(tot)}</td>
+            </tr>
+          </tbody>
+        </table>`;
+    }
+
+    /* ── HH partner rows ── */
+    const hhPartnerRows=hh?`
+      ${dataRow("Partner age",partner.age+" years")}
+      ${dataRow("Partner gender",genderLabel(partner.gender))}
+      ${dataRow("Partner monthly income",disp(partner.income))}
+      ${dataRow("Partner savings to date",disp(partner.savings))}
+      ${dataRow("Partner savings rate",partner.savingsRate+"% of gross income")}
+      ${dataRow("Partner target retirement","Age "+partner.retireAge)}
+      ${partner.debtBalance>0?dataRow("Partner outstanding debt",disp(partner.debtBalance),"#C0392B"):""}
+    `:"";
+
+    /* ── HH pots row ── */
+    const hhPotsHtml=hh&&result.p1P!=null?`
+      <div class="two-col">
+        ${kpiCard("Your retirement pot (age "+base.retireAge+")",disp(result.p1P),"Individual projection","#EEF3FF","#1877F2")}
+        ${kpiCard("Partner's retirement pot (age "+partner.retireAge+")",disp(result.p2P),"Individual projection","#F5F3FF","#7C3AED")}
+      </div>`:"";
+
+    /* ── HH income split ── */
+    const hhIncomeHtml=hh&&result.p1mt!=null?`
+      <div class="two-col" style="margin-top:12px">
+        ${kpiCard("Your share ("+Math.round(result.p1s*100)+"%)",disp(moAtRet*result.p1s),"≈ "+disp(result.p1mt)+"/mo in today's money","#EEF3FF","#1877F2")}
+        ${kpiCard("Partner's share ("+Math.round(result.p2s*100)+"%)",disp(moAtRet*result.p2s),"≈ "+disp(result.p2mt)+"/mo in today's money","#F5F3FF","#7C3AED")}
+      </div>`:"";
+
+    /* ── Debt section ── */
+    const debtHtml=!hh&&base.debtBalance>0?`
+      <div class="sub-card" style="border-left:3px solid #C0392B;background:#FDECEA22">
+        <div class="sub-card-title" style="color:#C0392B">Outstanding Debt</div>
+        <table class="data-tbl"><tbody>
+          ${dataRow("Total debt balance",disp(base.debtBalance),"#C0392B")}
+          ${base.debtRate>0?dataRow("Interest rate",base.debtRate+"% p.a."):""}
+          ${base.debtTerm>0?dataRow("Remaining term",Math.round(base.debtTerm/12)+" years"):""}
+          ${(()=>{const d=debtCalc(base.debtBalance,base.debtRate,base.debtTerm);return d.monthlyPmt>0?dataRow("Monthly repayment",disp(d.monthlyPmt)+"/mo","#C0392B"):""})()}
+        </tbody></table>
+      </div>`:"";
+
+    /* ── Scenario bars ── */
+    const scenMax=Math.round(result.retP*1.16);
+    const scenBar=(lbl,val,col,pct)=>`
+      <div class="scen-row">
+        <div class="scen-lbl">${lbl}</div>
+        <div class="scen-track"><div class="scen-fill" style="width:${pct}%;background:${col}"></div></div>
+        <div class="scen-val" style="color:${col}">${disp(val)}</div>
+      </div>`;
+
+    /* ── Full HTML ── */
+    const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>ARK Financial Plan — ${info.name}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:13px}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:#1C1E21;
+    background:#fff;
+    line-height:1.6;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* ── Page layout ── */
+  .page{max-width:780px;margin:0 auto;padding:0 32px 48px}
+
+  /* ── Cover header ── */
+  .cover{
+    background:linear-gradient(135deg,#1877F2 0%,#0d5abf 100%);
+    color:#fff;
+    padding:36px 40px 32px;
+    margin:0 -32px 32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .cover::after{
+    content:"";position:absolute;right:-60px;top:-60px;
+    width:220px;height:220px;border-radius:50%;
+    background:rgba(255,255,255,.06);
+  }
+  .cover-logo{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+  .cover-mark{
+    width:42px;height:42px;border-radius:12px;
+    background:rgba(255,255,255,.2);
+    display:grid;place-items:center;
+    font-size:20px;font-weight:800;color:#fff;
+    border:2px solid rgba(255,255,255,.3);
+  }
+  .cover-brand{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .cover-tag{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px}
+  .cover-title{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.2;margin-bottom:8px}
+  .cover-sub{font-size:13px;color:rgba(255,255,255,.8);margin-bottom:20px;line-height:1.5;text-align:justify}
+  .cover-meta{
+    display:flex;gap:20px;flex-wrap:wrap;
+    font-size:11px;color:rgba(255,255,255,.7);
+    border-top:1px solid rgba(255,255,255,.2);
+    padding-top:16px;margin-top:4px;
+  }
+  .cover-meta b{color:#fff;font-weight:600}
+
+  /* ── Verdict banner ── */
+  .verdict{
+    border-radius:10px;padding:14px 18px;margin-bottom:24px;
+    border:1.5px solid ${okBd};background:${okBg};
+    display:flex;align-items:center;gap:14px;
+  }
+  .verdict-icon{font-size:26px;flex-shrink:0}
+  .verdict-title{font-size:15px;font-weight:700;color:${okCol};margin-bottom:2px}
+  .verdict-body{font-size:12px;color:#65676B;line-height:1.55;text-align:justify}
+
+  /* ── Section heading ── */
+  .sec-head{
+    display:flex;align-items:center;gap:10px;
+    margin:28px 0 14px;
+    page-break-after:avoid;
+  }
+  .sec-bar{width:4px;height:20px;background:#1877F2;border-radius:2px;flex-shrink:0}
+  .sec-head span{font-size:14px;font-weight:700;color:#1C1E21;letter-spacing:-.01em}
+
+  /* ── KPI cards ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .kpi-card{
+    border-radius:10px;padding:14px 16px;
+    border:1.5px solid #E4E6EB;
+    page-break-inside:avoid;
+  }
+  .kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .kpi-val{font-size:20px;font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:3px}
+  .kpi-sub{font-size:10px;margin-top:2px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+  /* ── Hero income card ── */
+  .hero-card{
+    background:linear-gradient(135deg,#1877F2 0%,#0d5abf 100%);
+    color:#fff;border-radius:12px;padding:22px 24px;
+    margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:12px;
+    page-break-inside:avoid;
+  }
+  .hero-card-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+  .hero-card-val{font-size:30px;font-weight:800;letter-spacing:-.05em;line-height:1}
+  .hero-card-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:5px}
+  .hero-card-right{text-align:right}
+
+  /* ── Data table ── */
+  .data-tbl{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:12px}
+  .data-tbl th{
+    text-align:left;font-size:10px;font-weight:600;color:#65676B;
+    text-transform:uppercase;letter-spacing:.06em;
+    padding:8px 12px;border-bottom:2px solid #E4E6EB;
+    background:#F7F8FA;
+  }
+  .th-c{text-align:center!important}
+  .th-r{text-align:right!important}
+  .data-tbl tr:nth-child(even) td{background:#F7F8FA}
+  .td-lbl{padding:9px 12px;color:#65676B;font-weight:500;text-align:left}
+  .td-val{padding:9px 12px;color:#1C1E21;font-weight:600;text-align:right}
+  .td-center{padding:9px 12px;color:#1C1E21;text-align:center}
+  .data-tbl tr:last-child td{border-bottom:none}
+  .data-tbl td{border-bottom:1px solid #E4E6EB}
+  .total-row td{background:#EEF3FF!important;border-top:2px solid #1877F220}
+
+  /* ── Goals table ── */
+  .goals-tbl .td-lbl{font-weight:600;color:#1C1E21}
+  .goal-sub{font-size:11px;color:#65676B;margin-top:2px}
+
+  /* ── Sub card ── */
+  .sub-card{border-radius:10px;padding:14px 16px;margin-bottom:14px;border:1px solid #E4E6EB;background:#FAFBFC}
+  .sub-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;color:#1877F2}
+
+  /* ── Scenario bars ── */
+  .scen-wrap{margin-bottom:14px}
+  .scen-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .scen-lbl{font-size:12px;font-weight:500;color:#65676B;min-width:170px}
+  .scen-track{flex:1;height:8px;background:#E4E6EB;border-radius:4px;overflow:hidden}
+  .scen-fill{height:100%;border-radius:4px;transition:width .3s}
+  .scen-val{font-size:13px;font-weight:700;min-width:80px;text-align:right}
+
+  /* ── Health ring (text) ── */
+  .health-row{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .health-score{
+    width:72px;height:72px;border-radius:50%;flex-shrink:0;
+    display:grid;place-items:center;
+    font-size:20px;font-weight:800;
+    border:5px solid ${hCol};color:${hCol};
+  }
+  .health-detail{flex:1}
+  .health-label{font-size:16px;font-weight:700;color:${hCol};margin-bottom:3px}
+  .health-desc{font-size:12px;color:#65676B;line-height:1.55;text-align:justify}
+
+  /* ── Divider ── */
+  .divider{border:none;border-top:1px solid #E4E6EB;margin:24px 0}
+
+  /* ── Footer ── */
+  .footer{
+    margin-top:40px;padding:18px 20px;border-radius:10px;
+    background:#EEF3FF;border:1px solid rgba(24,119,242,.2);
+    font-size:10.5px;color:#65676B;line-height:1.65;text-align:justify;
+  }
+  .footer-brand{font-size:12px;font-weight:700;color:#1877F2;margin-bottom:4px}
+
+  /* ── Print rules ── */
+  @media print{
+    @page{margin:14mm 16mm;size:A4}
+    body{font-size:11.5px}
+    .cover{margin:0 -16px 28px;padding:28px 24px 24px}
+    .no-print{display:none!important}
+    .page{padding:0 0 32px}
+    .kpi-grid{grid-template-columns:repeat(4,1fr)}
+    .sec-head{page-break-after:avoid}
+    .kpi-card,.hero-card,.sub-card,.data-tbl tr{page-break-inside:avoid}
+  }
+
+  /* ── Print button (screen only) ── */
+  .print-bar{
+    position:sticky;top:0;z-index:100;
+    background:#1877F2;color:#fff;
+    padding:10px 32px;display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 2px 8px rgba(24,119,242,.3);
+  }
+  .print-bar-title{font-size:13px;font-weight:600}
+  .print-btn{
+    padding:8px 22px;border-radius:20px;border:2px solid rgba(255,255,255,.6);
+    background:rgba(255,255,255,.15);color:#fff;
+    font-size:13px;font-weight:700;cursor:pointer;
+    font-family:inherit;transition:all .15s;letter-spacing:.01em;
+  }
+  .print-btn:hover{background:rgba(255,255,255,.25)}
+  @media print{.print-bar{display:none}}
+</style>
+</head>
+<body>
+
+<div class="print-bar no-print">
+  <span class="print-bar-title">ARK Financial Plan — ${info.name}</span>
+  <button class="print-btn" onclick="window.print()">⬇ Download / Print PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- ═══════════════════ COVER ═══════════════════ -->
+  <div class="cover">
+    <div class="cover-logo">
+      <div class="cover-mark">A</div>
+      <div>
+        <div class="cover-brand">ARK Financial Planners</div>
+        <div class="cover-tag">Personalised Retirement Report</div>
+      </div>
+    </div>
+    <div class="cover-title">Your Financial Independence Report</div>
+    <div class="cover-sub">
+      This report presents a comprehensive analysis of your retirement readiness, covering your current financial position, projected retirement portfolio, income projections, life goal costs, and scenario-based stress testing. All figures are computed using your inputs and are for educational purposes only.
+    </div>
+    <div class="cover-meta">
+      <span><b>Prepared for:</b> ${info.name}</span>
+      <span><b>Date:</b> ${dateStr}</span>
+      <span><b>Currency:</b> ${cur}</span>
+      <span><b>Mode:</b> ${hh?"Household (2 persons)":"Individual"}</span>
+      <span><b>Scenario:</b> ${sfLabel}</span>
+      ${info.email?`<span><b>Email:</b> ${info.email}</span>`:""}
+      ${info.phone?`<span><b>Phone:</b> ${info.phone}</span>`:""}
+    </div>
+  </div>
+
+  <!-- ═══════════════════ VERDICT ═══════════════════ -->
+  <div class="verdict">
+    <div class="verdict-icon">${result.lasts?"✅":"⚠️"}</div>
+    <div>
+      <div class="verdict-title">${result.lasts?"On Track — Your funds are projected to last beyond your life expectancy":"Action Needed — Your funds may not last your full retirement"}</div>
+      <div class="verdict-body">
+        ${result.lasts
+          ? `Based on the <b>${sfLabel}</b> scenario, your projected retirement pot of <b>${disp(result.retP)}</b> is expected to last until age <b>${result.ro}</b>, which is <b>${result.sur} years beyond</b> your life expectancy of age ${result.le}. Your portfolio covers <b>${result.cm.toFixed(1)}× your annual spending</b>, against the recommended benchmark of 20–25×. Your financial health score is <b>${result.health}/100 — ${hl.l}</b>.`
+          : `Based on the <b>${sfLabel}</b> scenario, your projected retirement pot of <b>${disp(result.retP)}</b> may be exhausted at age <b>${result.ro}</b>, which is <b>${result.le-result.ro} years short</b> of your life expectancy of age ${result.le}. Immediate action on savings rate, retirement age, or spending is recommended. Your financial health score is <b>${result.health}/100 — ${hl.l}</b>.`
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ KEY METRICS ═══════════════════ -->
+  ${sectionHead("Key Results at a Glance")}
+  <div class="kpi-grid">
+    ${kpiCard("Retirement pot",disp(result.retP),"projected at retirement","#EEF3FF","#1877F2")}
+    ${kpiCard("Monthly income",disp(moAtRet)+"/mo","≈ "+disp(moToday)+"/mo today","#F0FDF4",hCol)}
+    ${kpiCard("Health score",result.health+"/100",""+hl.l,"#FFF8F0",hCol)}
+    ${kpiCard("Success probability",result.sp+"%","funds last to life exp.","#F5F3FF",spCol)}
+  </div>
+  <div class="two-col">
+    ${kpiCard("Coverage multiple",result.cm.toFixed(1)+"× annual spend","target: 20–25×","#EEF3FF","#1877F2")}
+    ${kpiCard("Funds last to","Age "+result.le,"life expectancy",result.lasts?"#F0FDF4":"#FDF2F2",okCol)}
+    ${kpiCard("Years to retirement",yrsAway+" years","retire at age "+base.retireAge,"#FAFBFC","#65676B")}
+    ${kpiCard("Income strategy",modeLabel,"","#FAFBFC","#65676B")}
+  </div>
+
+  <!-- ═══════════════════ RETIREMENT INCOME ═══════════════════ -->
+  ${sectionHead("Retirement Income Projection")}
+  <div class="hero-card">
+    <div>
+      <div class="hero-card-lbl">Monthly income at retirement</div>
+      <div class="hero-card-val">${disp(moAtRet)}<span style="font-size:14px;font-weight:600;opacity:.7">/mo</span></div>
+      <div class="hero-card-sub">In today's money: ${disp(moToday)}/mo &nbsp;·&nbsp; Inflation-adjusted 2.5%/yr over ${result.ytr} years</div>
+    </div>
+    <div class="hero-card-right">
+      <div class="hero-card-lbl">Income strategy</div>
+      <div style="font-size:15px;font-weight:700;color:#fff">${modeLabel}</div>
+      <div class="hero-card-sub">Scenario: ${sfLabel}</div>
+    </div>
+  </div>
+  ${hhIncomeHtml}
+  <table class="data-tbl"><tbody>
+    ${dataRow("Inflation assumption","2.5% per year")}
+    ${dataRow("Years to retirement",result.ytr+" years (retire age "+base.retireAge+")")}
+    ${dataRow("Cumulative inflation factor",inf.toFixed(3)+"×")}
+    ${dataRow("Monthly income in today's money",disp(moToday))}
+    ${dataRow("Annual withdrawal at retirement",disp(result.wd))}
+  </tbody></table>
+
+  <!-- ═══════════════════ RETIREMENT POT ═══════════════════ -->
+  ${sectionHead("Retirement Portfolio")}
+  ${hhPotsHtml}
+  <table class="data-tbl"><tbody>
+    ${dataRow(hh?"Combined projected pot":"Projected retirement pot",disp(result.retP),"#1877F2")}
+    ${dataRow("Coverage multiple",result.cm.toFixed(1)+"× annual withdrawal (benchmark: 20–25×)")}
+    ${dataRow("Funds exhausted at",result.lasts?"Age "+result.le+" (life exp.) — funds last beyond":"Age "+result.ro+" — "+( result.le-result.ro)+" yr shortfall",okCol)}
+    ${dataRow("Surplus / shortfall",result.lasts?"+"+result.sur+" years beyond life expectancy":result.le-result.ro+" years short of life expectancy",okCol)}
+    ${dataRow("Life expectancy","Age "+result.le+" (based on biological sex)")}
+  </tbody></table>
+
+  <!-- ═══════════════════ FINANCIAL HEALTH ═══════════════════ -->
+  ${sectionHead("Financial Health &amp; Savings")}
+  <div class="health-row">
+    <div class="health-score">${result.health}</div>
+    <div class="health-detail">
+      <div class="health-label">${result.health}/100 — ${hl.l}</div>
+      <div class="health-desc">
+        Your financial health score is calculated across four dimensions: savings rate (max 30 pts), spending discipline (max 25 pts), existing savings cushion (max 20 pts), and projected retirement adequacy (max 25 pts). A score above 75 indicates a strong retirement trajectory. Success probability of <b>${result.sp}%</b> reflects the likelihood your funds outlast your life expectancy under the selected return scenario.
+      </div>
+    </div>
+  </div>
+
+  ${hh?`
+  <div class="two-col">
+    <div class="sub-card" style="border-left:3px solid #1877F2">
+      <div class="sub-card-title" style="color:#1877F2">You</div>
+      <table class="data-tbl"><tbody>
+        ${dataRow("Age",base.age+" years")}
+        ${dataRow("Gender",genderLabel(base.gender))}
+        ${dataRow("Monthly income",disp(base.income))}
+        ${dataRow("Savings to date",disp(base.savings))}
+        ${dataRow("Savings rate",base.savingsRate+"% of gross income")}
+        ${dataRow("Target retirement","Age "+base.retireAge)}
+        ${base.debtBalance>0?dataRow("Debt balance",disp(base.debtBalance),"#C0392B"):""}
+      </tbody></table>
+    </div>
+    <div class="sub-card" style="border-left:3px solid #7C3AED">
+      <div class="sub-card-title" style="color:#7C3AED">Partner</div>
+      <table class="data-tbl"><tbody>
+        ${dataRow("Age",partner.age+" years")}
+        ${dataRow("Gender",genderLabel(partner.gender))}
+        ${dataRow("Monthly income",disp(partner.income))}
+        ${dataRow("Savings to date",disp(partner.savings))}
+        ${dataRow("Savings rate",partner.savingsRate+"% of gross income")}
+        ${dataRow("Target retirement","Age "+partner.retireAge)}
+        ${partner.debtBalance>0?dataRow("Debt balance",disp(partner.debtBalance),"#C0392B"):""}
+      </tbody></table>
+    </div>
+  </div>
+  <table class="data-tbl"><tbody>
+    ${dataRow("Combined monthly income",disp(base.income+partner.income))}
+    ${dataRow("Monthly household expenses",disp(base.monthlySpend))}
+    ${dataRow("Combined savings to date",disp(base.savings+partner.savings))}
+  </tbody></table>`
+  :`
+  <table class="data-tbl"><tbody>
+    ${dataRow("Age",base.age+" years")}
+    ${dataRow("Gender",genderLabel(base.gender))}
+    ${dataRow("Monthly income",disp(base.income))}
+    ${dataRow("Monthly spending",disp(base.monthlySpend))}
+    ${dataRow("Savings to date",disp(base.savings))}
+    ${dataRow("Savings rate",base.savingsRate+"% of gross income")}
+    ${dataRow("Target retirement age","Age "+base.retireAge+" ("+yrsAway+" years away)")}
+    ${dataRow("Life expectancy","Age "+result.le)}
+  </tbody></table>
+  ${debtHtml}`}
+
+  <!-- ═══════════════════ LIFE GOALS ═══════════════════ -->
+  ${goalsHtml||(()=>`
+  ${sectionHead("Life Goals &amp; Milestones")}
+  <div class="sub-card" style="text-align:center;color:#65676B;padding:20px">
+    No life goals were added to this plan.
+  </div>`)()}
+
+  <!-- ═══════════════════ SCENARIO STRESS TEST ═══════════════════ -->
+  ${sectionHead("Scenario Stress Test")}
+  <p style="font-size:12px;color:#65676B;margin-bottom:14px;text-align:justify">
+    The table below projects your retirement pot and monthly income under three return environments. The base case assumes a 5% annual investment return. The worst case (4%) represents a sustained low-return environment, while the best case (6%) reflects a more optimistic long-term outcome. All figures are inflation-adjusted.
+  </p>
+  <table class="data-tbl">
+    <thead><tr>
+      <th>Scenario</th><th>Return</th><th class="th-r">Projected pot</th><th class="th-r">Monthly income</th><th class="th-r">Funds last to</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="td-lbl" style="color:#C0392B;font-weight:700">&#x26A0; Worst case</td>
+        <td class="td-center">4% p.a.</td>
+        <td class="td-val" style="color:#C0392B">${disp(Math.round(result.retP*0.85))}</td>
+        <td class="td-val" style="color:#C0392B">${disp(Math.round(result.wd/12*0.85))}/mo</td>
+        <td class="td-val" style="color:#C0392B">~Age ${Math.max(result.ro-5,base.retireAge+1)}</td>
+      </tr>
+      <tr style="background:#EEF3FF">
+        <td class="td-lbl" style="color:#D97706;font-weight:700">&#9679; Base case${sfKey==="likely"?" (selected)":""}</td>
+        <td class="td-center">5% p.a.</td>
+        <td class="td-val" style="color:#1877F2">${disp(result.retP)}</td>
+        <td class="td-val" style="color:#1877F2">${disp(result.wd/12)}/mo</td>
+        <td class="td-val" style="color:#1877F2">Age ${result.le}</td>
+      </tr>
+      <tr>
+        <td class="td-lbl" style="color:#2D8A4E;font-weight:700">&#10003; Best case</td>
+        <td class="td-center">6% p.a.</td>
+        <td class="td-val" style="color:#2D8A4E">${disp(Math.round(result.retP*1.16))}</td>
+        <td class="td-val" style="color:#2D8A4E">${disp(Math.round(result.wd/12*1.16))}/mo</td>
+        <td class="td-val" style="color:#2D8A4E">Age ${result.le+(result.sur>0?Math.round(result.sur*0.3):0)+6}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="scen-wrap">
+    ${scenBar("Worst case (4%)",Math.round(result.retP*0.85),"#C0392B",Math.round(Math.round(result.retP*0.85)/scenMax*100))}
+    ${scenBar("Base case (5%) — selected",result.retP,"#1877F2",Math.round(result.retP/scenMax*100))}
+    ${scenBar("Best case (6%)",Math.round(result.retP*1.16),"#2D8A4E",100)}
+  </div>
+
+  <!-- ═══════════════════ DISCLAIMER ═══════════════════ -->
+  <hr class="divider"/>
+  <div class="footer">
+    <div class="footer-brand">ARK Financial Planners</div>
+    <b>Important disclaimer:</b> This report has been prepared for educational and illustrative purposes only and does not constitute financial advice. The projections shown are based on the inputs provided and a number of assumptions including investment return rates, inflation, and life expectancy. Actual outcomes may differ materially from those presented. Past performance is not indicative of future results. Exchange rate used: 1 USD = ${FX} MUR. We strongly recommend consulting a qualified and licensed financial adviser before making any financial decisions. ARK Financial Planners accepts no liability for any action taken in reliance on this report.
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>`;
+
+    return html;
+  }catch(e){console.error("Report:",e);return null;}
 }
 
-/* ── PDF ── */
-function generatePDF(info,result,base,partner,hh,disp,sym,frB,cur){
-  try{
-    const jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
-    if(!jsPDFLib){console.error("jsPDF not found");return false;}
-    const doc=new jsPDFLib({orientation:"portrait",unit:"mm",format:"a4"});
-    const W=210,M=16,COL=W-M*2;let y=0;
-    const np=(need)=>{if(y+need>272){doc.addPage();y=20;}};
-    doc.setFillColor(26,86,219);doc.rect(0,0,W,36,"F");
-    doc.setFont("helvetica","bold");doc.setFontSize(20);doc.setTextColor(255,255,255);
-    doc.text("ARK Financial Planners",M,15);
-    doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(180,210,255);
-    doc.text("Personalised Retirement Plan",M,23);
-    doc.setFontSize(8);doc.setTextColor(140,175,240);
-    doc.text("Prepared for: "+info.name+"   |   "+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}),M,30);
-    y=44;
-    const sec=(title)=>{np(14);doc.setFillColor(237,242,255);doc.rect(M,y,COL,8,"F");doc.setDrawColor(26,86,219);doc.setLineWidth(0.5);doc.line(M,y,M,y+8);doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(26,86,219);doc.text(title.toUpperCase(),M+4,y+5.5);y+=13;};
-    const row=(label,value,rgb)=>{np(8);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90,100,120);doc.text(label,M,y);doc.setFont("helvetica","bold");if(rgb)doc.setTextColor(...rgb);else doc.setTextColor(17,24,39);doc.text(String(value),W-M,y,{align:"right"});doc.setDrawColor(225,229,238);doc.setLineWidth(0.2);doc.line(M,y+2.5,W-M,y+2.5);y+=8;};
-    const bigCard=(label,value,sub,bg,fg)=>{np(22);doc.setFillColor(...bg);doc.roundedRect(M,y,COL,18,3,3,"F");doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+80)));doc.text(label,M+5,y+6);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...fg);doc.text(String(value),M+5,y+13.5);if(sub){doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...fg.map(c=>Math.min(255,c+80)));doc.text(sub,W-M-2,y+13.5,{align:"right"});}y+=23;};
-    const twoCards=(items)=>{np(20);const hw=(COL-6)/2;items.forEach((item,i)=>{const x=i===0?M:M+hw+6;doc.setFillColor(...item[2]);doc.roundedRect(x,y,hw,16,3,3,"F");doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...item[3].map(c=>Math.min(255,c+80)));doc.text(item[0],x+4,y+6);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...item[3]);doc.text(String(item[1]),x+4,y+13);});y+=21;};
-    const inf=result.inf||1,moAtRet=result.wd/12,moToday=moAtRet/inf;
-    const incomeMode=base.incomeMode||"rule4";
-    const modeLabel=incomeMode==="expenses"?"Maintaining your current lifestyle":incomeMode==="custom"?"Based on your custom target":"4% withdrawal rule";
-    sec("Your Retirement Income");
-    bigCard("Monthly income at retirement",disp(moAtRet),"in today's money: "+disp(moToday),[26,86,219],[255,255,255]);
-    row("Income strategy",modeLabel);
-    row("Inflation adjusted","2.5% per year over "+result.ytr+" years");
-    if(hh&&result.p1mt!=null){y+=2;twoCards([[" Your share ("+Math.round(result.p1s*100)+"%)",disp(moAtRet*result.p1s),[235,242,255],[26,86,219]],["Partner's share ("+Math.round(result.p2s*100)+"%)",disp(moAtRet*result.p2s),[243,238,255],[124,58,237]]]);row("Your share in today's money",disp(result.p1mt));row("Partner's share in today's money",disp(result.p2mt));}
-    y+=4;
-    sec("Your Retirement Pot");
-    if(hh&&result.p1P!=null){twoCards([["Your pot (age "+base.retireAge+")",disp(result.p1P),[235,242,255],[26,86,219]],["Partner's pot (age "+partner.retireAge+")",disp(result.p2P),[243,238,255],[124,58,237]]]);bigCard("Combined retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);}
-    else{bigCard("Projected retirement pot",disp(result.retP),"funds last to age "+result.le+(result.lasts?" ✓":" ⚠"),result.lasts?[240,253,244]:[254,242,242],result.lasts?[22,163,74]:[220,38,38]);}
-    row("Coverage ratio",result.cm.toFixed(1)+"× annual spending (target: 20–25×)");
-    row("Funds status",result.lasts?"✓ Lasts "+result.sur+" years beyond life expectancy":"⚠ Runs short by "+(result.le-result.ro)+" years",result.lasts?[22,163,74]:[220,38,38]);
-    y+=4;
-    sec("Savings & Financial Health");
-    const hRgb=result.health>=75?[22,163,74]:result.health>=55?[217,119,6]:[220,38,38];
-    const hl=hlabel(result.health);
-    twoCards([["Health score",result.health+"/100 — "+hl.l,[245,247,255],hRgb],["Success probability",result.sp+"%",[245,247,255],result.sp>=75?[22,163,74]:result.sp>=55?[217,119,6]:[220,38,38]]]);
-    if(hh){row("Your monthly income",disp(base.income));row("Your savings rate",base.savingsRate+"% of gross income");row("Your savings to date",disp(base.savings));row("Partner monthly income",disp(partner.income));row("Partner savings rate",partner.savingsRate+"% of gross income");row("Partner savings to date",disp(partner.savings));row("Monthly household expenses",disp(base.monthlySpend));}
-    else{row("Monthly income",disp(base.income));row("Monthly spending",disp(base.monthlySpend));row("Savings to date",disp(base.savings));row("Savings rate",base.savingsRate+"% of gross income");row("Target retirement age","Age "+base.retireAge);if(base.debtBalance>0){row("Outstanding debt",disp(base.debtBalance),[220,38,38]);row("Debt rate / term",base.debtRate+"% p.a. / "+Math.round((base.debtTerm||0)/12)+" years");}}
-    y+=4;
-    if((base.lifeGoals||[]).length>0){
-      sec("Life Goals & Milestones");
-      (base.lifeGoals||[]).forEach(g=>{
-        const freq=g.id==="trip"&&(g.recurYears||0)>0?" · every "+g.recurYears+" yrs":"";
-        const mortgage=g.id==="house"&&(g.mortgagePct||0)>0?" · "+g.mortgagePct+"% mortgage @ "+g.mortgageRate+"%":"";
-        row(g.icon+" "+g.label+" (age "+g.atAge+")"+freq+mortgage,disp(g.amount));
-      });
-      const totalGoals=(base.lifeGoals||[]).reduce((s,g)=>{if(g.id==="trip"&&(g.recurYears||0)>0){return s+g.amount*Math.max(1,Math.ceil((base.retireAge-g.atAge)/g.recurYears));}return s+g.amount;},0);
-      y+=2;row("Total estimated goal cost",disp(totalGoals),[217,119,6]);y+=4;
-    }
-    sec("Scenario Outlook");
-    row("Worst case (4% return)",disp(Math.round(result.retP*0.85)),[220,38,38]);
-    row("Base case (5% return)",disp(result.retP),[22,163,74]);
-    row("Best case (6% return)",disp(Math.round(result.retP*1.16)),[22,163,74]);
-    const fY=285;
-    doc.setFillColor(26,86,219);doc.rect(0,fY,W,12,"F");
-    doc.setFont("helvetica","normal");doc.setFontSize(7);doc.setTextColor(180,210,255);
-    doc.text("ARK Financial Planners · arkfinancialplanners.com",M,fY+5);
-    doc.text("For educational purposes only. Not financial advice.",W-M,fY+5,{align:"right"});
-    doc.setTextColor(140,175,240);
-    doc.text("Consult a qualified financial consultant before making decisions. · 1 USD = 46.5 MUR",W/2,fY+9.5,{align:"center"});
-    doc.save("ARK-Plan-"+info.name.replace(/\s+/g,"-")+".pdf");
-    return true;
-  }catch(e){console.error("PDF error:",e);return false;}
+/* Opens the report in a new tab */
+function generateReport(info,result,base,partner,hh,disp,sym,frB,cur){
+  const html=buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur);
+  if(!html)return false;
+  const w=window.open("","_blank","width=900,height=700,scrollbars=yes");
+  if(!w){alert("Please allow pop-ups to view your report.");return false;}
+  w.document.write(html);
+  w.document.close();
+  return true;
 }
 
 /* ── SLIDER ── */
@@ -365,14 +919,15 @@ function Slider({label,value,min,max,step,fmt,onChange,color,sub,hint}){
   const[loc,setLoc]=useState(value);
   useEffect(()=>setLoc(value),[value]);
   const clamp=v=>Math.min(max,Math.max(min,Math.round(+v/step)*step));
-  const p=Math.min(100,Math.max(0,((loc-min)/(max-min||1))*100));
+  const span=max-min||1;
+  const p=Math.min(100,Math.max(0,((loc-min)/span)*100));
   const set=v=>{const n=clamp(v);setLoc(n);onChange(n);};
   return h("div",{className:"sl-wrap"},
     h("div",{className:"sl-hdr"},
       h("span",{className:"sl-label"},label,hint&&h("span",{className:"sl-hint"},hint)),
       h("span",{className:"sl-val",style:{color}},fmt(loc))
     ),
-    sub&&h("div",{className:"sl-sub",style:{color}},sub),
+    sub&&h("div",{className:"sl-sub"},sub),
     h("div",{className:"sl-row"},
       h("button",{className:"sl-pm",onClick:()=>set(loc-step),tabIndex:-1},"−"),
       h("div",{className:"sl-track-wrap"},
@@ -384,18 +939,20 @@ function Slider({label,value,min,max,step,fmt,onChange,color,sub,hint}){
     )
   );
 }
+
 function SavSlider({income,sr,onChange,disp,color}){
   const[loc,setLoc]=useState(sr);
   useEffect(()=>setLoc(sr),[sr]);
-  const col=color||(loc>=20?"var(--ok)":loc>=10?"var(--warn)":"var(--danger)");
+  const col=color||"var(--accent)";
+  const statusCol=loc>=20?"var(--ok)":loc>=10?"var(--warn)":"var(--danger)";
   const set=v=>{const n=Math.min(50,Math.max(1,Math.round(+v)));setLoc(n);onChange(n);};
   const p=Math.min(100,(loc/50)*100);
   return h("div",{className:"sl-wrap"},
     h("div",{className:"sl-hdr"},
-      h("span",{className:"sl-label"},"Savings rate ",h("span",{style:{fontSize:10,color:"var(--hint)",fontWeight:400}},"% of monthly gross income")),
+      h("span",{className:"sl-label"},"Savings rate ",h("span",{className:"sl-hint"},"% of monthly gross income")),
       h("span",{className:"sl-val",style:{color:col}},loc+"%")
     ),
-    h("div",{className:"sl-sub",style:{color:col}},disp(income*(loc/100))+"/mo · "+(loc<10?"aim for 15%+":loc<20?"good — aim for 20%":"excellent ✓")),
+    h("div",{className:"sl-sub",style:{color:statusCol}},disp(income*(loc/100))+"/mo · "+(loc<10?"aim for 15%+":loc<20?"good — aim for 20%":"excellent ✓")),
     h("div",{className:"sl-row"},
       h("button",{className:"sl-pm",onClick:()=>set(loc-1),tabIndex:-1},"−"),
       h("div",{className:"sl-track-wrap"},
@@ -408,38 +965,89 @@ function SavSlider({income,sr,onChange,disp,color}){
   );
 }
 
-/* ── DEBT SECTION ── */
-function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp}){
-  const hasDebt=db>0,termYears=dt?Math.round(dt/12):0;
-  const dbt=debtCalc(db,dr,dt),dbDisp=frB(db);
-  const dynStep=cur==="MUR"?(dbDisp<1000000?1000:100000):stepDbDisp;
-  const p=Math.min(100,(dbDisp/maxDbDisp)*100);
-  return h("div",null,
-    h("div",{className:"sl-wrap"},
-      h("div",{className:"sl-hdr"},
-        h("span",{className:"sl-label"},"Outstanding debt ("+cur+")"),
-        h("span",{className:"sl-val",style:{color:"var(--danger)"}},dbDisp===0?"None":fmtAmt(dbDisp,sym))
-      ),
-      h("div",{className:"sl-row"},
-        h("button",{className:"sl-pm",onClick:()=>onDB(toB(Math.max(0,dbDisp-dynStep))),tabIndex:-1},"−"),
-        h("div",{className:"sl-track-wrap"},
-          h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:"var(--danger)"}})),
-          h("div",{className:"sl-thumb",style:{left:p+"%",background:"var(--danger)"}}),
-          h("input",{type:"range",className:"sl-input",min:0,max:maxDbDisp,step:dynStep,value:dbDisp,onChange:e=>onDB(toB(+e.target.value))})
-        ),
-        h("button",{className:"sl-pm",onClick:()=>onDB(toB(Math.min(maxDbDisp,dbDisp+dynStep))),tabIndex:-1},"+")
-      )
+/* ── STEPPED SCALE HELPER ──
+   Builds an array of values with variable increments.
+   MUR savings / debt: 0, then 10K steps to 1M, then 100K steps to 25M.
+   USD savings / debt: 0, then 1K steps to 100K, then 10K steps to 2M.
+   Returns { steps[], valToIdx(v), idxToVal(i) }
+*/
+function buildSteps(cur,includeZero){
+  const steps=[];
+  if(cur==="MUR"){
+    if(includeZero)steps.push(0);
+    /* 10,000 increments: 100,000 → 1,000,000 (91 values) */
+    for(let v=100000;v<=1000000;v+=10000)steps.push(v);
+    /* 100,000 increments: 1,100,000 → 25,000,000 */
+    for(let v=1100000;v<=25000000;v+=100000)steps.push(v);
+  }else{
+    /* USD */
+    if(includeZero)steps.push(0);
+    /* 1,000 increments: 10,000 → 100,000 */
+    for(let v=10000;v<=100000;v+=1000)steps.push(v);
+    /* 10,000 increments: 110,000 → 2,000,000 */
+    for(let v=110000;v<=2000000;v+=10000)steps.push(v);
+  }
+  const valToIdx=v=>{
+    if(!v||v<=0)return 0;
+    /* find closest index */
+    let best=0,bestDiff=Infinity;
+    for(let i=0;i<steps.length;i++){const d=Math.abs(steps[i]-v);if(d<bestDiff){bestDiff=d;best=i;}}
+    return best;
+  };
+  const idxToVal=i=>steps[Math.max(0,Math.min(steps.length-1,i))];
+  return{steps,valToIdx,idxToVal,max:steps.length-1};
+}
+
+/* ── STEPPED SLIDER ── renders a slider over a non-linear step array */
+function SteppedSlider({label,hint,valueBase,cur,toB,frB,sym,color,onChange,includeZero,fmtVal}){
+  const sc=buildSteps(cur,includeZero);
+  const dispVal=frB(valueBase);
+  const[idx,setIdx]=useState(()=>sc.valToIdx(dispVal));
+  /* keep in sync when external value changes (e.g. currency switch) */
+  useEffect(()=>{setIdx(sc.valToIdx(frB(valueBase)));},[valueBase,cur]);
+  const col=color||"var(--accent)";
+  const p=sc.max>0?Math.min(100,(idx/sc.max)*100):0;
+  const curDisp=sc.idxToVal(idx);
+  const setByIdx=i=>{
+    const n=Math.max(0,Math.min(sc.max,i));
+    setIdx(n);
+    onChange(toB(sc.idxToVal(n)));
+  };
+  return h("div",{className:"sl-wrap"},
+    h("div",{className:"sl-hdr"},
+      h("span",{className:"sl-label"},label,hint&&h("span",{className:"sl-hint"},hint)),
+      h("span",{className:"sl-val",style:{color:col}},fmtVal?fmtVal(curDisp):(curDisp===0?"None":fmtAmt(curDisp,sym)))
     ),
+    h("div",{className:"sl-row"},
+      h("button",{className:"sl-pm",onClick:()=>setByIdx(idx-1),tabIndex:-1},"−"),
+      h("div",{className:"sl-track-wrap"},
+        h("div",{className:"sl-track"},h("div",{className:"sl-fill",style:{width:p+"%",background:col}})),
+        h("div",{className:"sl-thumb",style:{left:p+"%",background:col}}),
+        h("input",{type:"range",className:"sl-input",min:0,max:sc.max,step:1,value:idx,
+          onChange:e=>setByIdx(+e.target.value)})
+      ),
+      h("button",{className:"sl-pm",onClick:()=>setByIdx(idx+1),tabIndex:-1},"+")
+    )
+  );
+}
+
+/* ── DEBT SECTION ── */
+function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym}){
+  const hasDebt=db>0,termYears=dt?Math.round(dt/12):0;
+  const dbt=debtCalc(db,dr,dt);
+  const col="var(--teal)";
+  return h("div",null,
+    h(SteppedSlider,{
+      label:"Outstanding debt ("+cur+")",
+      valueBase:db,cur,toB,frB,sym,color:col,
+      includeZero:true,
+      onChange:onDB,
+      fmtVal:v=>v===0?"None":fmtAmt(v,sym)
+    }),
     hasDebt&&h("div",{className:"debt-box"},
       h("div",{className:"row2"},
-        h("div",null,
-          h("div",{className:"field-lbl"},"Interest rate (% p.a.)"),
-          h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:dr||"",placeholder:"e.g. 6.5",onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})
-        ),
-        h("div",null,
-          h("div",{className:"field-lbl"},"Remaining term (years)"),
-          h("input",{className:"mini-input",type:"number",min:0,max:30,step:1,value:termYears===0?"":termYears,placeholder:"0",onChange:e=>{const v=e.target.value;onDT(v===""?0:Math.min(30,Math.max(0,parseInt(v)||0))*12);}})
-        )
+        h("div",null,h("div",{className:"field-lbl"},"Interest rate (% p.a.)"),h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:dr||"",placeholder:"e.g. 6.5",onChange:e=>onDR(Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})),
+        h("div",null,h("div",{className:"field-lbl"},"Remaining term (years)"),h("input",{className:"mini-input",type:"number",min:0,max:30,step:1,value:termYears===0?"":termYears,placeholder:"0",onChange:e=>{const v=e.target.value;onDT(v===""?0:Math.min(30,Math.max(0,parseInt(v)||0))*12);}}))
       )
     )
   );
@@ -463,39 +1071,40 @@ function Chart({data,ra,le,hdd}){
   const rx=sx(ra),lx=le>=minY&&le<=maxY?sx(le):null;
   return h("svg",{width:"100%",viewBox:"0 0 "+W+" "+H,style:{overflow:"visible",display:"block"}},
     h("defs",null,
-      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#3B82F6",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#3B82F6",stopOpacity:".01"})),
-      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#0D9488",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#0D9488",stopOpacity:".01"})),
-      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#A78BFA",stopOpacity:".12"}),h("stop",{offset:"100%",stopColor:"#A78BFA",stopOpacity:".01"}))
+      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#1877F2",stopOpacity:".2"}),h("stop",{offset:"100%",stopColor:"#1877F2",stopOpacity:".01"})),
+      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#0081FB",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#0081FB",stopOpacity:".01"})),
+      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#7C3AED",stopOpacity:".12"}),h("stop",{offset:"100%",stopColor:"#7C3AED",stopOpacity:".01"}))
     ),
     grow.length>1&&h("path",{d:tp(grow)+" L"+sx(grow[grow.length-1].yr)+","+(P.t+ch)+" L"+sx(grow[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gg)"}),
-    grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#3B82F6",strokeWidth:"2",strokeLinejoin:"round"}),
+    grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#1877F2",strokeWidth:"2.5",strokeLinejoin:"round"}),
     hdd?[
       draw.length>1&&h("path",{key:"f1",d:tp1(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gd)"}),
       draw.length>1&&h("path",{key:"f2",d:tp2(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gp)"}),
-      draw.length>1&&h("path",{key:"l1",d:tp1(draw),fill:"none",stroke:"#0D9488",strokeWidth:"1.8",strokeDasharray:"6,3"}),
-      draw.length>1&&h("path",{key:"l2",d:tp2(draw),fill:"none",stroke:"#A78BFA",strokeWidth:"1.8",strokeDasharray:"6,3"})
+      draw.length>1&&h("path",{key:"l1",d:tp1(draw),fill:"none",stroke:"#0081FB",strokeWidth:"2",strokeDasharray:"6,3"}),
+      draw.length>1&&h("path",{key:"l2",d:tp2(draw),fill:"none",stroke:"#7C3AED",strokeWidth:"2",strokeDasharray:"6,3"})
     ]:[
       draw.length>1&&h("path",{key:"fd",d:tp(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gd)"}),
-      draw.length>1&&h("path",{key:"ld",d:tp(draw),fill:"none",stroke:"#F59E0B",strokeWidth:"2",strokeDasharray:"6,3"})
+      draw.length>1&&h("path",{key:"ld",d:tp(draw),fill:"none",stroke:"#0081FB",strokeWidth:"2",strokeDasharray:"6,3"})
     ],
-    h("line",{x1:rx,y1:P.t,x2:rx,y2:P.t+ch,stroke:"#9CA3AF",strokeWidth:"1",strokeDasharray:"3,3"}),
-    h("text",{x:rx+3,y:P.t+9,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif"},"retire "+ra),
-    lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#EF4444",strokeWidth:"1.5",strokeDasharray:"4,3",opacity:".8"}),
-    lx&&h("text",{x:lx+3,y:P.t+9,fill:"#EF4444",fontSize:"8",fontFamily:"sans-serif"},"age "+le),
-    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>h("text",{key:yr,x:sx(yr),y:H-3,fill:"#9CA3AF",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr))
+    h("line",{x1:rx,y1:P.t,x2:rx,y2:P.t+ch,stroke:"#8A8D91",strokeWidth:"1",strokeDasharray:"3,3"}),
+    h("text",{x:rx+3,y:P.t+9,fill:"#8A8D91",fontSize:"8",fontFamily:"sans-serif"},"retire "+ra),
+    lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#C0392B",strokeWidth:"1.5",strokeDasharray:"4,3",opacity:".8"}),
+    lx&&h("text",{x:lx+3,y:P.t+9,fill:"#C0392B",fontSize:"8",fontFamily:"sans-serif"},"age "+le),
+    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>h("text",{key:yr,x:sx(yr),y:H-3,fill:"#8A8D91",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr))
   );
 }
+
 function LifeBar({ra,le,ro}){
   const end=Math.max(le+10,ro+4),rng=Math.max(1,end-ra);
   const lp=((le-ra)/rng)*100,rp=Math.min(100,((Math.min(ro,end)-ra)/rng)*100),ok=ro>=le;
   return h("div",{className:"lifebar"},
     h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:5}},
       h("span",{style:{fontSize:11,color:"var(--muted)"}},"Retire "+ra),
-      h("span",{style:{fontSize:11,fontWeight:600,color:ok?"var(--ok)":"var(--danger)"}},ok?"+"+( ro-le)+" yrs beyond life exp.":(le-ro)+" yr shortfall")
+      h("span",{style:{fontSize:11,fontWeight:700,color:ok?"var(--ok)":"var(--danger)"}},ok?"+"+( ro-le)+" yrs beyond life exp.":(le-ro)+" yr shortfall")
     ),
-    h("div",{style:{height:6,background:"var(--border)",borderRadius:3,position:"relative",overflow:"hidden"}},
+    h("div",{style:{height:6,background:"var(--subtle)",borderRadius:3,position:"relative",overflow:"hidden"}},
       h("div",{style:{position:"absolute",left:0,top:0,height:"100%",width:rp+"%",background:ok?"var(--ok)":"var(--danger)",borderRadius:3}}),
-      h("div",{style:{position:"absolute",top:0,left:lp+"%",width:2,height:"100%",background:"rgba(255,255,255,.5)"}})
+      h("div",{style:{position:"absolute",top:0,left:lp+"%",width:2,height:"100%",background:"rgba(255,255,255,.6)"}})
     ),
     h("div",{style:{position:"relative",height:14,marginTop:2}},
       h("div",{style:{position:"absolute",left:lp+"%",transform:"translateX(-50%)",fontSize:9,color:"var(--muted)",whiteSpace:"nowrap"}},"Life exp. age "+le)
@@ -505,68 +1114,97 @@ function LifeBar({ra,le,ro}){
 
 /* ── GOALS ── */
 const GOALS=[
-  {id:"house",icon:"🏠",label:"Buy a house",da:300000,dage:42},
+  {id:"house",icon:"🏠",label:"Buy a house",da:200000,dage:42},
   {id:"car",icon:"🚗",label:"Buy a car",da:30000,dage:40},
   {id:"edu",icon:"🎓",label:"Kids' education",da:50000,dage:45},
   {id:"wed",icon:"💒",label:"Wedding / event",da:25000,dage:38},
-  {id:"trip",icon:"✈️",label:"Dream trip",da:20000,dage:45},
-  {id:"other",icon:"⭐",label:"Other",da:40000,dage:43},
+  {id:"trip",icon:"✈️",label:"Dream trip",da:10000,dage:45},
+  {id:"other",icon:"⭐",label:"Other",da:20000,dage:43},
 ];
+/* Caps in DISPLAY units — no FX conversion needed */
 function getCaps(id,cur){
-  if(id==="house")return{max:cur==="MUR"?100000000:3000000,step:cur==="MUR"?100000:10000};
-  if(id==="edu")  return{max:cur==="MUR"?25000000:500000,  step:cur==="MUR"?100000:5000};
-  if(id==="trip") return{max:cur==="MUR"?1000000:50000,    step:cur==="MUR"?50000:500};
-  if(id==="car")  return{max:cur==="MUR"?15000000:300000,  step:cur==="MUR"?100000:5000};
-  if(id==="wed")  return{max:cur==="MUR"?2500000:100000,   step:cur==="MUR"?50000:2000};
-  if(id==="other")return{max:cur==="MUR"?5000000:150000,   step:cur==="MUR"?50000:2000};
-  return{max:cur==="MUR"?5000000:150000,step:cur==="MUR"?50000:2000};
+  if(cur==="MUR"){
+    if(id==="house")return{max:25000000,step:500000};
+    if(id==="edu")  return{max:25000000,step:100000};
+    if(id==="trip") return{max:1000000, step:50000};
+    if(id==="car")  return{max:5000000, step:100000};
+    if(id==="wed")  return{max:5000000, step:100000};
+    if(id==="other")return{max:5000000, step:100000};
+    return              {max:5000000,   step:100000};
+  }
+  /* USD */
+  if(id==="house")return{max:3000000,step:10000};
+  if(id==="edu")  return{max:500000, step:5000};
+  if(id==="trip") return{max:50000,  step:500};
+  if(id==="car")  return{max:300000, step:5000};
+  if(id==="wed")  return{max:100000, step:2000};
+  if(id==="other")return{max:150000, step:2000};
+  return              {max:150000,   step:2000};
 }
+
 function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
   const ageMin=Math.max(ba+1,18),ageMax=Math.min(le-1,99);
   return h("div",null,
-    h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}},
+    h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}},
       GOALS.map(gt=>{
         const active=goals.some(g=>g.id===gt.id);
-        return h("button",{key:gt.id,className:"goal-pill"+(active?" on":""),onClick:()=>active?onRemove(gt.id):onAdd(gt)},
-          h("span",{style:{fontSize:14}},gt.icon),h("span",null,gt.label));
+        return h("button",{key:gt.id,className:"goal-pill"+(active?" on":""),
+          onClick:()=>active?onRemove(gt.id):onAdd(gt)},
+          h("span",{style:{fontSize:16}},gt.icon),
+          h("span",null,gt.label)
+        );
       })
     ),
     goals.map(g=>{
       const isTrip=g.id==="trip",isHouse=g.id==="house";
-      const{max:maxDisp,step:stepDisp}=getCaps(g.id,cur);
-      const atAge=Math.max(ageMin,Math.min(g.atAge,ageMax));
-      return h("div",{key:g.id,style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.2)",borderRadius:10,padding:14,marginBottom:8}},
-        h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
-          h("span",{style:{fontSize:12,fontWeight:600,color:"var(--text)"}},g.icon+" "+g.label),
-          h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:17}},"×")
+      const{max:maxD,step:stepD}=getCaps(g.id,cur);
+      /* slider value in display units; store in base USD via toB */
+      const dispVal=cur==="MUR"?g.amount*FX:g.amount;
+      const minD=cur==="MUR"?stepD:Math.min(stepD,1000);
+      const atAge=Math.max(ageMin,Math.min(g.atAge||ageMin,ageMax));
+      return h("div",{key:g.id,style:{background:"var(--teal-lt)",border:"1px solid rgba(0,129,251,.2)",borderRadius:12,padding:14,marginBottom:8}},
+        h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+          h("span",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},g.icon+" "+g.label),
+          h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:18,lineHeight:1}},"×")
         ),
-        h(Slider,{label:isTrip?"Cost per trip":"Purchase price",value:frB(g.amount),min:1000,max:frB(maxDisp),step:frB(stepDisp),fmt:v=>disp(toB(v)),onChange:v=>onUpdate(g.id,"amount",toB(v)),color:"var(--gold)"}),
-        h(Slider,{label:isTrip?"First trip at age":"At age",value:atAge,min:ageMin,max:ageMax,step:1,fmt:v=>"Age "+v,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--warn)"}),
+        h(Slider,{
+          label:isTrip?"Cost per trip":"Purchase price",
+          value:dispVal,min:minD,max:maxD,step:stepD,
+          fmt:v=>sym+(v>=1e6?(v/1e6).toFixed(2)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString()),
+          onChange:v=>onUpdate(g.id,"amount",cur==="MUR"?v/FX:v),
+          color:"var(--teal)"
+        }),
+        h(Slider,{label:isTrip?"First trip at age":"At age",value:atAge,min:ageMin,max:ageMax,step:1,fmt:v=>"Age "+v,onChange:v=>onUpdate(g.id,"atAge",v),color:"var(--accent)"}),
         isHouse&&h("div",{style:{marginTop:4}},
-          h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,fmt:v=>v+"% (down payment: "+disp(toB(frB(g.amount)*(1-v/100)))+")",onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--accent)"}),
+          h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,
+            fmt:v=>{const dp=dispVal*(1-v/100);return v+"% (down payment: "+sym+(dp>=1e6?(dp/1e6).toFixed(2)+"M":dp>=1e3?(dp/1e3).toFixed(0)+"K":Math.round(dp).toLocaleString())+")";},
+            onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--teal)"}),
           (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:4}},
             h("div",null,h("div",{className:"field-lbl"},"Mortgage rate (% p.a.)"),h("input",{className:"mini-input",type:"number",min:0,max:20,step:0.1,value:g.mortgageRate||"",placeholder:"e.g. 5.5",onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(20,Math.max(0,parseFloat(e.target.value)||0)))})),
             h("div",null,h("div",{className:"field-lbl"},"Term (years)"),h("input",{className:"mini-input",type:"number",min:1,max:30,step:1,value:g.mortgageTerm||"",placeholder:"e.g. 20",onChange:e=>onUpdate(g.id,"mortgageTerm",Math.min(30,Math.max(1,parseInt(e.target.value)||20)))}))
           ),
-          (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&(function(){
-            const principal=g.amount*(g.mortgagePct/100),dbt=debtCalc(principal,g.mortgageRate,g.mortgageTerm*12);
+          (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&function(){
+            const principal=(cur==="MUR"?g.amount*FX:g.amount)*(g.mortgagePct/100);
+            const dbt=debtCalc(cur==="MUR"?principal/FX:principal,g.mortgageRate,g.mortgageTerm*12);
+            const mo=cur==="MUR"?dbt.monthlyPmt*FX:dbt.monthlyPmt;
+            const interest=cur==="MUR"?dbt.totalInterest*FX:dbt.totalInterest;
             return h("div",{style:{display:"flex",gap:14,fontSize:11,color:"var(--muted)",marginTop:4,flexWrap:"wrap"}},
-              h("span",null,"Loan: ",h("b",{style:{color:"var(--accent)"}},disp(principal))),
-              h("span",null,"Monthly: ",h("b",{style:{color:"var(--danger)"}},sym+Math.round(frB(dbt.monthlyPmt)).toLocaleString()+"/mo")),
-              h("span",null,"Interest: ",h("b",{style:{color:"var(--warn)"}},disp(dbt.totalInterest)))
+              h("span",null,"Loan: ",h("b",{style:{color:"var(--accent)"}},sym+(principal>=1e6?(principal/1e6).toFixed(2)+"M":principal>=1e3?(principal/1e3).toFixed(0)+"K":Math.round(principal).toLocaleString()))),
+              h("span",null,"Monthly: ",h("b",{style:{color:"var(--teal)"}},sym+Math.round(mo).toLocaleString()+"/mo")),
+              h("span",null,"Interest: ",h("b",{style:{color:"var(--warn)"}},sym+(interest>=1e6?(interest/1e6).toFixed(2)+"M":interest>=1e3?(interest/1e3).toFixed(0)+"K":Math.round(interest).toLocaleString())))
             );
-          })()
+          }()
         ),
-        isTrip&&h("div",{style:{marginTop:6}},
+        isTrip&&h("div",{style:{marginTop:8}},
           h("div",{className:"field-lbl",style:{marginBottom:6}},"Frequency"),
           h("div",{style:{display:"flex",gap:6}},
             [{v:0,l:"Once"},{v:2,l:"Every 2 yrs"},{v:3,l:"Every 3 yrs"},{v:5,l:"Every 5 yrs"}].map(opt=>
               h("button",{key:opt.v,onClick:()=>onUpdate(g.id,"recurYears",opt.v),
-                style:{flex:1,padding:"5px 2px",borderRadius:6,
-                  border:"1px solid "+((g.recurYears||0)===opt.v?"var(--gold)":"var(--border)"),
-                  background:(g.recurYears||0)===opt.v?"var(--gold-lt)":"transparent",
-                  color:(g.recurYears||0)===opt.v?"var(--gold)":"var(--muted)",
-                  fontSize:10,fontWeight:500,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}},opt.l)
+                style:{flex:1,padding:"6px 2px",borderRadius:20,
+                  border:"1.5px solid "+((g.recurYears||0)===opt.v?"var(--teal)":"var(--border)"),
+                  background:(g.recurYears||0)===opt.v?"var(--teal-lt)":"transparent",
+                  color:(g.recurYears||0)===opt.v?"var(--teal)":"var(--muted)",
+                  fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}},opt.l)
             )
           )
         )
@@ -580,35 +1218,35 @@ function IncomeMode({mode,onChange,ms,ca,onCA,result,disp,toB,frB,cur,sym,isHH})
   const p4=result?result.wd/12:0,ytr=result?result.ytr:0;
   const ispMo=ms*Math.pow(1.025,ytr),pct=ispMo>0?Math.round(p4/ispMo*100):0;
   const pctColor=pct>=100?"var(--ok)":pct>=70?"var(--warn)":"var(--danger)";
-  const minC=cur==="MUR"?5000:100,maxC=cur==="MUR"?2500000:50000,stepC=cur==="MUR"?5000:100;
+  const minC=cur==="MUR"?5000:100,maxC=cur==="MUR"?250000:50000,stepC=cur==="MUR"?10000:100;
   const modes=[
     {k:"rule4",icon:"📐",label:"4% Rule",sub:"Let pot decide",ac:"var(--accent)",ab:"var(--accent-lt)"},
-    {k:"expenses",icon:"🏠",label:"Same lifestyle",sub:"Match today",ac:"var(--gold)",ab:"var(--gold-lt)"},
+    {k:"expenses",icon:"🏠",label:"Same lifestyle",sub:"Match today",ac:"var(--teal)",ab:"var(--teal-lt)"},
     {k:"custom",icon:"🎯",label:"My target",sub:"Set a number",ac:"var(--p2)",ab:"var(--p2-lt)"},
   ];
   return h("div",null,
-    h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:12,lineHeight:1.6}},"How much monthly income "+(isHH?"do you both":"do you")+" want in retirement?"),
+    h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:12,lineHeight:1.6}},"How much monthly income "+(isHH?"do you both":"do you")+" want in retirement?"),
     h("div",{className:"imode-wrap"},
       modes.map(function(m){
         const on=mode===m.k;
         return h("button",{key:m.k,className:"imode-btn"+(on?" on":""),style:{borderColor:on?m.ac:"var(--border)",background:on?m.ab:"transparent",color:on?m.ac:"var(--muted)"},onClick:()=>onChange(m.k)},
-          h("div",{style:{fontSize:16,marginBottom:3}},m.icon),
-          h("div",{style:{fontWeight:600}},m.label),
+          h("div",{style:{fontSize:18,marginBottom:3}},m.icon),
+          h("div",{style:{fontWeight:700,fontSize:12}},m.label),
           h("div",{style:{fontSize:10,opacity:.7,marginTop:1}},m.sub),
-          on&&m.k==="rule4"&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},"≈"+disp(p4)+"/mo"),
-          on&&m.k==="expenses"&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},disp(ms)+"/mo"),
-          on&&m.k==="custom"&&ca>0&&h("div",{style:{fontSize:11,fontWeight:700,marginTop:3}},disp(ca)+"/mo")
+          on&&m.k==="rule4"&&h("div",{style:{fontSize:12,fontWeight:700,marginTop:3}},disp(p4)+"/mo"),
+          on&&m.k==="expenses"&&h("div",{style:{fontSize:12,fontWeight:700,marginTop:3}},disp(ms)+"/mo"),
+          on&&m.k==="custom"&&ca>0&&h("div",{style:{fontSize:12,fontWeight:700,marginTop:3}},disp(ca)+"/mo")
         );
       })
     ),
-    mode==="rule4"&&h("div",{className:"callout",style:{background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.18)"}},
+    mode==="rule4"&&h("div",{className:"callout",style:{background:"var(--accent-lt)",border:"1px solid rgba(24,119,242,.2)"}},
       h("b",{style:{color:"var(--accent)"}},"4% rule: "),"Withdrawing 4% annually = ",h("b",{style:{color:"var(--accent)"}},disp(p4)+"/mo"),
       ms>0&&[" — covering ",h("b",{key:"p",style:{color:pctColor}},pct+"%")," of inflation-adjusted monthly expenses."]
     ),
-    mode==="expenses"&&h("div",{className:"callout",style:{background:"var(--gold-lt)",border:"1px solid rgba(245,158,11,.18)"}},
-      h("b",{style:{color:"var(--gold)"}},"Same lifestyle: "),"Target ",h("b",{style:{color:"var(--gold)"}},disp(ms)+"/mo")," today, adjusted 2.5%/yr for "+ytr+" years."
+    mode==="expenses"&&h("div",{className:"callout",style:{background:"var(--teal-lt)",border:"1px solid rgba(0,129,251,.2)"}},
+      h("b",{style:{color:"var(--teal)"}},"Same lifestyle: "),"Target ",h("b",{style:{color:"var(--teal)"}},disp(ms)+"/mo")," today, adjusted 2.5%/yr for "+ytr+" years."
     ),
-    mode==="custom"&&h("div",{className:"callout",style:{background:"var(--p2-lt)",border:"1px solid rgba(167,139,250,.18)"}},
+    mode==="custom"&&h("div",{className:"callout",style:{background:"var(--p2-lt)",border:"1px solid rgba(124,58,237,.18)"}},
       h("b",{style:{color:"var(--p2)"}},"Your target:"),
       h("div",{style:{marginTop:8}},h(Slider,{label:"Monthly retirement income",value:frB(ca||ms),min:minC,max:maxC,step:stepC,fmt:v=>sym+(v>=1e6?(v/1e6).toFixed(2)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo",onChange:v=>onCA(toB(v)),color:"var(--p2)"}))
     )
@@ -620,8 +1258,8 @@ function Ring({score,color}){
   const r=22,circ=2*Math.PI*r,dash=circ*(Math.min(100,Math.max(0,score))/100);
   return h("div",{style:{position:"relative",width:56,height:56,flexShrink:0}},
     h("svg",{width:56,height:56,viewBox:"0 0 56 56",style:{transform:"rotate(-90deg)"}},
-      h("circle",{cx:28,cy:28,r,fill:"none",stroke:"var(--border)",strokeWidth:4}),
-      h("circle",{cx:28,cy:28,r,fill:"none",stroke:color,strokeWidth:4,strokeDasharray:dash+" "+(circ-dash),strokeLinecap:"round"})
+      h("circle",{cx:28,cy:28,r,fill:"none",stroke:"var(--subtle)",strokeWidth:5}),
+      h("circle",{cx:28,cy:28,r,fill:"none",stroke:color,strokeWidth:5,strokeDasharray:dash+" "+(circ-dash),strokeLinecap:"round"})
     ),
     h("div",{style:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color}},score)
   );
@@ -631,49 +1269,148 @@ function Ring({score,color}){
 function Modal({result,onClose,disp,base,partner,hh,frB,sym,cur}){
   const[name,setName]=useState(""),[ email,setEmail]=useState(""),[phone,setPhone]=useState("");
   const[saveCRM,setSaveCRM]=useState(false),[done,setDone]=useState(false),[loading,setLoading]=useState(false),[pdfError,setPdfError]=useState(false);
-  const ok=result.lasts,hl=hlabel(result.health),valid=name.trim()&&email.trim();
+  const[errors,setErrors]=useState({});
+  const ok=result.lasts,hl=hlabel(result.health);
+
+  function validateEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());}
+  function validatePhone(v){if(!v.trim())return true;return /^[+]?[\d\s\-().]{7,20}$/.test(v.trim());}
+
+  function validate(){
+    const e={};
+    if(!name.trim())e.name="Name is required.";
+    if(!email.trim())e.email="Email is required.";
+    else if(!validateEmail(email))e.email="Please enter a valid email address.";
+    if(phone.trim()&&!validatePhone(phone))e.phone="Please enter a valid phone number.";
+    setErrors(e);
+    return Object.keys(e).length===0;
+  }
+
+  const valid=name.trim()&&validateEmail(email)&&validatePhone(phone);
+
   const submit=async function(){
-    if(!valid)return;setLoading(true);
+    if(!validate())return;
+    setLoading(true);
     const info={name,email,phone};
-    const pdfOk=generatePDF(info,result,base,partner,hh,disp,sym,frB,cur);
-    if(!pdfOk)setPdfError(true);
+    /* Build the report HTML once — used for the pop-up and CRM storage */
+    const reportHTML=buildReportHTML(info,result,base,partner,hh,disp,sym,frB,cur);
+    const reportOk=!!(reportHTML&&(()=>{
+      try{const w=window.open("","_blank","width=900,height=700,scrollbars=yes");if(!w)return false;w.document.write(reportHTML);w.document.close();return true;}catch(e){return false;}
+    })());
+    if(!reportOk)setPdfError(true);
     if(saveCRM){
-      try{await window.storage.set("lead:"+Date.now(),JSON.stringify({name,email,phone,health:result.health,sp:result.sp,pot:disp(result.retP),monthlyIncome:disp(result.wd/12),verdict:result.lasts?"On track":"Needs action",retireAge:base.retireAge,age:base.age,savingsRate:base.savingsRate,cur,hhMode:hh,goals:(base.lifeGoals||[]).map(g=>g.label),ts:new Date().toISOString()}));}catch(e){}
+      try{
+        const ts=Date.now();
+        const leadPayload={
+          /* Contact */
+          name,email,phone,
+          /* Plan summary */
+          health:result.health,
+          sp:result.sp,
+          pot:disp(result.retP),
+          potRaw:result.retP,
+          monthlyIncome:disp(result.wd/12),
+          monthlyIncomeRaw:result.wd/12,
+          verdict:result.lasts?"On track":"Needs action",
+          lasts:result.lasts,
+          fundsToAge:result.lasts?result.le:result.ro,
+          surplusYears:result.sur,
+          coverageMultiple:result.cm,
+          /* Personal */
+          age:base.age,
+          gender:base.gender,
+          retireAge:base.retireAge,
+          lifeExpectancy:result.le,
+          savingsRate:base.savingsRate,
+          income:disp(base.income),
+          monthlySpend:disp(base.monthlySpend),
+          savings:disp(base.savings),
+          debtBalance:base.debtBalance>0?disp(base.debtBalance):null,
+          incomeMode:base.incomeMode||"rule4",
+          /* Scenario */
+          scenarioSelected:window.__sf||"likely",
+          scenarioRate:window.__sf==="best"?"6%":window.__sf==="tough"?"4%":"5%",
+          /* Goals — full detail */
+          goals:(base.lifeGoals||[]).map(g=>g.label||g.id),
+          goalsDetail:(base.lifeGoals||[]).map(g=>({
+            id:g.id,label:g.label,icon:g.icon,
+            amount:disp(g.amount),atAge:g.atAge,
+            recurYears:g.recurYears||0,
+            mortgagePct:g.mortgagePct||0,
+            mortgageRate:g.mortgageRate||0,
+            mortgageTerm:g.mortgageTerm||0
+          })),
+          /* HH */
+          hhMode:hh,
+          partnerAge:hh?partner.age:null,
+          partnerGender:hh?partner.gender:null,
+          partnerRetireAge:hh?partner.retireAge:null,
+          partnerSavingsRate:hh?partner.savingsRate:null,
+          partnerIncome:hh?disp(partner.income):null,
+          partnerSavings:hh?disp(partner.savings):null,
+          p1Pot:hh&&result.p1P!=null?disp(result.p1P):null,
+          p2Pot:hh&&result.p2P!=null?disp(result.p2P):null,
+          /* Stress scenarios */
+          potWorstCase:disp(Math.round(result.retP*0.85)),
+          potBestCase:disp(Math.round(result.retP*1.16)),
+          /* Currency & report reference */
+          cur,
+          reportKey:"report:"+ts,
+          ts:new Date().toISOString()
+        };
+        await window.storage.set("lead:"+ts,JSON.stringify(leadPayload));
+        if(reportHTML)await window.storage.set("report:"+ts,reportHTML);
+      }catch(e){}
     }
     setLoading(false);setDone(true);
   };
+
   if(done)return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation(),style:{textAlign:"center"}},
-      h("div",{style:{fontSize:40,marginBottom:14}},pdfError?"⚠️":"✅"),
-      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:8,color:"var(--text)"}},pdfError?"Something went wrong":"Your plan is ready!"),
-      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:10}},pdfError?"PDF could not be generated. Please try again.":"Your retirement plan PDF has been downloaded."),
+      h("div",{style:{fontSize:44,marginBottom:14}},pdfError?"⚠️":"✅"),
+      h("div",{style:{fontSize:18,fontWeight:700,marginBottom:8}},pdfError?"Something went wrong":"Your report is ready!"),
+      h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.7,marginBottom:10}},pdfError?"Report could not be opened. Please allow pop-ups and try again.":"Your retirement report has opened in a new tab — use your browser's Print to save as PDF."),
       !pdfError&&saveCRM&&h("p",{style:{fontSize:12,color:"var(--ok)",marginBottom:16}},"✓ Your details have been saved. A consultant may reach out."),
       !pdfError&&!saveCRM&&h("p",{style:{fontSize:12,color:"var(--muted)",marginBottom:16}},"Your privacy is protected — no details stored."),
       h("button",{className:"cta",onClick:onClose},"Close")
     )
   );
+
+  const fieldStyle=(hasErr)=>({...{},border:"1.5px solid "+(hasErr?"var(--danger)":"var(--border)")});
+  const errMsg=(msg)=>h("div",{style:{fontSize:11,color:"var(--danger)",marginTop:3,fontWeight:500}},msg);
+
   return h("div",{className:"modal-ov",onClick:onClose},
     h("div",{className:"modal-box",onClick:e=>e.stopPropagation()},
-      h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:20,cursor:"pointer"}},"×"),
-      h("div",{style:{fontSize:18,fontWeight:600,marginBottom:4,color:"var(--text)"}},"Download your plan"),
-      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Fill in your details to generate your personalised PDF retirement plan."),
-      h("div",{style:{background:ok?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(ok?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),borderRadius:10,padding:"10px 14px",marginBottom:18,fontSize:12,color:"var(--muted)",lineHeight:1.6}},
+      h("button",{onClick:onClose,style:{position:"absolute",top:14,right:16,background:"none",border:"none",color:"var(--muted)",fontSize:22,cursor:"pointer"}},"×"),
+      h("div",{style:{fontSize:18,fontWeight:700,marginBottom:4}},"Generate your report"),
+      h("p",{style:{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.6}},"Fill in your details to generate your personalised retirement report. It will open in a new tab — use Print to save as PDF."),
+      h("div",{style:{background:ok?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(ok?"rgba(45,138,78,.2)":"rgba(192,57,43,.2)"),borderRadius:10,padding:"10px 14px",marginBottom:18,fontSize:12,color:"var(--muted)",lineHeight:1.6}},
         h("b",{style:{color:ok?"var(--ok)":"var(--danger)"}},ok?"✓ On track":"⚠ Action needed")," · Health: ",h("b",{style:{color:hl.c}},result.health+"/100 · "+hl.l)," · Monthly income: ",h("b",{style:{color:"var(--text)"}},disp(result.wd/12)+"/mo")
       ),
-      h("div",{style:{display:"flex",flexDirection:"column",gap:10,marginBottom:16}},
-        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Full name *"),h("input",{type:"text",value:name,onChange:e=>setName(e.target.value),placeholder:"Your name",className:"modal-input"})),
-        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Email address *"),h("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"you@example.com",className:"modal-input"})),
-        h("div",null,h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:4,fontWeight:500}},"Phone (optional)"),h("input",{type:"tel",value:phone,onChange:e=>setPhone(e.target.value),placeholder:"+230 5XXX XXXX",className:"modal-input"}))
-      ),
-      h("label",{style:{display:"flex",alignItems:"flex-start",gap:10,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(59,130,246,.2)",borderRadius:10,marginBottom:16,cursor:"pointer"}},
-        h("input",{type:"checkbox",checked:saveCRM,onChange:e=>setSaveCRM(e.target.checked),style:{marginTop:2,accentColor:"var(--accent)",width:16,height:16,flexShrink:0,cursor:"pointer"}}),
+      h("div",{style:{display:"flex",flexDirection:"column",gap:12,marginBottom:16}},
         h("div",null,
-          h("div",{style:{fontSize:12,fontWeight:600,color:"var(--accent)",marginBottom:2}},"Save my plan & get consultant support"),
-          h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.55}},"Tick this to store your details securely. An ARK consultant will reach out to help you execute your plan.")
+          h("div",{className:"field-lbl"},"Full name *"),
+          h("input",{type:"text",value:name,onChange:e=>{setName(e.target.value);if(errors.name)setErrors(p=>({...p,name:""}));},placeholder:"Your name",className:"modal-input",style:fieldStyle(errors.name)}),
+          errors.name&&errMsg(errors.name)
+        ),
+        h("div",null,
+          h("div",{className:"field-lbl"},"Email address *"),
+          h("input",{type:"email",value:email,onChange:e=>{setEmail(e.target.value);if(errors.email)setErrors(p=>({...p,email:""}));},placeholder:"you@example.com",className:"modal-input",style:fieldStyle(errors.email)}),
+          errors.email&&errMsg(errors.email),
+          !errors.email&&email&&!validateEmail(email)&&errMsg("Please enter a valid email address.")
+        ),
+        h("div",null,
+          h("div",{className:"field-lbl"},"Phone (optional)"),
+          h("input",{type:"tel",value:phone,onChange:e=>{setPhone(e.target.value);if(errors.phone)setErrors(p=>({...p,phone:""}));},placeholder:"+230 5XXX XXXX",className:"modal-input",style:fieldStyle(errors.phone)}),
+          errors.phone&&errMsg(errors.phone),
+          !errors.phone&&phone&&!validatePhone(phone)&&errMsg("Please enter a valid phone number (7–20 digits).")
         )
       ),
+      h("label",{style:{display:"flex",alignItems:"flex-start",gap:10,padding:"12px 14px",background:"var(--accent-lt)",border:"1px solid rgba(24,119,242,.2)",borderRadius:10,marginBottom:14,cursor:"pointer"}},
+        h("input",{type:"checkbox",checked:saveCRM,onChange:e=>setSaveCRM(e.target.checked),style:{marginTop:2,accentColor:"var(--accent)",width:16,height:16,flexShrink:0,cursor:"pointer"}}),
+        h("div",null,h("div",{style:{fontSize:13,fontWeight:700,color:"var(--accent)",marginBottom:2}},"Save my plan & get consultant support"),h("div",{style:{fontSize:12,color:"var(--muted)",lineHeight:1.55}},"Tick to store your details securely. An ARK consultant will reach out."))
+      ),
       h("p",{style:{fontSize:11,color:"var(--hint)",marginBottom:14}},"* Name and email required."+(saveCRM?" Your details will be saved to our CRM.":" Your details will not be stored.")),
-      h("button",{className:"cta",onClick:submit,disabled:!valid||loading,style:{opacity:!valid||loading?.5:1}},loading?"Generating your plan…":"Download my plan →")
+      h("button",{className:"cta",onClick:submit,disabled:loading,style:{opacity:loading?.6:1}},loading?"Building your report…":"View my report →")
     )
   );
 }
@@ -685,20 +1422,27 @@ function Hero({onStart,dark,setDark}){
     h("div",{className:"hero-badge"},h("div",{className:"hero-dot"}),"Free · No signup"),
     h("h1",{className:"hero-title"},"Ever wondered if your money",h("br"),h("span",{style:{color:"var(--accent)"}},"will be enough")," to live",h("br"),"all your dreams?"),
     h("p",{className:"hero-sub"},
-      "Most people have ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"no idea"),".",h("br"),h("br"),
-      "They're relying on ",h("span",{style:{fontWeight:600,color:"var(--danger)"}},"hope"),".",h("br"),h("br"),
-      "At ",h("span",{style:{fontWeight:600,color:"var(--text)"}},"Ark Financial Planners"),", we bring ",h("span",{style:{fontWeight:600,color:"var(--ok)"}},"clarity"),"."
+      "Most people have ",h("span",{style:{fontWeight:700,color:"var(--text)"}},"no idea"),".",h("br"),h("br"),
+      "They're relying on ",h("span",{style:{fontWeight:700,color:"var(--danger)"}},"hope"),".",h("br"),h("br"),
+      "At ",h("span",{style:{fontWeight:700,color:"var(--text)"}},"Ark Financial Planners"),", we bring ",h("span",{style:{fontWeight:700,color:"var(--ok)"}},"clarity"),"."
     ),
     h("button",{className:"hero-cta",onClick:onStart},"Find out now →"),
     h("div",{className:"hero-feats"},
       [["🏠","Couples too","Plan together or solo"],["📐","Inflation-adjusted","Real purchasing power"],["🎯","Monthly clarity","Know your exact number"],["🔒","Private","Nothing stored without your permission"]].map(function(arr){
-        return h("div",{key:arr[1],className:"hero-feat"},h("div",{className:"hero-feat-icon"},arr[0]),h("div",{style:{fontSize:12,fontWeight:600,marginBottom:2,color:"var(--text)"}},arr[1]),h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.4}},arr[2]));
+        return h("div",{key:arr[1],className:"hero-feat"},
+          h("div",{className:"hero-feat-icon"},arr[0]),
+          h("div",{style:{fontSize:12,fontWeight:700,marginBottom:2,color:"var(--text)"}},arr[1]),
+          h("div",{style:{fontSize:11,color:"var(--muted)",lineHeight:1.4}},arr[2])
+        );
       })
     )
   );
 }
+
 function Tog({opts,val,onChange}){
-  return h("div",{className:"tog"},opts.map(function(o){return h("button",{key:o[0],className:"tog-btn"+(val===o[0]?" on":""),onClick:()=>onChange(o[0])},o[2]&&h("span",{style:{marginRight:4,fontSize:13}},o[2]),o[1]);}));
+  return h("div",{className:"tog"},opts.map(function(o){
+    return h("button",{key:o[0],className:"tog-btn"+(val===o[0]?" on":""),onClick:()=>onChange(o[0])},o[2]&&h("span",{style:{marginRight:4}},o[2]),o[1]);
+  }));
 }
 
 /* ── APP ── */
@@ -711,53 +1455,64 @@ function App(){
   const PDEF={age:33,gender:"male",income:6250,savings:30000,savingsRate:10,retireAge:65,debtBalance:0,debtRate:0,debtTerm:0};
   const[base,setBase]=useState(DEF),[partner,setPartner]=useState(PDEF),[st,setST]=useState(null);
   const sr={tough:0.04,likely:0.05,best:0.06}[sf]||0.05;
+  useEffect(()=>{window.__sf=sf;},[sf]);
   const res=useMemo(function(){return hh?hhProj(base,partner,sr):proj(base,sr);},[JSON.stringify(base),JSON.stringify(partner),hh,sr]);
   useEffect(function(){setST(hh?hhStress(base,partner):stressTest(base));},[JSON.stringify(base),JSON.stringify(partner),hh]);
   const sB=(k,v)=>setBase(p=>({...p,[k]:v}));
   const sP=(k,v)=>setPartner(p=>({...p,[k]:v}));
   const baseLE=base.gender==="male"?75:85,partnerLE=partner.gender==="male"?75:85;
   const goalLE=hh?Math.max(baseLE,partnerLE):baseLE,goalBA=hh?Math.min(base.age,partner.age):base.age;
-  const addG=function(gt){sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,amount:gt.da,atAge:Math.max(goalBA+1,Math.min(gt.dage,goalLE-1)),recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20}]);};
+  const addG=function(gt){
+    sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,
+      amount:cur==="MUR"?gt.da:gt.da,  /* da is in USD base; stored as USD */
+      atAge:Math.max(goalBA+1,Math.min(gt.dage,goalLE-1)),
+      recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20
+    }]);
+  };
   const remG=id=>sB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
   const updG=(id,k,v)=>sB("lifeGoals",(base.lifeGoals||[]).map(g=>g.id===id?{...g,[k]:v}:g));
   const hl=res?hlabel(res.health):{l:"",c:"var(--accent)"};
-  const minI=cur==="MUR"?0:150,maxI=cur==="MUR"?1000000:100000,stepI=cur==="MUR"?1000:500;
-  const minSp=cur==="MUR"?0:100,maxSp=cur==="MUR"?250000:25000,stepSp=cur==="MUR"?1000:100;
-  const maxSv=cur==="MUR"?25000000:10000000,stepSv=cur==="MUR"?1000:10000;
-  const maxDbDisp=cur==="MUR"?50000000:5000000,stepDbDisp=1000;
+
+  /* Slider params — all in DISPLAY units */
+  const minI=0,maxI=cur==="MUR"?1000000:100000,stepI=cur==="MUR"?1000:500;
+  const minSp=0,maxSp=cur==="MUR"?250000:25000,stepSp=cur==="MUR"?1000:100;
   const fmtI=v=>sym+(v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":Math.round(v).toLocaleString())+"/mo";
   const fmtS=v=>v===0?"None":fmtAmt(v,sym);
   const fmtSp=v=>v===0?"None":fmtAmt(v,sym)+"/mo";
+
   const SD=[
     {k:"tough",lbl:"Worst case",rate:"4%",c:"var(--danger)",pot:st?st.tP:0,mo:st?st.tM:0},
     {k:"likely",lbl:"Base case", rate:"5%",c:"var(--warn)", pot:st?st.lP:0,mo:st?st.lM:0},
     {k:"best",  lbl:"Best case", rate:"6%",c:"var(--ok)",   pot:st?st.bP:0,mo:st?st.bM:0},
   ];
-  const secL={fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:10};
-  const cardS={background:"var(--card)",border:"1px solid var(--border)",borderRadius:16,padding:20,marginBottom:12};
-  const ctaS={width:"100%",padding:14,borderRadius:8,background:"var(--accent)",border:"none",color:"#fff",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit"};
+  const secL={fontSize:12,fontWeight:600,color:"var(--muted)",letterSpacing:".02em",marginBottom:10};
+  const cardS={background:"var(--card)",border:"1px solid var(--border)",borderRadius:12,padding:20,marginBottom:12,boxShadow:"0 1px 2px rgba(0,0,0,.08)"};
+  const ctaS={width:"100%",padding:14,borderRadius:24,background:"var(--accent)",border:"none",color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .18s",letterSpacing:".01em"};
 
   function GChips({val,onChange,ac}){
-    return h("div",{style:{marginBottom:14}},
-      h("div",{style:secL},"Biological sex"),
+    return h("div",{style:{marginBottom:16}},
+      h("div",{style:{fontSize:12,fontWeight:600,color:"var(--muted)",marginBottom:8}},"Biological sex"),
       h("div",{className:"g-chips"},[["female","♀ Female"],["male","♂ Male"]].map(function(arr){
-        return h("button",{key:arr[0],className:"g-chip",style:{borderColor:val===arr[0]?ac:"var(--border)",background:val===arr[0]?ac+"22":"transparent",color:val===arr[0]?ac:"var(--muted)"},onClick:()=>onChange(arr[0])},arr[1]);
+        return h("button",{key:arr[0],className:"g-chip",
+          style:{borderColor:val===arr[0]?ac:"var(--border)",background:val===arr[0]?ac+"18":"transparent",color:val===arr[0]?ac:"var(--muted)",fontWeight:val===arr[0]?700:500},
+          onClick:()=>onChange(arr[0])},arr[1]);
       }))
     );
   }
+
   function PersonCard({card,setFn,col,label,sub,num}){
     return h("div",{className:"person-card "+(num===1?"p1":"p2")},
       h("div",{className:"person-hdr"},
-        h("div",{className:"avatar",style:{background:col+"22",color:col}},num),
-        h("div",null,h("div",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},label),h("div",{style:{fontSize:11,color:"var(--muted)"}},sub))
+        h("div",{className:"avatar",style:{background:col+"22",color:col,width:34,height:34,borderRadius:"50%"}},num),
+        h("div",null,h("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)"}},label),h("div",{style:{fontSize:11,color:"var(--muted)"}},sub))
       ),
-      h(Slider,{label:"Age",value:card.age,min:18,max:70,step:1,fmt:v=>v+" yrs",onChange:v=>setFn("age",v),color:col}),
-      h(GChips,{val:card.gender,onChange:g=>setFn("gender",g),ac:col}),
-      h(Slider,{label:"Income ("+cur+")",value:frB(card.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>setFn("income",toB(v)),color:col}),
-      h(Slider,{label:"Savings ("+cur+")",value:frB(card.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>setFn("savings",toB(v)),color:col}),
-      h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:col}),
-      h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,step:1,fmt:v=>"Age "+v,onChange:v=>setFn("retireAge",v),color:"var(--gold)"}),
-      h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||0,onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp})
+      h(Slider,{label:"Age",value:card.age,min:18,max:70,step:1,fmt:v=>v+" yrs",onChange:v=>setFn("age",v),color:"var(--accent)"}),
+      h(GChips,{val:card.gender,onChange:g=>setFn("gender",g),ac:"var(--accent)"}),
+      h(Slider,{label:"Income ("+cur+")",value:frB(card.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>setFn("income",toB(v)),color:"var(--accent)"}),
+      h(SteppedSlider,{label:"Savings ("+cur+")",hint:"cash + investments",valueBase:card.savings,cur,toB,frB,sym,color:"var(--accent)",includeZero:false,onChange:v=>setFn("savings",v)}),
+      h(SavSlider,{income:card.income,sr:card.savingsRate,onChange:v=>setFn("savingsRate",v),disp,color:"var(--accent)"}),
+      h(Slider,{label:"Retire age",value:card.retireAge,min:Math.max(card.age+2,40),max:80,step:1,fmt:v=>"Age "+v,onChange:v=>setFn("retireAge",v),color:"var(--accent)"}),
+      h(DebtSection,{db:card.debtBalance||0,dr:card.debtRate||0,dt:card.debtTerm||0,onDB:v=>setFn("debtBalance",v),onDR:v=>setFn("debtRate",v),onDT:v=>setFn("debtTerm",v),disp,frB,toB,cur,sym})
     );
   }
 
@@ -765,11 +1520,15 @@ function App(){
 
   return h("div",{style:{minHeight:"100vh",background:"var(--bg)"}},
     modal&&res&&h(Modal,{result:res,onClose:()=>setModal(false),disp,base,partner,hh,frB,sym,cur}),
+
     h("header",{className:"hdr"},
       h("div",{className:"wrap hdr-inner"},
         h("button",{className:"logo-btn",onClick:()=>setHero(true)},
           h("div",{className:"logo-mark"},"A"),
-          h("div",null,h("div",{style:{fontSize:14,fontWeight:600,letterSpacing:"-.3px"}},"ARK Financial Planners"))
+          h("div",null,
+            h("div",{style:{fontSize:15,fontWeight:700,color:"var(--text)"}},"ARK Financial Planners"),
+            h("div",{style:{fontSize:10,color:"var(--muted)"}})
+          )
         ),
         h("div",{className:"hdr-right"},
           h(Tog,{opts:[["USD","USD $"],["MUR","MUR ₨"]],val:cur,onChange:setCur}),
@@ -778,25 +1537,28 @@ function App(){
         )
       )
     ),
+
     h("nav",{className:"bnav"},[["plan","Plan","M4 6h16M4 12h16M4 18h16"],["results","Results","M22 12h-4l-3 9L9 3l-3 9H2"]].map(function(arr){
       return h("button",{key:arr[0],className:"bnav-btn"+(tab===arr[0]?" on":""),onClick:()=>setTab(arr[0])},
         h("svg",{className:"bnav-icon",viewBox:"0 0 24 24"},h("path",{d:arr[2]})),h("span",null,arr[1]));
     })),
-    h("div",{className:"wrap",style:{paddingTop:24,paddingBottom:48}},
+
+    h("div",{className:"wrap",style:{paddingTop:20,paddingBottom:48}},
 
       /* ── PLAN TAB ── */
       tab==="plan"&&h("div",{className:"fade"},
-        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16,color:"var(--text)"}},hh?"Your household plan":"Where do you stand?"),
+        h("h2",{style:{fontSize:22,fontWeight:700,letterSpacing:"-.3px",marginBottom:16,color:"var(--text)"}},hh?"Your household plan":"Where do you stand?"),
         h("div",{style:{marginBottom:16}},
           h("div",{style:secL},"Planning for"),
           h("div",{className:"mode-tog"},[["solo","👤 Just me",false],["hh","👫 Me & partner",true]].map(function(arr){
             return h("button",{key:arr[0],className:"mode-btn"+(hh===arr[2]?" on":""),onClick:()=>setHH(arr[2])},arr[1]);
           })),
-          hh&&h("div",{style:{fontSize:12,color:"var(--muted)",padding:"8px 12px",background:"var(--accent-lt)",borderRadius:8,border:"1px solid rgba(59,130,246,.15)",marginBottom:8}},"Shared expenses & goals entered once. Each partner has their own income, savings, debt & target date.")
+          hh&&h("div",{style:{fontSize:12,color:"var(--muted)",padding:"8px 12px",background:"var(--accent-lt)",borderRadius:10,border:"1px solid rgba(24,119,242,.15)",marginBottom:8}},"Shared expenses & goals entered once. Each partner has their own income, savings, debt & target date.")
         ),
+
         hh&&h("div",{style:cardS},
           h("div",{style:secL},"Shared household finances"),
-          h(Slider,{label:"Monthly expenses ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)"}),
+          h(Slider,{label:"Monthly expenses ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--teal)"}),
           h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:14,marginTop:4}},
             h("button",{className:"goals-tog"+((base.lifeGoals||[]).length>0?" has":""),onClick:()=>setGoalsOpen(p=>!p)},
               h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" shared life goal"+((base.lifeGoals||[]).length>1?"s":"")+" — tap to edit":"+ Add shared life goals"),
@@ -805,6 +1567,7 @@ function App(){
             goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
           )
         ),
+
         hh?h("div",null,
           h("div",{style:secL},"Individual finances"),
           h("div",{className:"person-pair"},
@@ -814,19 +1577,23 @@ function App(){
           res&&res.p1P!=null&&h("div",{className:"hh-snap"},
             h("div",{style:{...secL,marginBottom:8}},"Projected pots"),
             h("div",{className:"hh-snap-row"},[["Your pot ("+base.retireAge+")",res.p1P,"var(--accent)"],["Partner ("+partner.retireAge+")",res.p2P,"var(--p2)"],["Combined",res.retP,"var(--ok)"]].map(function(arr){
-              return h("div",{key:arr[0],className:"hh-snap-item"},h("div",{style:{fontSize:9,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".06em",marginBottom:2}},arr[0]),h("div",{style:{fontSize:14,fontWeight:600,color:arr[2]}},disp(arr[1],true)));
+              return h("div",{key:arr[0],className:"hh-snap-item"},
+                h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:2}},arr[0]),
+                h("div",{style:{fontSize:15,fontWeight:700,color:arr[2]}},disp(arr[1],true))
+              );
             }))
           )
         ):h("div",{style:cardS},
           h(Slider,{label:"Your age",value:base.age,min:18,max:70,step:1,fmt:v=>v+" years",onChange:v=>sB("age",v),color:"var(--accent)"}),
           h(GChips,{val:base.gender,onChange:g=>sB("gender",g),ac:"var(--accent)"}),
           h(Slider,{label:"Monthly income ("+cur+")",value:frB(base.income),min:minI,max:maxI,step:stepI,fmt:fmtI,onChange:v=>sB("income",toB(v)),color:"var(--accent)",hint:"gross"}),
-          h(Slider,{label:"Monthly spending ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--warn)",hint:"all living costs"}),
-          h(Slider,{label:"Savings to date ("+cur+")",value:frB(base.savings),min:0,max:maxSv,step:stepSv,fmt:fmtS,onChange:v=>sB("savings",toB(v)),color:"var(--accent)",hint:"cash + investments"}),
+          h(Slider,{label:"Monthly spending ("+cur+")",value:frB(base.monthlySpend),min:minSp,max:maxSp,step:stepSp,fmt:fmtSp,onChange:v=>sB("monthlySpend",toB(v)),color:"var(--teal)",hint:"all living costs"}),
+          h(SteppedSlider,{label:"Savings to date ("+cur+")",hint:"cash + investments",valueBase:base.savings,cur,toB,frB,sym,color:"var(--accent)",includeZero:false,onChange:v=>sB("savings",v)}),
           h(SavSlider,{income:base.income,sr:base.savingsRate,onChange:v=>sB("savingsRate",v),disp}),
-          h(Slider,{label:"Target retirement age",value:base.retireAge,min:Math.max(base.age+2,40),max:80,step:1,fmt:v=>"Age "+v+" · "+(v-base.age)+" yrs away",onChange:v=>sB("retireAge",v),color:"var(--gold)"}),
-          h(DebtSection,{db:base.debtBalance||0,dr:base.debtRate||0,dt:base.debtTerm||0,onDB:v=>sB("debtBalance",v),onDR:v=>sB("debtRate",v),onDT:v=>sB("debtTerm",v),disp,frB,toB,cur,sym,maxDbDisp,stepDbDisp})
+          h(Slider,{label:"Target retirement age",value:base.retireAge,min:Math.max(base.age+2,40),max:80,step:1,fmt:v=>"Age "+v+" · "+(v-base.age)+" yrs away",onChange:v=>sB("retireAge",v),color:"var(--accent)"}),
+          h(DebtSection,{db:base.debtBalance||0,dr:base.debtRate||0,dt:base.debtTerm||0,onDB:v=>sB("debtBalance",v),onDR:v=>sB("debtRate",v),onDT:v=>sB("debtTerm",v),disp,frB,toB,cur,sym})
         ),
+
         !hh&&h("div",{style:{marginBottom:12}},
           h("button",{className:"goals-tog"+((base.lifeGoals||[]).length>0?" has":""),onClick:()=>setGoalsOpen(p=>!p)},
             h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" life goal"+((base.lifeGoals||[]).length>1?"s":"")+" added":"+ Add life goals (house, car, trips…)"),
@@ -834,87 +1601,99 @@ function App(){
           ),
           goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
         ),
-        res&&h("div",{className:"teaser",onClick:()=>setTab("results")},
+
+        res&&h("div",{className:"teaser",onClick:()=>{setTab("results");setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),50);}},
           h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:10}},
-            h("span",{style:{fontSize:11,fontWeight:600,color:"var(--accent)",textTransform:"uppercase",letterSpacing:".07em"}},"Your snapshot"),
-            h("span",{style:{fontSize:11,color:"var(--accent)"}},"Full results →")
+            h("span",{style:{fontSize:12,fontWeight:700,color:"var(--accent)"}},"Your snapshot"),
+            h("span",{style:{fontSize:12,color:"var(--accent)"}},"Full results →")
           ),
           h("div",{style:{display:"flex",alignItems:"center",gap:14}},
             h(Ring,{score:res.health,color:hl.c}),
             h("div",null,
-              h("div",{style:{fontSize:13,fontWeight:600,color:hl.c,marginBottom:2}},hl.l+" — health score "+res.health+"/100"),
-              h("div",{style:{fontSize:11,color:"var(--muted)"}},"Showing "+(sf==="best"?"best case 6%":sf==="tough"?"worst case 4%":"base case 5%")+" · adjust on Results page")
+              h("div",{style:{fontSize:13,fontWeight:700,color:hl.c,marginBottom:2}},hl.l+" — health score "+res.health+"/100"),
+              h("div",{style:{fontSize:12,color:"var(--muted)"}},"Showing "+(sf==="best"?"best case 6%":sf==="tough"?"worst case 4%":"base case 5%")+" · adjust on Results page")
             )
           )
         ),
-        h("button",{style:ctaS,onClick:()=>setTab("results")},hh?"Show me our reality →":"Show me my reality →")
+        h("button",{style:ctaS,onClick:()=>{setTab("results");setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),50);}},hh?"Show me our reality →":"Show me my reality →")
       ),
 
       /* ── RESULTS TAB ── */
       tab==="results"&&res&&h("div",{className:"fade"},
-        h("h2",{style:{fontSize:22,fontWeight:600,letterSpacing:"-.4px",marginBottom:16,color:"var(--text)"}},hh?"Household results":"Your results"),
+        h("h2",{style:{fontSize:22,fontWeight:700,letterSpacing:"-.3px",marginBottom:16,color:"var(--text)"}},hh?"Household results":"Your results"),
+
         h("div",{style:cardS},h(IncomeMode,{mode:base.incomeMode||"rule4",onChange:m=>sB("incomeMode",m),ms:base.monthlySpend,ca:base.retireMonthlyExpenses||0,onCA:v=>sB("retireMonthlyExpenses",v),result:res,disp,toB,frB,cur,sym,isHH:hh})),
+
         st&&h("div",{style:{marginBottom:14}},
           h("div",{style:secL},"Return scenarios"),
           h("div",{className:"scen-grid"},SD.map(function(sc){
-            return h("button",{key:sc.k,className:"scen-btn",style:{borderColor:sf===sc.k?sc.c:"var(--border)",borderWidth:sf===sc.k?2:1,background:sf===sc.k?"var(--subtle)":"var(--card)"},onClick:()=>setSF(sc.k)},
-              h("div",{style:{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",color:sc.c,marginBottom:3}},sc.lbl),
-              h("div",{style:{fontSize:17,fontWeight:600,color:sc.c,letterSpacing:"-.4px",lineHeight:1.2,marginBottom:2}},disp(sc.pot,true)),
-              h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:6}},sc.rate+" return"),
+            return h("button",{key:sc.k,className:"scen-btn",
+              style:{borderColor:sf===sc.k?sc.c:"var(--border)",borderWidth:sf===sc.k?2:1,background:sf===sc.k?"var(--subtle)":"var(--card)"},
+              onClick:()=>setSF(sc.k)},
+              h("div",{style:{fontSize:11,fontWeight:700,color:sc.c,marginBottom:3}},sc.lbl),
+              h("div",{style:{fontSize:18,fontWeight:700,color:sc.c,letterSpacing:"-.4px",lineHeight:1.2,marginBottom:2}},disp(sc.pot,true)),
+              h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:6}},sc.rate+" return"),
               h("div",{style:{borderTop:"1px solid var(--border)",paddingTop:6}},
-                h("div",{style:{fontSize:13,fontWeight:600,color:"var(--muted)"}},disp(sc.mo)),
+                h("div",{style:{fontSize:14,fontWeight:700,color:"var(--muted)"}},disp(sc.mo)),
                 h("div",{style:{fontSize:10,color:"var(--muted)"}},"/mo at retirement")
               )
             );
           }))
         ),
-        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:res.lasts?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(res.lasts?"rgba(34,197,94,.2)":"rgba(239,68,68,.2)"),borderRadius:8,marginBottom:10}},
-          h("span",{style:{fontSize:13,fontWeight:600,color:res.lasts?"var(--ok)":"var(--danger)"}},res.lasts?"✓ Funds last to age "+res.le+" — "+res.sur+" yrs to spare":"⚠ Runs out at age "+res.ro+" — "+(res.le-res.ro)+" yrs short")
+
+        h("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:res.lasts?"var(--ok-lt)":"var(--danger-lt)",border:"1px solid "+(res.lasts?"rgba(45,138,78,.2)":"rgba(192,57,43,.2)"),borderRadius:10,marginBottom:10}},
+          h("span",{style:{fontSize:13,fontWeight:700,color:res.lasts?"var(--ok)":"var(--danger)"}},res.lasts?"✓ Funds last to age "+res.le+" — "+res.sur+" yrs to spare":"⚠ Runs out at age "+res.ro+" — "+(res.le-res.ro)+" yrs short")
         ),
+
         hh&&res.p1P!=null&&h("div",{style:{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}},[["👤 You",res.p1P,base.retireAge,"var(--accent)"],["👤 Partner",res.p2P,partner.retireAge,"var(--p2)"]].map(function(arr){
-          return h("div",{key:arr[0],style:{flex:1,padding:"8px 12px",background:"var(--subtle)",borderRadius:8,border:"1px solid "+arr[3]+"33"}},
-            h("div",{style:{fontSize:10,color:"var(--muted)",marginBottom:1}},arr[0]+" — retires age "+arr[2]),
-            h("div",{style:{fontSize:15,fontWeight:600,color:arr[3]}},disp(arr[1]))
+          return h("div",{key:arr[0],style:{flex:1,padding:"8px 12px",background:"var(--subtle)",borderRadius:10,border:"1px solid "+arr[3]+"33"}},
+            h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:1}},arr[0]+" — retires age "+arr[2]),
+            h("div",{style:{fontSize:15,fontWeight:700,color:arr[3]}},disp(arr[1]))
           );
         })),
+
         h("div",{style:cardS},
           h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
-            h("span",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".07em"}},"Your money over time"),
-            h("span",{style:{fontSize:10,color:(SD.find(s=>s.k===sf)||SD[1]).c,fontWeight:600}},(SD.find(s=>s.k===sf)||SD[1]).lbl+" · "+(SD.find(s=>s.k===sf)||SD[1]).rate)
+            h("span",{style:{fontSize:12,fontWeight:600,color:"var(--muted)"}},"Your money over time"),
+            h("span",{style:{fontSize:11,color:(SD.find(s=>s.k===sf)||SD[1]).c,fontWeight:700}},(SD.find(s=>s.k===sf)||SD[1]).lbl+" · "+(SD.find(s=>s.k===sf)||SD[1]).rate)
           ),
           h(Chart,{data:res.data,ra:hh?res.hra:base.retireAge,le:res.le,hdd:hh?res.hdd:null}),
           h(LifeBar,{ra:hh?res.hra:base.retireAge,le:res.le,ro:res.ro})
         ),
+
         hh&&res.p1mt!=null&&h("div",{style:{marginBottom:14}},
           h("div",{style:secL},"Monthly income at retirement"),
           h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
             [{l:"👤 You",c:"var(--accent)",mo:res.wd/12*res.p1s,today:res.p1mt,pct:Math.round(res.p1s*100)},{l:"👤 Partner",c:"var(--p2)",mo:res.wd/12*res.p2s,today:res.p2mt,pct:Math.round(res.p2s*100)}].map(function(p){
               return h("div",{key:p.l,style:{background:"var(--card)",border:"1px solid "+p.c+"33",borderRadius:12,padding:"14px 16px"}},
-                h("div",{style:{fontSize:10,color:p.c,textTransform:"uppercase",letterSpacing:".07em",fontWeight:600,marginBottom:5}},p.l+" · "+p.pct+"%"),
-                h("div",{style:{fontSize:20,fontWeight:600,color:p.c,letterSpacing:"-.5px",lineHeight:1,marginBottom:2}},disp(p.mo),h("span",{style:{fontSize:11,color:"var(--muted)",fontWeight:400}},"/mo")),
+                h("div",{style:{fontSize:11,color:p.c,fontWeight:700,marginBottom:5}},p.l+" · "+p.pct+"%"),
+                h("div",{style:{fontSize:20,fontWeight:700,color:p.c,letterSpacing:"-.5px",lineHeight:1,marginBottom:2}},disp(p.mo),h("span",{style:{fontSize:12,color:"var(--muted)",fontWeight:400}},"/mo")),
                 h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:8}},"≈ "+disp(p.today)+"/mo today"),
-                h("div",{style:{height:3,background:"var(--border)",borderRadius:2}},h("div",{style:{height:"100%",width:p.pct+"%",background:p.c,borderRadius:2}}))
+                h("div",{style:{height:4,background:"var(--subtle)",borderRadius:2}},h("div",{style:{height:"100%",width:p.pct+"%",background:p.c,borderRadius:2}}))
               );
             })
           )
         ),
+
         h("div",{className:"stat-grid"},[["Health score",res.health+"/100",hl.l,hl.c],["Success probability",res.sp+"%","funds last to life exp.",res.sp>=75?"var(--ok)":res.sp>=55?"var(--warn)":"var(--danger)"],["Coverage",res.cm.toFixed(1)+"×","annual spending",res.cm>=22?"var(--ok)":res.cm>=16?"var(--warn)":"var(--danger)"],["Monthly income",disp(res.wd/12),"at retirement","var(--text)"]].map(function(arr){
           return h("div",{key:arr[0],className:"stat-box"},h("div",{className:"stat-lbl"},arr[0]),h("div",{className:"stat-val",style:{color:arr[3]}},arr[1]),h("div",{className:"stat-sub"},arr[2]));
         })),
-        h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:16,padding:"20px 22px",marginBottom:14}},
-          h("div",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:8}},"Ready to act?"),
-          h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--text)",letterSpacing:"-.3px",lineHeight:1.3}},"Plans are great,"),
-          h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--accent)",letterSpacing:"-.3px",marginBottom:14,lineHeight:1.3}},"but execution is key."),
-          h("p",{style:{fontSize:12,color:"var(--muted)",lineHeight:1.65,marginBottom:16}},"Your numbers are ready. The next step is a conversation with a consultant who can turn this plan into action."),
+
+        h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:14,padding:"20px 22px",marginBottom:14}},
+          h("div",{style:{fontSize:12,fontWeight:600,color:"var(--muted)",marginBottom:8}},"Ready to act?"),
+          h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--text)",lineHeight:1.3}},"Plans are great,"),
+          h("div",{style:{fontFamily:"Georgia,serif",fontSize:20,fontWeight:400,color:"var(--accent)",lineHeight:1.3,marginBottom:14}},"but execution is key."),
+          h("p",{style:{fontSize:13,color:"var(--muted)",lineHeight:1.65,marginBottom:16}},"Your numbers are ready. The next step is a conversation with a consultant who can turn this plan into action."),
           h("button",{style:ctaS,onClick:()=>setModal(true)},"Guide me to achieve my dreams →")
         )
       )
     ),
+
     h("footer",{className:"footer"},
       h("div",{className:"wrap footer-inner"},
         h("div",{style:{display:"flex",alignItems:"center",gap:8}},
-          h("div",{className:"logo-mark",style:{width:24,height:24,borderRadius:7,fontSize:12}},"A"),
-          h("span",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},"ARK Financial Planners"),
+          h("div",{className:"logo-mark",style:{width:26,height:26,fontSize:12}},"A"),
+          h("span",{style:{fontSize:13,fontWeight:700}},"ARK Financial Planners"),
           h("span",{style:{fontSize:11,color:"var(--muted)",marginLeft:4}},"1 USD = "+FX+" MUR")
         ),
         h("div",{style:{fontSize:11,color:"var(--hint)",maxWidth:380,lineHeight:1.55}},"For educational purposes only. Not financial advice. Consult a qualified financial consultant before making decisions.")
