@@ -124,8 +124,15 @@ input[type=range].sl-input{position:absolute;left:0;width:100%;height:100%;opaci
 .person-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0}
 
-/* Goals */
-.goals-tog{width:100%;border:1.5px dashed var(--border);border-radius:12px;padding:11px 14px;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:500;display:flex;justify-content:space-between;cursor:pointer;text-align:left;transition:all .15s}
+/* Goal owner selector */
+.owner-wrap{display:flex;gap:6px;margin-bottom:12px}
+.owner-btn{flex:1;padding:7px 4px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;line-height:1.2}
+.owner-btn.p1on{border-color:var(--accent);background:var(--accent-lt);color:var(--accent)}
+.owner-btn.p2on{border-color:var(--p2);background:var(--p2-lt);color:var(--p2)}
+.owner-btn.shon{border-color:var(--teal);background:var(--teal-lt);color:var(--teal)}
+.owner-summary{font-size:11px;color:var(--muted);margin-top:4px;margin-bottom:8px;line-height:1.5}
+
+width:100%;border:1.5px dashed var(--border);border-radius:12px;padding:11px 14px;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:500;display:flex;justify-content:space-between;cursor:pointer;text-align:left;transition:all .15s}
 .goals-tog:hover{border-color:var(--accent);color:var(--accent)}
 .goals-tog.has{border-color:var(--accent);color:var(--accent);background:var(--accent-lt)}
 .goal-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all .15s}
@@ -372,8 +379,12 @@ function stressTest(inp){
 function hhProj(p1,p2,rate){
   rate=rate||0.05;
   const INF=0.025,SWR=0.04,r=rate;
-  const r1=proj({...p1,incomeMode:"rule4",lifeGoals:p1.lifeGoals||[]},r);
-  const r2=proj({...p2,incomeMode:"rule4",lifeGoals:[]},r);
+  // Split goals by owner: p1 gets p1-only + half of shared; p2 gets p2-only + half of shared
+  const allGoals=p1.lifeGoals||[];
+  const goalsP1=allGoals.filter(g=>g.owner==="p1"||(g.owner||"shared")==="shared").map(g=>({...g,amount:g.owner==="p1"?g.amount:g.amount/2}));
+  const goalsP2=allGoals.filter(g=>g.owner==="p2"||(g.owner||"shared")==="shared").map(g=>({...g,amount:g.owner==="p2"?g.amount:g.amount/2}));
+  const r1=proj({...p1,incomeMode:"rule4",lifeGoals:goalsP1},r);
+  const r2=proj({...p2,incomeMode:"rule4",lifeGoals:goalsP2},r);
   const hra=Math.max(p1.retireAge,p2.retireAge);
   const le1=p1.gender==="male"?75:85,le2=p2.gender==="male"?75:85,hle=Math.max(le1,le2);
   const pot1=r1.retP*Math.pow(1+r,Math.max(0,hra-p1.retireAge));
@@ -1096,44 +1107,251 @@ function DebtSection({db,dr,dt,onDB,onDR,onDT,disp,frB,toB,cur,sym}){
   );
 }
 
-/* ── CHART ── */
-function Chart({data,ra,le,hdd}){
+/* ── INTERACTIVE CASHFLOW CHART ── */
+function CashflowChart({data,ra,le,hdd,allGoalMarkers,disp,dark}){
+  const[hovered,setHovered]=useState(null);          // {x,y,yr,val,goals:[]}
+  const[activeGoals,setActiveGoals]=useState(null);  // null = all shown; Set of indices = filtered
+  const[mounted,setMounted]=useState(false);
+  useEffect(()=>{setMounted(true);},[]);
+
   if(!data||!data.length)return null;
-  const W=600,H=180,P={l:8,r:8,t:14,b:20},cw=W-P.l-P.r,ch=H-P.t-P.b;
+
+  /* Deduplicate unique goals for toggle chips */
+  const uniqueGoals=[];
+  (allGoalMarkers||[]).forEach(function(g){
+    if(!uniqueGoals.find(u=>u.label===g.label&&u.owner===g.owner))uniqueGoals.push(g);
+  });
+
+  /* Which markers are active */
+  const visibleMarkers=(allGoalMarkers||[]).filter(function(g){
+    if(!activeGoals)return true;
+    return activeGoals.has(g.label+"__"+g.owner);
+  });
+
+  /* SVG geometry */
+  const W=600,H=200,P={l:54,r:16,t:12,b:28},cw=W-P.l-P.r,ch=H-P.t-P.b;
   const av=[...data.map(d=>d.val)];
   if(hdd)hdd.forEach(d=>av.push(d.p1v||0,d.p2v||0));
-  const maxV=Math.max(...av,1)*1.12;
+  const maxV=Math.max(...av,1)*1.15;
+  const minV=0;
   const ay=[...data.map(d=>d.yr)];
   if(hdd)hdd.forEach(d=>ay.push(d.yr));
   const minY=Math.min(...ay),maxY=Math.max(...ay),rng=Math.max(1,maxY-minY);
-  const sx=yr=>P.l+((yr-minY)/rng)*cw,sy=v=>P.t+ch-(Math.max(0,v)/maxV)*ch;
-  const grow=data.filter(d=>d.phase==="grow"),draw=hdd||data.filter(d=>d.phase==="draw");
-  const tp=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.val).toFixed(1)).join(" ");
+  const sx=yr=>P.l+((yr-minY)/rng)*cw;
+  const sy=v=>P.t+ch-((Math.max(0,v)-minV)/(maxV-minV))*ch;
+  const grow=data.filter(d=>d.phase==="grow");
+  const draw=hdd||data.filter(d=>d.phase==="draw");
+
+  /* Path builders */
+  const tp =pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.val).toFixed(1)).join(" ");
   const tp1=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.p1v||0).toFixed(1)).join(" ");
   const tp2=pts=>pts.map((d,i)=>(i?"L":"M")+sx(d.yr).toFixed(1)+","+sy(d.p2v||0).toFixed(1)).join(" ");
+
+  /* Y-axis ticks — 4 clean gridlines */
+  const yTicks=[0,.25,.5,.75,1].map(f=>({v:maxV*f,y:sy(maxV*f)}));
+
+  /* Interpolate portfolio value at year */
+  const valAtYr=yr=>{
+    const all=[...grow,...(hdd?[]:[])];
+    const pt=all.find(d=>d.yr===Math.round(yr));
+    if(pt)return pt.val;
+    const before=grow.filter(d=>d.yr<=yr),after=grow.filter(d=>d.yr>yr);
+    if(!before.length)return 0;if(!after.length)return before[before.length-1].val;
+    const b=before[before.length-1],a=after[0];
+    return b.val+(a.val-b.val)*((yr-b.yr)/(a.yr-b.yr));
+  };
+
+  /* Mouse move handler — snap to nearest data year */
+  const svgRef=React.useRef(null);
+  function onMouseMove(e){
+    const svg=svgRef.current;if(!svg)return;
+    const rect=svg.getBoundingClientRect();
+    const scaleX=W/rect.width;
+    const mx=(e.clientX-rect.left)*scaleX;
+    const yr=minY+((mx-P.l)/cw)*rng;
+    const clampedYr=Math.max(minY,Math.min(maxY,yr));
+    /* Find nearest grow point */
+    const all=grow.length>0?grow:draw;
+    const nearest=all.reduce((best,d)=>Math.abs(d.yr-clampedYr)<Math.abs(best.yr-clampedYr)?d:best,all[0]);
+    /* Goals at this year */
+    const goalsHere=visibleMarkers.filter(g=>g.yr===nearest.yr);
+    setHovered({x:sx(nearest.yr),y:sy(nearest.val),yr:nearest.yr,val:nearest.val,goals:goalsHere});
+  }
+
+  /* Stagger markers — assign column slot to avoid x-overlap */
+  const slotted=visibleMarkers.map(function(g,i){
+    return {...g,slot:i%3}; // 3 vertical rows
+  });
+
+  const textColor=dark?"#B0B3B8":"#65676B";
+  const gridColor=dark?"rgba(255,255,255,.06)":"rgba(0,0,0,.05)";
   const rx=sx(ra),lx=le>=minY&&le<=maxY?sx(le):null;
-  return h("svg",{width:"100%",viewBox:"0 0 "+W+" "+H,style:{overflow:"visible",display:"block"}},
-    h("defs",null,
-      h("linearGradient",{id:"gg",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#1877F2",stopOpacity:".2"}),h("stop",{offset:"100%",stopColor:"#1877F2",stopOpacity:".01"})),
-      h("linearGradient",{id:"gd",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#0081FB",stopOpacity:".15"}),h("stop",{offset:"100%",stopColor:"#0081FB",stopOpacity:".01"})),
-      h("linearGradient",{id:"gp",x1:"0",y1:"0",x2:"0",y2:"1"},h("stop",{offset:"0%",stopColor:"#7C3AED",stopOpacity:".12"}),h("stop",{offset:"100%",stopColor:"#7C3AED",stopOpacity:".01"}))
+
+  return h("div",{style:{userSelect:"none"}},
+    /* ── Toggle chips ── */
+    uniqueGoals.length>0&&h("div",{style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}},
+      h("span",{style:{fontSize:11,color:"var(--muted)",alignSelf:"center",marginRight:2,fontWeight:600,letterSpacing:".02em",textTransform:"uppercase"}},
+        "Life events"
+      ),
+      /* All toggle */
+      h("button",{
+        onClick:()=>setActiveGoals(null),
+        style:{padding:"4px 11px",borderRadius:20,border:"1.5px solid "+(activeGoals===null?"var(--accent)":"var(--border)"),
+          background:activeGoals===null?"var(--accent-lt)":"transparent",
+          color:activeGoals===null?"var(--accent)":"var(--muted)",
+          fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}
+      },"All"),
+      uniqueGoals.map(function(g,i){
+        const key=g.label+"__"+g.owner;
+        const isOn=activeGoals===null||activeGoals.has(key);
+        const col=g.owner==="p2"?"var(--p2)":g.owner==="p1"?"var(--accent)":"var(--teal)";
+        const bg=g.owner==="p2"?"var(--p2-lt)":g.owner==="p1"?"var(--accent-lt)":"var(--teal-lt)";
+        return h("button",{key:i,
+          onClick:function(){
+            if(activeGoals===null){
+              /* Switch to exclusive — all off except this */
+              const s=new Set();s.add(key);setActiveGoals(s);
+            }else{
+              const s=new Set(activeGoals);
+              if(s.has(key)){s.delete(key);if(s.size===0){setActiveGoals(null);}else setActiveGoals(s);}
+              else{s.add(key);setActiveGoals(s);}
+            }
+          },
+          style:{display:"flex",alignItems:"center",gap:4,padding:"4px 11px",borderRadius:20,
+            border:"1.5px solid "+(isOn?col:"var(--border)"),
+            background:isOn?bg:"transparent",
+            color:isOn?col:"var(--muted)",
+            fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s",
+            opacity:isOn?1:.5}
+        },
+          h("span",{style:{fontSize:13}},g.icon),
+          g.label,
+          h("span",{style:{fontWeight:400,fontSize:10,opacity:.75}}," · "+(g.owner==="p2"?"Partner":g.owner==="p1"?"You":"Shared"))
+        );
+      })
     ),
-    grow.length>1&&h("path",{d:tp(grow)+" L"+sx(grow[grow.length-1].yr)+","+(P.t+ch)+" L"+sx(grow[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gg)"}),
-    grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#1877F2",strokeWidth:"2.5",strokeLinejoin:"round"}),
-    hdd?[
-      draw.length>1&&h("path",{key:"f1",d:tp1(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gd)"}),
-      draw.length>1&&h("path",{key:"f2",d:tp2(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gp)"}),
-      draw.length>1&&h("path",{key:"l1",d:tp1(draw),fill:"none",stroke:"#0081FB",strokeWidth:"2",strokeDasharray:"6,3"}),
-      draw.length>1&&h("path",{key:"l2",d:tp2(draw),fill:"none",stroke:"#7C3AED",strokeWidth:"2",strokeDasharray:"6,3"})
-    ]:[
-      draw.length>1&&h("path",{key:"fd",d:tp(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#gd)"}),
-      draw.length>1&&h("path",{key:"ld",d:tp(draw),fill:"none",stroke:"#0081FB",strokeWidth:"2",strokeDasharray:"6,3"})
-    ],
-    h("line",{x1:rx,y1:P.t,x2:rx,y2:P.t+ch,stroke:"#8A8D91",strokeWidth:"1",strokeDasharray:"3,3"}),
-    h("text",{x:rx+3,y:P.t+9,fill:"#8A8D91",fontSize:"8",fontFamily:"sans-serif"},"retire "+ra),
-    lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#C0392B",strokeWidth:"1.5",strokeDasharray:"4,3",opacity:".8"}),
-    lx&&h("text",{x:lx+3,y:P.t+9,fill:"#C0392B",fontSize:"8",fontFamily:"sans-serif"},"age "+le),
-    [minY,Math.round((minY+maxY)/2),maxY].map(yr=>h("text",{key:yr,x:sx(yr),y:H-3,fill:"#8A8D91",fontSize:"8",fontFamily:"sans-serif",textAnchor:"middle"},yr))
+
+    /* ── SVG chart ── */
+    h("div",{style:{position:"relative"}},
+      h("svg",{ref:svgRef,width:"100%",viewBox:"0 0 "+W+" "+H,
+        style:{overflow:"visible",display:"block",cursor:"crosshair"},
+        onMouseMove,onMouseLeave:()=>setHovered(null)},
+        h("defs",null,
+          h("linearGradient",{id:"cgg",x1:"0",y1:"0",x2:"0",y2:"1"},
+            h("stop",{offset:"0%",stopColor:"#1877F2",stopOpacity:dark?".25":".18"}),
+            h("stop",{offset:"100%",stopColor:"#1877F2",stopOpacity:".02"})
+          ),
+          h("linearGradient",{id:"cgd",x1:"0",y1:"0",x2:"0",y2:"1"},
+            h("stop",{offset:"0%",stopColor:"#0081FB",stopOpacity:dark?".18":".12"}),
+            h("stop",{offset:"100%",stopColor:"#0081FB",stopOpacity:".01"})
+          ),
+          h("linearGradient",{id:"cgp",x1:"0",y1:"0",x2:"0",y2:"1"},
+            h("stop",{offset:"0%",stopColor:"#7C3AED",stopOpacity:dark?".15":".10"}),
+            h("stop",{offset:"100%",stopColor:"#7C3AED",stopOpacity:".01"})
+          )
+        ),
+
+        /* Y-axis gridlines + labels */
+        yTicks.map(function(t,i){
+          return h("g",{key:"yt"+i},
+            h("line",{x1:P.l,y1:t.y,x2:W-P.r,y2:t.y,stroke:gridColor,strokeWidth:"1"}),
+            t.v>0&&h("text",{x:P.l-6,y:t.y+3,textAnchor:"end",fontSize:"9",fill:textColor,fontFamily:"sans-serif"},
+              disp(t.v,true)
+            )
+          );
+        }),
+
+        /* Growth area + line */
+        grow.length>1&&h("path",{d:tp(grow)+" L"+sx(grow[grow.length-1].yr)+","+(P.t+ch)+" L"+sx(grow[0].yr)+","+(P.t+ch)+" Z",fill:"url(#cgg)"}),
+        grow.length>1&&h("path",{d:tp(grow),fill:"none",stroke:"#1877F2",strokeWidth:"2",strokeLinejoin:"round",strokeLinecap:"round"}),
+
+        /* Drawdown */
+        hdd?[
+          draw.length>1&&h("path",{key:"f1",d:tp1(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#cgd)"}),
+          draw.length>1&&h("path",{key:"f2",d:tp2(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#cgp)"}),
+          draw.length>1&&h("path",{key:"l1",d:tp1(draw),fill:"none",stroke:"#0081FB",strokeWidth:"1.5",strokeDasharray:"5,3",strokeLinecap:"round"}),
+          draw.length>1&&h("path",{key:"l2",d:tp2(draw),fill:"none",stroke:"#7C3AED",strokeWidth:"1.5",strokeDasharray:"5,3",strokeLinecap:"round"})
+        ]:[
+          draw.length>1&&h("path",{key:"fd",d:tp(draw)+" L"+sx(draw[draw.length-1].yr)+","+(P.t+ch)+" L"+sx(draw[0].yr)+","+(P.t+ch)+" Z",fill:"url(#cgd)"}),
+          draw.length>1&&h("path",{key:"ld",d:tp(draw),fill:"none",stroke:"#0081FB",strokeWidth:"1.5",strokeDasharray:"5,3",strokeLinecap:"round"})
+        ],
+
+        /* Goal event markers */
+        slotted.map(function(g,i){
+          const gx=sx(g.yr);
+          const pv=valAtYr(g.yr);
+          const py=sy(pv);
+          const col=g.owner==="p2"?"#7C3AED":g.owner==="p1"?"#1877F2":"#0081FB";
+          /* Slot-based pin height above chart top so they don't overlap */
+          const pinTop=P.t+(g.slot*14);
+          return h("g",{key:"gm"+i,style:{opacity:mounted?1:0,transition:"opacity .3s"}},
+            /* Thin line from pin to portfolio point */
+            h("line",{x1:gx,y1:pinTop+16,x2:gx,y2:py-5,stroke:col,strokeWidth:"1",strokeDasharray:"2,2",opacity:".5"}),
+            /* Filled circle at portfolio value */
+            h("circle",{cx:gx,cy:py,r:"4",fill:col,stroke:"white",strokeWidth:"1.5",opacity:".95"}),
+            /* Pin bubble */
+            h("g",{transform:"translate("+gx+","+(pinTop)+")",style:{cursor:"pointer"}},
+              h("circle",{cx:0,cy:8,r:9,fill:col,opacity:".12"}),
+              h("text",{x:0,y:13,textAnchor:"middle",fontSize:"12",fontFamily:"sans-serif"},g.icon)
+            )
+          );
+        }),
+
+        /* Retire line */
+        h("line",{x1:rx,y1:P.t,x2:rx,y2:P.t+ch,stroke:"#8A8D91",strokeWidth:"1",strokeDasharray:"3,3",opacity:".7"}),
+        h("text",{x:rx+4,y:P.t+ch-4,fill:"#8A8D91",fontSize:"9",fontFamily:"sans-serif"},"Retire "+ra),
+
+        /* Life expectancy line */
+        lx&&h("line",{x1:lx,y1:P.t,x2:lx,y2:P.t+ch,stroke:"#C0392B",strokeWidth:"1",strokeDasharray:"4,3",opacity:".7"}),
+        lx&&h("text",{x:lx+4,y:P.t+ch-4,fill:"#C0392B",fontSize:"9",fontFamily:"sans-serif"},"Age "+le),
+
+        /* X-axis year labels */
+        [minY,Math.round((minY+maxY)/2),maxY].map(yr=>
+          h("text",{key:yr,x:sx(yr),y:H-6,fill:textColor,fontSize:"9",fontFamily:"sans-serif",textAnchor:"middle"},yr)
+        ),
+
+        /* Hover crosshair */
+        hovered&&[
+          h("line",{key:"hx",x1:hovered.x,y1:P.t,x2:hovered.x,y2:P.t+ch,stroke:dark?"rgba(255,255,255,.2)":"rgba(0,0,0,.12)",strokeWidth:"1"}),
+          h("circle",{key:"hc",cx:hovered.x,cy:hovered.y,r:5,fill:"#1877F2",stroke:"white",strokeWidth:"2"})
+        ]
+      ),
+
+      /* Tooltip */
+      hovered&&(function(){
+        const goals=hovered.goals;
+        const tipW=160,tipX=hovered.x>W*0.65?-tipW-12:12;
+        return h("div",{style:{
+          position:"absolute",
+          top:Math.max(4,hovered.y*(100/H)-10)+"%",
+          left:hovered.x*(100/W)+"%",
+          transform:"translateX("+(hovered.x>W*0.65?"-100%":"0")+")",
+          pointerEvents:"none",zIndex:10
+        }},
+          h("div",{style:{
+            background:dark?"rgba(36,37,38,.97)":"rgba(255,255,255,.98)",
+            border:"1px solid "+(dark?"rgba(255,255,255,.1)":"rgba(0,0,0,.1)"),
+            borderRadius:10,padding:"10px 13px",boxShadow:"0 4px 20px rgba(0,0,0,.15)",
+            minWidth:140,maxWidth:200
+          }},
+            h("div",{style:{fontSize:11,color:"var(--muted)",marginBottom:3,fontWeight:600}},"Age "+hovered.yr),
+            h("div",{style:{fontSize:15,fontWeight:700,color:"var(--accent)",marginBottom:goals.length>0?8:0}},disp(hovered.val)),
+            goals.length>0&&h("div",{style:{borderTop:"1px solid "+(dark?"rgba(255,255,255,.08)":"rgba(0,0,0,.07)"),paddingTop:7}},
+              goals.map(function(g,i){
+                const col=g.owner==="p2"?"var(--p2)":g.owner==="p1"?"var(--accent)":"var(--teal)";
+                return h("div",{key:i,style:{display:"flex",alignItems:"center",gap:6,marginBottom:i<goals.length-1?5:0}},
+                  h("span",{style:{fontSize:14}},g.icon),
+                  h("div",null,
+                    h("div",{style:{fontSize:11,fontWeight:700,color:col}},g.label),
+                    h("div",{style:{fontSize:10,color:"var(--muted)"}},disp(g.amount)+" drawn")
+                  )
+                );
+              })
+            )
+          )
+        );
+      })()
+    )
   );
 }
 
@@ -1185,8 +1403,13 @@ function getCaps(id,cur){
   return              {max:150000,   step:2000};
 }
 
-function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
+function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym,hhMode}){
   const ageMin=Math.max(ba+1,18),ageMax=Math.min(le-1,99);
+  const ownerOpts=[
+    {k:"shared",lbl:"Shared",sub:"50% each",icon:"👫",cls:"shon"},
+    {k:"p1",    lbl:"You",   sub:"fully",   icon:"👤",cls:"p1on"},
+    {k:"p2",    lbl:"Partner",sub:"fully",  icon:"👤",cls:"p2on"},
+  ];
   return h("div",null,
     h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}},
       GOALS.map(gt=>{
@@ -1201,15 +1424,37 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
     goals.map(g=>{
       const isTrip=g.id==="trip",isHouse=g.id==="house";
       const{max:maxD,step:stepD}=getCaps(g.id,cur);
-      /* slider value in display units; store in base USD via toB */
       const dispVal=cur==="MUR"?g.amount*FX:g.amount;
       const minD=cur==="MUR"?stepD:Math.min(stepD,1000);
       const atAge=Math.max(ageMin,Math.min(g.atAge||ageMin,ageMax));
+      const owner=g.owner||"shared";
+      const ownerDisp=owner==="shared"?{label:"Shared equally",color:"var(--teal)",amtNote:"("+disp(g.amount/2)+" each)"}:
+                       owner==="p1"?{label:"You only",color:"var(--accent)",amtNote:"(full "+disp(g.amount)+")"}:
+                       {label:"Partner only",color:"var(--p2)",amtNote:"(full "+disp(g.amount)+")"};
       return h("div",{key:g.id,style:{background:"var(--teal-lt)",border:"1px solid rgba(0,129,251,.2)",borderRadius:12,padding:14,marginBottom:8}},
         h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
           h("span",{style:{fontSize:13,fontWeight:600,color:"var(--text)"}},g.icon+" "+g.label),
           h("button",{onClick:()=>onRemove(g.id),style:{background:"none",border:"none",color:"var(--muted)",cursor:"pointer",fontSize:18,lineHeight:1}},"×")
         ),
+
+        /* Owner selector — only in HH mode */
+        hhMode&&h("div",{style:{marginBottom:12}},
+          h("div",{style:{fontSize:11,fontWeight:600,color:"var(--muted)",marginBottom:6}},"Who is this goal for?"),
+          h("div",{className:"owner-wrap"},
+            ownerOpts.map(opt=>h("button",{key:opt.k,
+              className:"owner-btn"+(owner===opt.k?" "+opt.cls:""),
+              onClick:()=>onUpdate(g.id,"owner",opt.k)},
+              h("span",{style:{fontSize:14}},opt.icon),
+              h("span",null,opt.lbl),
+              h("span",{style:{fontSize:9,opacity:.75}},opt.sub)
+            ))
+          ),
+          h("div",{className:"owner-summary"},
+            h("span",{style:{color:ownerDisp.color,fontWeight:600}},ownerDisp.label),
+            " — ",disp(g.amount)," goal ",ownerDisp.amtNote," drawn at age ",atAge
+          )
+        ),
+
         h(Slider,{
           label:isTrip?"Cost per trip":"Purchase price",
           value:dispVal,min:minD,max:maxD,step:stepD,
@@ -1222,8 +1467,8 @@ function LifeGoals({goals,onAdd,onRemove,onUpdate,ba,le,disp,toB,frB,cur,sym}){
           h(Slider,{label:"% financed via mortgage",value:g.mortgagePct||0,min:0,max:100,step:5,
             fmt:v=>{const dp=dispVal*(1-v/100);return v+"% (down payment: "+sym+(dp>=1e6?(dp/1e6).toFixed(2)+"M":dp>=1e3?(dp/1e3).toFixed(0)+"K":Math.round(dp).toLocaleString())+")";},
             onChange:v=>onUpdate(g.id,"mortgagePct",v),color:"var(--teal)"}),
-          (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:4}},
-            h("div",null,h("div",{className:"field-lbl"},"Mortgage rate (% p.a.)"),h("input",{className:"mini-input",type:"number",min:0,max:20,step:0.1,value:g.mortgageRate||"",placeholder:"e.g. 5.5",onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(20,Math.max(0,parseFloat(e.target.value)||0)))})),
+          (g.mortgagePct||0)>0&&h("div",{className:"row2",style:{marginTop:8}},
+            h("div",null,h("div",{className:"field-lbl"},"Interest rate (% p.a.)"),h("input",{className:"mini-input",type:"number",min:0,max:30,step:0.1,value:g.mortgageRate||"",placeholder:"e.g. 6.5",onChange:e=>onUpdate(g.id,"mortgageRate",Math.min(30,Math.max(0,parseFloat(e.target.value)||0)))})),
             h("div",null,h("div",{className:"field-lbl"},"Term (years)"),h("input",{className:"mini-input",type:"number",min:1,max:30,step:1,value:g.mortgageTerm||"",placeholder:"e.g. 20",onChange:e=>onUpdate(g.id,"mortgageTerm",Math.min(30,Math.max(1,parseInt(e.target.value)||20)))}))
           ),
           (g.mortgagePct||0)>0&&(g.mortgageRate||0)>0&&(g.mortgageTerm||0)>0&&function(){
@@ -1516,7 +1761,8 @@ function App(){
     sB("lifeGoals",[...(base.lifeGoals||[]),{...gt,
       amount:cur==="MUR"?gt.da:gt.da,  /* da is in USD base; stored as USD */
       atAge:Math.max(goalBA+1,Math.min(gt.dage,goalLE-1)),
-      recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20
+      recurYears:gt.id==="trip"?3:0,mortgagePct:0,mortgageRate:0,mortgageTerm:20,
+      owner:"shared"
     }]);
   };
   const remG=id=>sB("lifeGoals",(base.lifeGoals||[]).filter(g=>g.id!==id));
@@ -1614,7 +1860,7 @@ function App(){
               h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" shared life goal"+((base.lifeGoals||[]).length>1?"s":"")+" — tap to edit":"+ Add shared life goals"),
               h("span",null,goalsOpen?"▲":"▼")
             ),
-            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
+            goalsOpen&&h("div",{style:{marginTop:12}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym,hhMode:true}))
           )
         ),
 
@@ -1649,7 +1895,7 @@ function App(){
             h("span",null,(base.lifeGoals||[]).length>0?(base.lifeGoals||[]).length+" life goal"+((base.lifeGoals||[]).length>1?"s":"")+" added":"+ Add life goals (house, car, trips…)"),
             h("span",null,goalsOpen?"▲":"▼")
           ),
-          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym}))
+          goalsOpen&&h("div",{style:{...cardS,marginTop:8}},h(LifeGoals,{goals:base.lifeGoals||[],onAdd:addG,onRemove:remG,onUpdate:updG,ba:goalBA,le:goalLE,disp,toB,frB,cur,sym,hhMode:false}))
         ),
 
         res&&h("div",{className:"teaser",onClick:()=>{setTab("results");setTimeout(()=>window.scrollTo({top:0,behavior:"smooth"}),50);}},
@@ -1702,15 +1948,6 @@ function App(){
           );
         })),
 
-        h("div",{style:cardS},
-          h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
-            h("span",{style:{fontSize:12,fontWeight:600,color:"var(--muted)"}},"Your money over time"),
-            h("span",{style:{fontSize:11,color:(SD.find(s=>s.k===sf)||SD[1]).c,fontWeight:700}},(SD.find(s=>s.k===sf)||SD[1]).lbl+" · "+(SD.find(s=>s.k===sf)||SD[1]).rate)
-          ),
-          h(Chart,{data:res.data,ra:hh?res.hra:base.retireAge,le:res.le,hdd:hh?res.hdd:null}),
-          h(LifeBar,{ra:hh?res.hra:base.retireAge,le:res.le,ro:res.ro})
-        ),
-
         hh&&res.p1mt!=null&&h("div",{style:{marginBottom:14}},
           h("div",{style:secL},"Monthly income at retirement"),
           h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
@@ -1728,6 +1965,54 @@ function App(){
         h("div",{className:"stat-grid"},[["Health score",res.health+"/100",hl.l,hl.c],["Success probability",res.sp+"%","funds last to life exp.",res.sp>=75?"var(--ok)":res.sp>=55?"var(--warn)":"var(--danger)"],["Coverage",res.cm.toFixed(1)+"×","annual spending",res.cm>=22?"var(--ok)":res.cm>=16?"var(--warn)":"var(--danger)"],["Monthly income",disp(res.wd/12),"at retirement","var(--text)"]].map(function(arr){
           return h("div",{key:arr[0],className:"stat-box"},h("div",{className:"stat-lbl"},arr[0]),h("div",{className:"stat-val",style:{color:arr[3]}},arr[1]),h("div",{className:"stat-sub"},arr[2]));
         })),
+
+        /* ── CASHFLOW CHART — just before Ready to act ── */
+        (function(){
+          const goals=base.lifeGoals||[];
+          const startAge=hh?Math.min(base.age,partner.age):base.age;
+          const allGoalMarkers=[];
+          goals.forEach(function(g){
+            if(!g.amount||!g.atAge)return;
+            if(g.id==="trip"&&(g.recurYears||0)>0){
+              const retA=hh?Math.max(base.retireAge,partner.retireAge):base.retireAge;
+              for(let a=g.atAge;a<retA;a+=g.recurYears){
+                allGoalMarkers.push({yr:a,icon:g.icon,label:g.label,amount:g.amount,owner:g.owner||"shared"});
+              }
+            }else{
+              allGoalMarkers.push({yr:g.atAge,icon:g.icon,label:g.label,amount:g.amount,owner:g.owner||"shared"});
+            }
+          });
+          const selScen=SD.find(s=>s.k===sf)||SD[1];
+          return h("div",{style:{...cardS,padding:"24px 22px 20px"}},
+            /* Card header — title outside the SVG */
+            h("div",{style:{marginBottom:20}},
+              h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:8}},
+                h("div",null,
+                  h("h3",{style:{fontSize:16,fontWeight:700,color:"var(--text)",margin:0,letterSpacing:"-.2px"}},"Your money over time"),
+                  h("p",{style:{fontSize:12,color:"var(--muted)",marginTop:3,marginBottom:0,lineHeight:1.5}},
+                    "How your portfolio grows to retirement and draws down through your lifetime"+(allGoalMarkers.length>0?" — tap a life event below to explore its impact":"")+"."
+                  )
+                ),
+                h("div",{style:{display:"flex",alignItems:"center",gap:6,flexShrink:0}},
+                  h("span",{style:{width:10,height:10,borderRadius:"50%",background:selScen.c,display:"inline-block"}}),
+                  h("span",{style:{fontSize:12,fontWeight:700,color:selScen.c}},selScen.lbl+" · "+selScen.rate)
+                )
+              )
+            ),
+            /* Interactive chart */
+            h(CashflowChart,{
+              data:res.data,
+              ra:hh?res.hra:base.retireAge,
+              le:res.le,
+              hdd:hh?res.hdd:null,
+              allGoalMarkers,
+              disp,
+              dark
+            }),
+            /* LifeBar — clean separation */
+            h("div",{style:{marginTop:16}},h(LifeBar,{ra:hh?res.hra:base.retireAge,le:res.le,ro:res.ro}))
+          );
+        })(),
 
         h("div",{style:{background:"var(--subtle)",border:"1px solid var(--border)",borderRadius:14,padding:"20px 22px",marginBottom:14}},
           h("div",{style:{fontSize:12,fontWeight:600,color:"var(--muted)",marginBottom:8}},"Ready to act?"),
